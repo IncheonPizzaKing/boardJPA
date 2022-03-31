@@ -15,8 +15,4 @@ public class BoardForm {
     private String title;
     private String author;
     private String content;
-
-    private String fileId;
-    private String fileName;
-    private String fileType;
 }

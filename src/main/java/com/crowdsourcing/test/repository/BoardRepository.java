@@ -17,6 +17,10 @@ public class BoardRepository {
         em.persist(board);
     }
 
+    public void remove(Board board) {
+        em.remove(board);
+    }
+
     public Board findOne(Long id) {
         return em.find(Board.class, id);
     }

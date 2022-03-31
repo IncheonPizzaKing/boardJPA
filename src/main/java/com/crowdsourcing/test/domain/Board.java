@@ -12,28 +12,18 @@ import java.util.List;
 @Getter @Setter
 public class Board {
 
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "board_id")
     private Long id;
 
+    @Column(nullable = false)
     private String contentType;
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private String author;
+    @Column(nullable = false)
     private String content;
     private LocalDateTime time;
-    @OneToMany(
-            mappedBy = "board",
-            cascade = {CascadeType.PERSIST, CascadeType.REMOVE},
-            orphanRemoval = true
-    )
-    private List<BoardFile> boardFile = new ArrayList<>();
-
-    // Board에서 파일 처리 위함
-    public void addBoardFile(BoardFile boardFile) {
-        this.boardFile.add(boardFile);
-
-        // 게시글에 파일이 저장되어있지 않은 경우
-        if(boardFile.getBoard() != this)
-            // 파일 저장
-            boardFile.setBoard(this);
-    }
+    private Long fileId;
 }

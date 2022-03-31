@@ -13,15 +13,20 @@
                 <th>제목</th>
                 <th>작성자</th>
                 <th>작성시간</th>
+                <th>첨부파일</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="board : ${board}">
-                <td th:text="${board.id}"></td>
+                <td th:text="${board.id}"><a href="#" th:href="@{/items/update/{board.id}"></a></td>
                 <td th:text="${board.contentType}"></td>
                 <td th:text="${board.title}"></td>
                 <td th:text="${board.author}"></td>
                 <td th:text="${board.time}"></td>
+                <td th:if="${board.fileId != null}">
+                    <a th:href="@{'/download/' + ${board.fileId}}" th:text="다운로드"></a>
+                </td>
+                <td th:if="${board.fileId == null}"></td>
             </tr>
             </tbody>
         </table>
