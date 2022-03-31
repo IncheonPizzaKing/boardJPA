@@ -1,0 +1,32 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header" />
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <div>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>분류</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성시간</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="board : ${board}">
+                <td th:text="${board.id}"></td>
+                <td th:text="${board.contentType}"></td>
+                <td th:text="${board.title}"></td>
+                <td th:text="${board.author}"></td>
+                <td th:text="${board.time}"></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div th:replace="fragments/footer :: footer" />
+</div> <!-- /container -->
+</body>
+</html>
