@@ -15,7 +15,6 @@ public class Board {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")
     private Long id;
-
     @Column(nullable = false)
     private String contentType;
     @Column(nullable = false)

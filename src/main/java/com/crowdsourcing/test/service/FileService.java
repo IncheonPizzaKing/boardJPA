@@ -22,6 +22,12 @@ public class FileService {
         return file.getId();
     }
 
+    @Transactional
+    public void delete(Long fileId) {
+        File file = fileRepository.findOne(fileId);
+        fileRepository.remove(file);
+    }
+
     //파일 조회
     public List<File> findFile() {
         return fileRepository.findAll();

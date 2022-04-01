@@ -5,6 +5,19 @@
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader" />
     <div>
+        <form th:object="${boardSearch}" class="form-inline">
+            <select th:field="*{types}" class="form-control">
+                <option value="none">전체</option>
+                <option value="free">자유</option>
+                <option value="sports">스포츠</option>
+                <option value="music">음악</option>
+                <option value="movie">영화</option>
+            </select>
+            <input type="text" th:field="*{search}" class="form-control" placeholder="제목을 입력하세요"/>
+            <button type="submit" class="btn btn-primary mb-2">검색</button>
+        </form>
+    </div>
+    <div>
         <table class="table table-striped">
             <thead>
             <tr>
@@ -18,7 +31,7 @@
             </thead>
             <tbody>
             <tr th:each="board : ${board}">
-                <td th:text="${board.id}"><a href="#" th:href="@{/items/update/{board.id}"></a></td>
+                        <td><a th:href="@{/board/{id}/update (id=${board.id})}" th:text="${board.id}"></a></td>
                 <td th:text="${board.contentType}"></td>
                 <td th:text="${board.title}"></td>
                 <td th:text="${board.author}"></td>

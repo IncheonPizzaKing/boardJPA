@@ -13,10 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
@@ -78,15 +75,20 @@ public class BoardController {
             board.setFileId(fileId);
         }
         boardService.write(board);
-        return "redirect:/board/";
+        return "redirect:/board";
     }
 
     @GetMapping("/board")
-    public String list(Model model) {
-        List<Board> board = boardService.findBoard();
-        model.addAttribute("board", board);
+    public String list(@ModelAttribute("boardSearch") BoardSearch boardSearch, Model model) {
+        List<Board> boardList = boardService.findBoard(boardSearch);
+        model.addAttribute("board", boardList);
         return "board/boardList";
     }
+
+//    @PostMapping("/board")
+//    public String searchList(@RequestParam("boardSearch") String boardSearch, Model model) {
+//        return "/board/boardList";
+//    }
 
     @GetMapping("/download/{fileId}")
     public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") Long fileId) throws IOException {
@@ -99,7 +101,7 @@ public class BoardController {
                 .body(resource);
     }
 
-    @GetMapping("/board/update/{boardId}")
+    @GetMapping("/board/{boardId}/update")
     public String updateBoardForm(@PathVariable("boardId") Long boardId, Model model) {
         Board board = (Board) boardService.findOne(boardId);
         BoardForm form = new BoardForm();
@@ -107,13 +109,23 @@ public class BoardController {
         form.setTitle(board.getTitle());
         form.setAuthor(board.getAuthor());
         form.setContent(board.getContent());
+        Long id = boardId;
 
         model.addAttribute("form", form);
+        model.addAttribute("id",id);
         return "board/updateBoardForm";
     }
 
-    @PostMapping("/board/update/{boardId}")
-    public String updateBoard(@ModelAttribute("form") BoardForm boardForm) {
-        boardService.updateBoard(boardForm.ge)
+    @PostMapping("/board/{boardId}/update")
+    public String updateBoard(@PathVariable Long boardId, @ModelAttribute("form") BoardForm form) {
+        boardService.update(boardId, form.getTitle(), form.getContent());
+        return "redirect:/board";
+    }
+
+    @GetMapping("/board/{boardId}/delete")
+    public String deleteBoard(@PathVariable Long boardId) {
+        boardService.delete(boardId);
+        return "redirect:/board";
     }
 }
+
