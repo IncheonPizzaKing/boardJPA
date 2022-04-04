@@ -34,15 +34,18 @@
         <div class="form-group">
             <label th:for="author">작성자</label>
             <input type="text" th:field="*{author}" class="form-control"
-                   placeholder="작성자를 입력하세요">
+                   placeholder="작성자를 입력하세요"
+                   th:class="${#fields.hasErrors('author')}? 'form-control fieldError' : 'form-control'">
+            <p th:if="${#fields.hasErrors('author')}"
+               th:errors="*{author}">Incorrect date</p>
         </div>
         <div class="form-group">
             <label th:for="content">내용</label>
-            <textarea rows="5" th:field="*{content}" class="form-control"
+            <textarea rows="5" th:field="*{content}" th:class="form-control"
                       placeholder="내용을 입력하세요"></textarea>
         </div>
         <div class="form-group">
-            <label th:for="content">파일 업로드</label>
+            <label th:for="file">파일 업로드</label>
             <br>
             <input type="file" name="multipartFile" class="form-control">
         </div>

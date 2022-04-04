@@ -7,13 +7,12 @@ import javax.validation.constraints.NotEmpty;
 
 @Getter
 @Setter
-public class BoardForm {
+public class UserForm {
 
     @NotEmpty
-    private String contentType;
+    private String username;
     @NotEmpty
-    private String title;
+    private String password;
     @NotEmpty
-    private String author;
-    private String content;
+    private String role;
 }

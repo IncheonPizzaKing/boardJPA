@@ -39,7 +39,7 @@ public class BoardController {
     }
 
     @PostMapping("/board/new")
-    public String create(@Valid BoardForm boardForm, BindingResult result, MultipartFile multipartFile) throws Exception {
+    public String create(@ModelAttribute("boardForm") BoardForm boardForm, BindingResult result, MultipartFile multipartFile) throws Exception {
 
         if (result.hasErrors()) {
             return "board/createBoardForm";
@@ -85,11 +85,6 @@ public class BoardController {
         return "board/boardList";
     }
 
-//    @PostMapping("/board")
-//    public String searchList(@RequestParam("boardSearch") String boardSearch, Model model) {
-//        return "/board/boardList";
-//    }
-
     @GetMapping("/download/{fileId}")
     public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") Long fileId) throws IOException {
         com.crowdsourcing.test.domain.File fileDto = fileService.findOne(fileId);
@@ -109,10 +104,8 @@ public class BoardController {
         form.setTitle(board.getTitle());
         form.setAuthor(board.getAuthor());
         form.setContent(board.getContent());
-        Long id = boardId;
 
         model.addAttribute("form", form);
-        model.addAttribute("id",id);
         return "board/updateBoardForm";
     }
 

@@ -21,7 +21,7 @@
         <table class="table table-striped">
             <thead>
             <tr>
-                <th>#</th>
+                <th>글 번호</th>
                 <th>분류</th>
                 <th>제목</th>
                 <th>작성자</th>
@@ -31,7 +31,7 @@
             </thead>
             <tbody>
             <tr th:each="board : ${board}">
-                        <td><a th:href="@{/board/{id}/update (id=${board.id})}" th:text="${board.id}"></a></td>
+                <td><a th:href="@{/board/{id}/update (id=${board.id})}" th:text="${board.id}"></a></td>
                 <td th:text="${board.contentType}"></td>
                 <td th:text="${board.title}"></td>
                 <td th:text="${board.author}"></td>

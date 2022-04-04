@@ -2,9 +2,7 @@ package com.crowdsourcing.test.service;
 
 import com.crowdsourcing.test.controller.BoardSearch;
 import com.crowdsourcing.test.domain.Board;
-import com.crowdsourcing.test.domain.File;
 import com.crowdsourcing.test.repository.BoardRepository;
-import com.crowdsourcing.test.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
