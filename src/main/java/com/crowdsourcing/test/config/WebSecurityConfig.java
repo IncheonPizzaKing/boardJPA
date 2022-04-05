@@ -24,11 +24,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http
+        http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/", "/board").permitAll()
                 .antMatchers("/login", "/user/new").anonymous()
-                .antMatchers("/board/**", "/board/new/**", "/download").hasAuthority("USER")
+                .antMatchers("/board/**", "/download/**").hasAuthority("USER")
                 .antMatchers("/admin").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
@@ -39,7 +39,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true);
 
-        http
+        http.csrf().disable()
                 .sessionManagement()
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false);

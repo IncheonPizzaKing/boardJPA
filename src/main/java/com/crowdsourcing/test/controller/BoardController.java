@@ -10,6 +10,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -34,12 +36,17 @@ public class BoardController {
 
     @GetMapping("/board/new")
     public String createForm(Model model) {
-        model.addAttribute("boardForm", new BoardForm());
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserDetails userDetails = (UserDetails)principal;
+        String username = ((UserDetails) principal).getUsername();
+        BoardForm board = new BoardForm();
+        board.setAuthor(username);
+        model.addAttribute("boardForm", board);
         return "board/createBoardForm";
     }
 
     @PostMapping("/board/new")
-    public String create(@ModelAttribute("boardForm") BoardForm boardForm, BindingResult result, MultipartFile multipartFile) throws Exception {
+    public String create(@Valid BoardForm boardForm, BindingResult result, MultipartFile multipartFile) throws Exception {
 
         if (result.hasErrors()) {
             return "board/createBoardForm";

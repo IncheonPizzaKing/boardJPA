@@ -8,19 +8,15 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import javax.validation.Valid;
 
 @Controller
 @RequiredArgsConstructor
 public class UserController {
 
     private final UserService userService;
-
-//    @GetMapping("/user/login")
-//    public String createLoginForm(Model model) {
-//        return "user/loginForm";
-//    }
 
     @GetMapping("/user/new")
     public String createUserForm(Model model) {
@@ -29,7 +25,7 @@ public class UserController {
     }
 
     @PostMapping("/user/new")
-    public String create(@ModelAttribute("userForm") UserForm userForm, BindingResult result) {
+    public String create(@Valid UserForm userForm, BindingResult result) {
         if (result.hasErrors()) {
             return "user/createUserForm";
         }
@@ -43,10 +39,4 @@ public class UserController {
 
         return "redirect:/";
     }
-
-//    @GetMapping("/user/logout")
-//    public String logoutPage(HttpServletRequest request, HttpServletResponse response) {
-//        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-//        return "redirect:/user/login";
-//    }
 }

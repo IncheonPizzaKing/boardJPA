@@ -18,23 +18,15 @@ public class User implements UserDetails {
     @Column(name = "userId")
     private Long id;
 
-    @Column(name = "username", unique = true, nullable = false)
+    @Column(unique = true, nullable = false)
     private String username;
 
-    @Column(name = "password", nullable = false)
+    @Column(nullable = false)
     private String password;
 
-    @Column(name = "role", nullable = false)
+    @Column(nullable = false)
     private String role;
 
-//    public User(User user) {
-//        this.username = user.getUsername();
-//        this.password = user.getPassword();
-//        this.auth = user.getAuth();
-//    }
-
-    // 사용자의 권한을 콜렉션 형태로 반환
-    // 단, 클래스 자료형은 GrantedAuthority를 구현해야함
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> roles = new HashSet<>();
