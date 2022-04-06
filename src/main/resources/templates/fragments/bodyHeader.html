@@ -2,33 +2,42 @@
 <html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <nav class="navbar navbar-inverse navbar-fixed-top" th:fragment="bodyHeader">
     <div class="container-fluid">
-        <div class="navbar-header">
+        <div class="nav-header">
             <a href="/">
                 <h3 class="text-muted">HELLO BOARD</h3>
             </a>
         </div>
-        <div class="nav navbar">
-            <ul class="nav d-flex">
-                <li sec:authorize="isAuthenticated()" class="nav-item">
+        <ul class="nav d-flex nav-right">
+            <li sec:authorize="isAuthenticated()" class="nav-item">
+                <div>
                     <span sec:authorize="hasAuthority('USER') && !hasAuthority('ADMIN')">권한 : 사용자</span>
                     <span sec:authorize="hasAuthority('ADMIN')">권한 : 관리자 </span>
                     <span sec:authentication="name"></span>
                     <span th:text="${'님 환영합니다.'}"></span>
-                </li>
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a th:href="@{/user/new}"
-                       class="btn btn-outline-success">회원가입</a>
-                </li>
-                <li class="nav-item" sec:authorize="!isAuthenticated()">
-                    <a th:href="@{/login}"
-                       class="btn btn-outline-info">로그인</a>
-                </li>
-                <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a th:href="@{/logout}"
-                       class="btn btn-outline-danger">로그아웃</a>
-                </li>
-            </ul>
-        </div>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-outline-secondary" href="/board/new">게시글 등록</a>
+            </li>
+            <li class="nav-item">
+                <a class="btn btn-outline-warning" href="/board">게시판 목록</a>
+            </li>
+            <li sec:authorize="hasAuthority('ADMIN')">
+                <a th:href="@{/admin}" class="btn btn-outline-primary">관리자 페이지</a>
+            </li>
+            <li class="nav-item" sec:authorize="!isAuthenticated()">
+                <a th:href="@{/user/new}"
+                   class="btn btn-outline-success">회원가입</a>
+            </li>
+            <li class="nav-item" sec:authorize="!isAuthenticated()">
+                <a th:href="@{/login}"
+                   class="btn btn-outline-info">로그인</a>
+            </li>
+            <li class="nav-item" sec:authorize="isAuthenticated()">
+                <a th:href="@{/logout}"
+                   class="btn btn-outline-danger">로그아웃</a>
+            </li>
+        </ul>
     </div>
 </nav>
 </body>

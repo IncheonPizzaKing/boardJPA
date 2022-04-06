@@ -5,13 +5,18 @@
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div>
-        <form th:object="${adminSearch}" class="form-inline">
+        <form th:object="${userSearch}" class="form-inline">
+            <select th:field="*{types}" class="form-control">
+                <option value="none">전체</option>
+                <option value="USER,ADMIN">관리자</option>
+                <option value="USER">사용자</option>
+            </select>
             <input type="text" th:field="*{search}" class="form-control" placeholder="사용자명을 입력하세요"/>
             <button type="submit" class="btn btn-primary">검색</button>
         </form>
     </div>
     <div>
-        <form action="/admin" method="post" th:object="${adminList}">
+        <form action="/admin" method="post" th:object="${selected}">
             <table class="table table-striped">
                 <thead>
                 <tr>
@@ -22,15 +27,16 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr th:each="admin : ${admin}">
-                    <td><input type="checkbox" th:field="*{remove}" th:value="${admin.id}"/></td>
+                <tr th:each="admin : ${user}">
+                    <td><input type="checkbox" th:field="*{id}"  th:value="${admin.id}"/></td>
                     <td th:text="${admin.id}"></td>
                     <td th:text="${admin.username}"></td>
-                    <td th:text="${admin.role}"></td>
+                    <td th:if="${admin.role.equals('USER')}" th:text="${'   사용자'}"></td>
+                    <td th:if="${admin.role.equals('USER,ADMIN')}" th:text="${'관리자'}"></td>
                 </tr>
                 </tbody>
             </table>
-            <input type="submit" class="btn btn-danger">계정 삭제</input>
+            <input type="submit" class="btn btn-danger" value="계정 삭제" />
         </form>
     </div>
     <div th:replace="fragments/footer :: footer"/>
