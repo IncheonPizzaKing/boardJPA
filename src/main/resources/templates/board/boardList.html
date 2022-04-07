@@ -38,7 +38,7 @@
                 <td th:text="${board.time}"></td>
                 <td th:each="file : ${board.fileList}">
                     <div th:if="${file != null}">
-                        <a th:href="@{'/download/' + ${file}}" th:text="${'파일' + fileStat.index}"></a>
+                        <a th:href="@{'/download/' + ${board.id} + '/' + ${fileStat.index}}" th:text="${'파일' + fileStat.index}"></a>
                     </div>
                     <div th:if="${file == null}"></div>
                 </td>

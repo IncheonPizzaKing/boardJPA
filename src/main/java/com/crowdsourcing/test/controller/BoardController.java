@@ -93,10 +93,11 @@ public class BoardController {
         return "board/boardList";
     }
 
-    @GetMapping("/download/{file}")
-    public ResponseEntity<Resource> fileDownload(@PathVariable("file") com.crowdsourcing.test.domain.File file) throws IOException {
-
-        com.crowdsourcing.test.domain.File fileDto = fileService.findOne(file.getId());
+    @GetMapping("/download/{boardId}/{file}")
+    public ResponseEntity<Resource> fileDownload(@PathVariable("boardId") Long id, @PathVariable("file") int file) throws IOException {
+        Board board = boardService.findOne(id);
+        List<com.crowdsourcing.test.domain.File> fileList = board.getFileList();
+        com.crowdsourcing.test.domain.File fileDto = fileList.get(file);
         Path path = Paths.get(fileDto.getFilePath());
         Resource resource = new InputStreamResource(Files.newInputStream(path));
         return ResponseEntity.ok()
