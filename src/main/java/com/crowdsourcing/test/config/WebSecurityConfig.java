@@ -43,6 +43,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionManagement()
                 .maximumSessions(1)
                 .maxSessionsPreventsLogin(false);
+
+        http
+                .exceptionHandling()
+                .accessDeniedPage("/denied");
     }
 
     @Override

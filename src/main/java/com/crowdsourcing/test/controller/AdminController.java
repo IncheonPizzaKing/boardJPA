@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 
 @Controller
@@ -36,5 +39,15 @@ public class AdminController {
         }
 
         return "redirect:/admin";
+    }
+
+    @GetMapping("/denied")
+    public String deniedAlert(HttpServletResponse response) throws Exception {
+        response.setContentType("text/html; charset=euc-kr");
+        PrintWriter out = response.getWriter();
+        out.println("<script>alert('접근하실 수 없는 페이지입니다^^'); </script>");
+        out.flush();
+
+        return "home";
     }
 }

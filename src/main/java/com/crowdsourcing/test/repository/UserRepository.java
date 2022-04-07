@@ -24,10 +24,9 @@ public class UserRepository {
     }
 
     public User findByUsername(String username) {
-        User user = em.createQuery(
+        return em.createQuery(
                         "SELECT u from User u WHERE u.username = :username", User.class).
                 setParameter("username", username).getSingleResult();
-        return user;
     }
 
     public User findOne(Long id) {
@@ -39,18 +38,21 @@ public class UserRepository {
         String search = userSearch.getSearch();
         String types = userSearch.getTypes();
         if (StringUtils.hasText(search)) {
-            if (StringUtils.hasText(types)) {
-                jpql += " and u.username like concat('%',:search,'%')";
-            } else {
-                jpql += " where u.username like concat('%',:search,'%')";
-            }
+            jpql += " where u.username like concat('%',:search,'%')";
         }
         if (("none").equals(types)) {
             TypedQuery<User> query = em.createQuery(jpql, User.class);
+            if (StringUtils.hasText(search)) {
+                query = query.setParameter("search", search);
+            }
             return query.getResultList();
         }
         if (StringUtils.hasText(types)) {
-            jpql += " where u.role = :types";
+            if (StringUtils.hasText(search)) {
+                jpql += " and u.role = :types";
+            } else {
+                jpql += " where u.role = :types";
+            }
         }
         TypedQuery<User> query = em.createQuery(jpql, User.class)
                 .setMaxResults(1000); //최대 1000건

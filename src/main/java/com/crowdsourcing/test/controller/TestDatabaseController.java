@@ -19,7 +19,7 @@ public class TestDatabaseController {
 
     public void create() {
         createTestDB("aaa111@naver.com", "11", "USER");
-        createTestDB("bbb222@naver.com", "11", "USER,ADMIN");
+        createTestDB("bbb222@naver.com", "11", "ADMIN,USER");
         createTestDB("ccc333@naver.com", "11", "USER");
 
         createTestDB2("free", "test1", "aaa111@naver.com", "test1");

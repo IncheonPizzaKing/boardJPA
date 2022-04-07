@@ -34,18 +34,21 @@ public class BoardRepository {
         String jpql = "select b from Board b";
         String search = boardSearch.getSearch();
         String types = boardSearch.getTypes();
+        if (StringUtils.hasText(search)) {
+            jpql += " where b.title like concat('%',:search,'%')";
+        }
         if (("none").equals(types)) {
             TypedQuery<Board> query = em.createQuery(jpql, Board.class);
+            if (StringUtils.hasText(search)) {
+                query = query.setParameter("search", search);
+            }
             return query.getResultList();
         }
         if (StringUtils.hasText(types)) {
-            jpql += " where b.contentType = :types";
-        }
-        if (StringUtils.hasText(search)) {
-            if (StringUtils.hasText(types)) {
-                jpql += " and b.title like concat('%',:search,'%')";
+            if (StringUtils.hasText(search)) {
+                jpql += " and b.contentType = :types";
             } else {
-                jpql += " where b.title like concat('%',:search,'%')";
+                jpql += " where b.contentType = :types";
             }
         }
         TypedQuery<Board> query = em.createQuery(jpql, Board.class)
