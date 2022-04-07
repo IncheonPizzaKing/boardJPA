@@ -24,6 +24,12 @@ public class FileRepository {
         return em.find(File.class, id);
     }
 
+    public List<File> findFiles(Long boardId) {
+        return em.createQuery("select f from File f where f.boardId = :id", File.class)
+                .setParameter("id", boardId)
+                .getResultList();
+    }
+
     public List<File> findAll() {
         return em.createQuery("select f from File f", File.class)
                 .getResultList();

@@ -5,6 +5,8 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter @Setter
@@ -22,5 +24,7 @@ public class Board {
     @Column(nullable = false)
     private String content;
     private LocalDateTime time;
-    private Long fileId;
+
+    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
+    private List<File> fileList = new ArrayList<>();
 }

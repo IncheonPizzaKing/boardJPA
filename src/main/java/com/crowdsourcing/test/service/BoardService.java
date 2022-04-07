@@ -2,6 +2,7 @@ package com.crowdsourcing.test.service;
 
 import com.crowdsourcing.test.controller.BoardSearch;
 import com.crowdsourcing.test.domain.Board;
+import com.crowdsourcing.test.domain.File;
 import com.crowdsourcing.test.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -27,10 +28,6 @@ public class BoardService {
     @Transactional
     public void delete(Long boardId) {
         Board board = boardRepository.findOne(boardId);
-        Long fileId = board.getFileId();
-        if (fileId != null) {
-            fileService.delete(fileId);
-        }
         boardRepository.remove(board);
     }
 
@@ -50,4 +47,5 @@ public class BoardService {
     public Board findOne(Long boardId) {
         return boardRepository.findOne(boardId);
     }
+
 }

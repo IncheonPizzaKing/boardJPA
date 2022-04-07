@@ -20,4 +20,8 @@ public class File {
     private String fileName;
     @Column(nullable = false)
     private String filePath;
+
+    @ManyToOne
+    @JoinColumn(name = "board_id")
+    private Board board;
 }

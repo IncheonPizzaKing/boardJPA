@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -37,7 +38,7 @@ public class BoardController {
     @GetMapping("/board/new")
     public String createForm(Model model) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails)principal;
+        UserDetails userDetails = (UserDetails) principal;
         String username = ((UserDetails) principal).getUsername();
         BoardForm board = new BoardForm();
         board.setAuthor(username);
@@ -46,7 +47,7 @@ public class BoardController {
     }
 
     @PostMapping("/board/new")
-    public String create(@Valid BoardForm boardForm, BindingResult result, MultipartFile multipartFile) throws Exception {
+    public String create(@Valid BoardForm boardForm, BindingResult result, List<MultipartFile> multipartFile) throws Exception {
 
         if (result.hasErrors()) {
             return "board/createBoardForm";
@@ -57,31 +58,31 @@ public class BoardController {
         board.setAuthor(boardForm.getAuthor());
         board.setContent(boardForm.getContent());
         board.setTime(LocalDateTime.now());
-
-        if (!multipartFile.isEmpty()) {
-            String originFilename = multipartFile.getOriginalFilename();
-            String filename = new MD5Generator(originFilename).toString();
-            String savePath = System.getProperty("user.dir") + "/files";
-            if (!new File(savePath).exists()) {
-
-                try {
-                    new File(savePath).mkdir();
-                } catch (Exception e) {
-                    e.getStackTrace();
-                }
-            }
-            String filePath = savePath + "/" + filename;
-            multipartFile.transferTo(new File(filePath));
-
-            com.crowdsourcing.test.domain.File fileDto = new com.crowdsourcing.test.domain.File();
-            fileDto.setFileName(filename);
-            fileDto.setFilePath(filePath);
-            fileDto.setOriginFileName(originFilename);
-            Long fileId = fileService.upload(fileDto);
-
-            board.setFileId(fileId);
-        }
         boardService.write(board);
+        if (!multipartFile.isEmpty()) {
+            for (MultipartFile multipartFileIn : multipartFile) {
+                String originFilename = multipartFileIn.getOriginalFilename();
+                String filename = new MD5Generator(originFilename).toString();
+                String savePath = System.getProperty("user.dir") + "/files";
+                if (!new File(savePath).exists()) {
+
+                    try {
+                        new File(savePath).mkdir();
+                    } catch (Exception e) {
+                        e.getStackTrace();
+                    }
+                }
+                String filePath = savePath + "/" + filename;
+                multipartFileIn.transferTo(new File(filePath));
+
+                com.crowdsourcing.test.domain.File fileDto = new com.crowdsourcing.test.domain.File();
+                fileDto.setFileName(filename);
+                fileDto.setFilePath(filePath);
+                fileDto.setOriginFileName(originFilename);
+                fileDto.setBoard(board);
+                Long fileId = fileService.upload(fileDto);
+            }
+        }
         return "redirect:/board";
     }
 
@@ -92,9 +93,10 @@ public class BoardController {
         return "board/boardList";
     }
 
-    @GetMapping("/download/{fileId}")
-    public ResponseEntity<Resource> fileDownload(@PathVariable("fileId") Long fileId) throws IOException {
-        com.crowdsourcing.test.domain.File fileDto = fileService.findOne(fileId);
+    @GetMapping("/download/{file}")
+    public ResponseEntity<Resource> fileDownload(@PathVariable("file") com.crowdsourcing.test.domain.File file) throws IOException {
+
+        com.crowdsourcing.test.domain.File fileDto = fileService.findOne(file.getId());
         Path path = Paths.get(fileDto.getFilePath());
         Resource resource = new InputStreamResource(Files.newInputStream(path));
         return ResponseEntity.ok()

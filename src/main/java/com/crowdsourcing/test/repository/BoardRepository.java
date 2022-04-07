@@ -2,6 +2,7 @@ package com.crowdsourcing.test.repository;
 
 import com.crowdsourcing.test.controller.BoardSearch;
 import com.crowdsourcing.test.domain.Board;
+import com.crowdsourcing.test.domain.File;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;

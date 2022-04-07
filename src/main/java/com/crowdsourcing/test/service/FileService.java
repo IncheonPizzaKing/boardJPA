@@ -23,14 +23,17 @@ public class FileService {
     }
 
     @Transactional
-    public void delete(Long fileId) {
-        File file = fileRepository.findOne(fileId);
+    public void remove(File file) {
         fileRepository.remove(file);
     }
 
     //파일 조회
-    public List<File> findFile() {
+    public List<File> findAll() {
         return fileRepository.findAll();
+    }
+
+    public List<File> findFiles(Long boardId) {
+        return fileRepository.findFiles(boardId);
     }
 
     public File findOne(Long fileId) {

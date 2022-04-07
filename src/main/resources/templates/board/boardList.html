@@ -1,9 +1,9 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header" />
+<head th:replace="fragments/header :: header"/>
 <body>
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div>
         <form th:object="${boardSearch}" class="form-inline">
             <select th:field="*{types}" class="form-control">
@@ -36,15 +36,17 @@
                 <td th:text="${board.title}"></td>
                 <td th:text="${board.author}"></td>
                 <td th:text="${board.time}"></td>
-                <td th:if="${board.fileId != null}">
-                    <a th:href="@{'/download/' + ${board.fileId}}" th:text="다운로드"></a>
+                <td th:each="file : ${board.fileList}">
+                    <div th:if="${file != null}">
+                        <a th:href="@{'/download/' + ${file}}" th:text="${'파일' + fileStat.index}"></a>
+                    </div>
+                    <div th:if="${file == null}"></div>
                 </td>
-                <td th:if="${board.fileId == null}"></td>
             </tr>
             </tbody>
         </table>
     </div>
-    <div th:replace="fragments/footer :: footer" />
+    <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->
 </body>
 </html>
