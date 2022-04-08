@@ -20,9 +20,8 @@ public class BoardService {
 
     //게시글 작성
     @Transactional
-    public Long write(Board board) {
+    public void write(Board board) {
         boardRepository.save(board);
-        return board.getId();
     }
 
     @Transactional

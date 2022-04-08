@@ -7,8 +7,11 @@ import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -45,6 +48,7 @@ public class TestDatabaseController {
         board.setAuthor(author);
         board.setContent(content);
         board.setTime(LocalDateTime.now());
+        List<MultipartFile> test = new ArrayList<>();
 
         boardService.write(board);
     }

@@ -25,7 +25,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -63,7 +62,7 @@ public class BoardController {
             for (MultipartFile multipartFileIn : multipartFile) {
                 String originFilename = multipartFileIn.getOriginalFilename();
                 String filename = new MD5Generator(originFilename).toString();
-                String savePath = System.getProperty("user.dir") + "/files";
+                String savePath = System.getProperty("user.dir") + "\\files";
                 if (!new File(savePath).exists()) {
 
                     try {
@@ -72,15 +71,14 @@ public class BoardController {
                         e.getStackTrace();
                     }
                 }
-                String filePath = savePath + "/" + filename;
+                String filePath = savePath + "\\" + filename;
                 multipartFileIn.transferTo(new File(filePath));
 
                 com.crowdsourcing.test.domain.File fileDto = new com.crowdsourcing.test.domain.File();
                 fileDto.setFileName(filename);
                 fileDto.setFilePath(filePath);
                 fileDto.setOriginFileName(originFilename);
-                fileDto.setBoard(board);
-                Long fileId = fileService.upload(fileDto);
+                fileService.upload(board, fileDto);
             }
         }
         return "redirect:/board";
@@ -102,7 +100,7 @@ public class BoardController {
         Resource resource = new InputStreamResource(Files.newInputStream(path));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=/" + fileDto.getOriginFileName() + "/")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=\"" + new String(fileDto.getOriginFileName().getBytes("UTF-8"), "ISO-8859-1") + "\"")
                 .body(resource);
     }
 

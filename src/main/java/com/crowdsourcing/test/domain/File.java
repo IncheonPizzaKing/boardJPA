@@ -24,4 +24,9 @@ public class File {
     @ManyToOne
     @JoinColumn(name = "board_id")
     private Board board;
+
+    public void addBoard(Board board) {
+        this.board = board;
+        board.getFileList().add(this);
+    }
 }
