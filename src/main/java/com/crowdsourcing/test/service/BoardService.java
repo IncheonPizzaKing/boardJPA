@@ -16,7 +16,6 @@ import java.util.List;
 public class BoardService {
 
     private final BoardRepository boardRepository;
-    private final FileService fileService;
 
     //게시글 작성
     @Transactional

@@ -10,8 +10,6 @@
         <ul class="nav d-flex nav-right">
             <li sec:authorize="isAuthenticated()" class="nav-item">
                 <div>
-                    <span sec:authorize="hasAuthority('USER') && !hasAuthority('ADMIN')">권한 : 사용자</span>
-                    <span sec:authorize="hasAuthority('ADMIN')">권한 : 관리자 </span>
                     <span sec:authentication="name"></span>
                     <span th:text="${'님 환영합니다.'}"></span>
                 </div>

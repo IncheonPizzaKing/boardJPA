@@ -21,14 +21,13 @@ public class TestDatabaseController {
     private final BoardService boardService;
 
     public void create() {
-        createTestDB("aaa111@naver.com", "11", "USER");
-        createTestDB("bbb222@naver.com", "11", "ADMIN,USER");
-        createTestDB("ccc333@naver.com", "11", "USER");
+        createTestDB("user", "user", "USER");
+        createTestDB("admin", "admin", "ADMIN,USER");
 
-        createTestDB2("free", "test1", "aaa111@naver.com", "test1");
-        createTestDB2("sports", "test2", "bbb222@naver.com", "test2");
-        createTestDB2("movie", "test3", "ccc333@naver.com", "test3");
-        createTestDB2("music", "test4", "aaa111@naver.com", "test4");
+        createTestDB2("free", "test1", "user", "test1");
+        createTestDB2("sports", "test2", "user", "test2");
+        createTestDB2("movie", "test3", "admin", "test3");
+        createTestDB2("music", "test4", "admin", "test4");
     }
 
     public void createTestDB(String name, String password, String role) {

@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -46,7 +47,7 @@ public class BoardController {
     }
 
     @PostMapping("/board/new")
-    public String create(@Valid BoardForm boardForm, BindingResult result, List<MultipartFile> multipartFile) throws Exception {
+    public String create(@ModelAttribute("boardForm") @Valid BoardForm boardForm, BindingResult result, List<MultipartFile> multipartFile) throws Exception {
 
         if (result.hasErrors()) {
             return "board/createBoardForm";
@@ -58,8 +59,8 @@ public class BoardController {
         board.setContent(boardForm.getContent());
         board.setTime(LocalDateTime.now());
         boardService.write(board);
-        if (!multipartFile.isEmpty()) {
-            for (MultipartFile multipartFileIn : multipartFile) {
+        for (MultipartFile multipartFileIn : multipartFile) {
+            if (!multipartFileIn.isEmpty()) {
                 String originFilename = multipartFileIn.getOriginalFilename();
                 String filename = new MD5Generator(originFilename).toString();
                 String savePath = System.getProperty("user.dir") + "\\files";
@@ -118,7 +119,10 @@ public class BoardController {
     }
 
     @PostMapping("/board/{boardId}/update")
-    public String updateBoard(@PathVariable Long boardId, @ModelAttribute("form") BoardForm form) {
+    public String updateBoard(@ModelAttribute("form") @Valid BoardForm form, BindingResult result, @PathVariable Long boardId) {
+        if (result.hasErrors()) {
+            return "board/updateBoardForm";
+        }
         boardService.update(boardId, form.getTitle(), form.getContent());
         return "redirect:/board";
     }
