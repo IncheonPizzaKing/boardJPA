@@ -6,9 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter @Setter
@@ -26,6 +24,9 @@ public class User implements UserDetails {
 
     @Column(nullable = false)
     private String role;
+
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
+    private List<Board> boardList = new ArrayList<>();
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

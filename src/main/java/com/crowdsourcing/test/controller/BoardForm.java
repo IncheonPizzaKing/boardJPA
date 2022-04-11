@@ -11,7 +11,7 @@ public class BoardForm {
 
     @NotEmpty
     private String contentType;
-    @NotEmpty
+    @NotEmpty(message = "제목은 필수 입력 값입니다")
     private String title;
     @NotEmpty
     private String author;

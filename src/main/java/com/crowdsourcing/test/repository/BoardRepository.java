@@ -2,9 +2,7 @@ package com.crowdsourcing.test.repository;
 
 import com.crowdsourcing.test.controller.BoardSearch;
 import com.crowdsourcing.test.domain.Board;
-import com.crowdsourcing.test.domain.File;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.io.FileExistsException;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
 
@@ -12,26 +10,32 @@ import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-import static ch.qos.logback.core.joran.action.ActionConst.NULL;
-
 @Repository
 @RequiredArgsConstructor
 public class BoardRepository {
 
     private final EntityManager em;
 
+    /**
+     * 게시글 저장, 제거
+     */
     public void save(Board board) {
         em.persist(board);
     }
-
     public void remove(Board board) {
         em.remove(board);
     }
 
+    /**
+     * 게시글 한 개 조회(id)
+     */
     public Board findOne(Long id) {
         return em.find(Board.class, id);
     }
 
+    /**
+     * 검색 조건에 만족하는 모든 게시글 조회
+     */
     public List<Board> findAll(BoardSearch boardSearch) {
         String jpql = "select b from Board b";
         String search = boardSearch.getSearch();

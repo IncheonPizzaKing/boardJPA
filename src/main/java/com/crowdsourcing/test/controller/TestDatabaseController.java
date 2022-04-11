@@ -20,6 +20,9 @@ public class TestDatabaseController {
     private final UserService userService;
     private final BoardService boardService;
 
+    /**
+     * 테스트 데이터 주입
+     */
     public void create() {
         createTestDB("user", "user", "USER");
         createTestDB("admin", "admin", "ADMIN,USER");
@@ -30,6 +33,9 @@ public class TestDatabaseController {
         createTestDB2("music", "test4", "admin", "test4");
     }
 
+    /**
+     * 테스트 사용자 데이터 메소드
+     */
     public void createTestDB(String name, String password, String role) {
         User user = new User();
         user.setUsername(name);
@@ -40,15 +46,17 @@ public class TestDatabaseController {
         userService.save(user);
     }
 
+    /**
+     * 테스트 게시글 데이터 메소드
+     */
     public void createTestDB2(String type, String title, String author, String content) {
         Board board = new Board();
         board.setContentType(type);
         board.setTitle(title);
-        board.setAuthor(author);
         board.setContent(content);
         board.setTime(LocalDateTime.now());
         List<MultipartFile> test = new ArrayList<>();
 
-        boardService.write(board);
+        boardService.write(board, author);
     }
 }

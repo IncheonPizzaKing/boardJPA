@@ -14,7 +14,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.CollectionUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,6 +34,9 @@ public class BoardController {
     private final BoardService boardService;
     private final FileService fileService;
 
+    /**
+     * 게시글 업로드 페이지 접속시
+     * */
     @GetMapping("/board/new")
     public String createForm(Model model) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -46,6 +48,9 @@ public class BoardController {
         return "board/createBoardForm";
     }
 
+    /**
+     * 게시글 업로드 버튼 클릭시
+     */
     @PostMapping("/board/new")
     public String create(@ModelAttribute("boardForm") @Valid BoardForm boardForm, BindingResult result, List<MultipartFile> multipartFile) throws Exception {
 
@@ -55,10 +60,12 @@ public class BoardController {
         Board board = new Board();
         board.setContentType(boardForm.getContentType());
         board.setTitle(boardForm.getTitle());
-        board.setAuthor(boardForm.getAuthor());
         board.setContent(boardForm.getContent());
         board.setTime(LocalDateTime.now());
-        boardService.write(board);
+        boardService.write(board, boardForm.getAuthor());
+        /**
+         * 파일 업로드
+         */
         for (MultipartFile multipartFileIn : multipartFile) {
             if (!multipartFileIn.isEmpty()) {
                 String originFilename = multipartFileIn.getOriginalFilename();
@@ -85,6 +92,9 @@ public class BoardController {
         return "redirect:/board";
     }
 
+    /**
+     * 게시글 조회시
+     */
     @GetMapping("/board")
     public String list(@ModelAttribute("boardSearch") BoardSearch boardSearch, Model model) {
         List<Board> boardList = boardService.findBoard(boardSearch);
@@ -92,6 +102,10 @@ public class BoardController {
         return "board/boardList";
     }
 
+
+    /**
+     * 첨부파일 다운로드 버튼 클릭시
+     */
     @GetMapping("/download/{boardId}/{file}")
     public ResponseEntity<Resource> fileDownload(@PathVariable("boardId") Long id, @PathVariable("file") int file) throws IOException {
         Board board = boardService.findOne(id);
@@ -105,19 +119,27 @@ public class BoardController {
                 .body(resource);
     }
 
+
+    /**
+     * 게시글 수정페이지 접속시
+     */
     @GetMapping("/board/{boardId}/update")
     public String updateBoardForm(@PathVariable("boardId") Long boardId, Model model) {
         Board board = (Board) boardService.findOne(boardId);
         BoardForm form = new BoardForm();
         form.setContentType(board.getContentType());
         form.setTitle(board.getTitle());
-        form.setAuthor(board.getAuthor());
+        form.setAuthor(board.getAuthor().getUsername());
         form.setContent(board.getContent());
 
         model.addAttribute("form", form);
         return "board/updateBoardForm";
     }
 
+
+    /**
+     * 게시글 수정 버튼 클릭시
+     */
     @PostMapping("/board/{boardId}/update")
     public String updateBoard(@ModelAttribute("form") @Valid BoardForm form, BindingResult result, @PathVariable Long boardId) {
         if (result.hasErrors()) {
@@ -127,6 +149,10 @@ public class BoardController {
         return "redirect:/board";
     }
 
+
+    /**
+     * 게시글 삭제 버튼 클릭시
+     */
     @GetMapping("/board/{boardId}/delete")
     public String deleteBoard(@PathVariable Long boardId) {
         boardService.delete(boardId);

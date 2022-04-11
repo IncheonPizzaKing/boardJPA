@@ -14,7 +14,9 @@ public class FileService {
 
     private final FileRepository fileRepository;
 
-    //파일 업로드
+    /**
+     * 파일 업로드
+     */
     @Transactional
     public File upload(Board board, File file) {
         file.addBoard(board);
@@ -27,7 +29,9 @@ public class FileService {
 //        fileRepository.remove(file);
 //    }
 //
-//    //파일 조회
+//    /**
+//     * 조건에 맞는 파일 전체 검색
+//     */
 //    public List<File> findAll() {
 //        return fileRepository.findAll();
 //    }

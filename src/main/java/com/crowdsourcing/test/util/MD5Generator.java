@@ -7,6 +7,9 @@ import java.security.NoSuchAlgorithmException;
 public class MD5Generator {
     private String result;
 
+    /**
+     * 파일이 저장되는 경로와 파일명이 겹치지않게 파일명을 변환
+     */
     public MD5Generator(String input) throws UnsupportedEncodingException, NoSuchAlgorithmException {
         MessageDigest mdMD5 = MessageDigest.getInstance("MD5");
         mdMD5.update(input.getBytes("UTF-8"));

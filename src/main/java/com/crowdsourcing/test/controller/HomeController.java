@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Slf4j
 public class HomeController {
 
+    /**
+     * "/" 기본경로 접속시
+     */
     @RequestMapping("/")
     public String home() {
         return "home";

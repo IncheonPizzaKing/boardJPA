@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -21,6 +20,9 @@ public class AdminController {
 
     private final UserService userService;
 
+    /**
+     * 관리자 페이지 접속시
+     */
     @GetMapping("/admin")
     public String list(@ModelAttribute("userSearch") BoardSearch userSearch, Model model) {
         List<User> user = userService.findUser(userSearch);
@@ -29,6 +31,9 @@ public class AdminController {
         return "admin/adminList";
     }
 
+    /**
+     * 사용자 삭제 버튼 클릭시
+     */
     @PostMapping("/admin")
     public String deleteBoard(@Valid AdminForm selected) {
         List<Long> list = selected.getId();
@@ -41,6 +46,9 @@ public class AdminController {
         return "redirect:/admin";
     }
 
+    /**
+     * 접근 권한이 없는 페이지에 접속했을시
+     */
     @GetMapping("/denied")
     public String deniedAlert(HttpServletResponse response) throws Exception {
         response.setContentType("text/html; charset=euc-kr");

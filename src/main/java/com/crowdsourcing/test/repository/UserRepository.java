@@ -15,24 +15,35 @@ import java.util.List;
 public class UserRepository {
     private final EntityManager em;
 
+    /**
+     * 사용자 저장, 삭제
+     */
     public void save(User user) {
         em.persist(user);
     }
-
     public void remove(User user) {
         em.remove(user);
     }
 
+    /**
+     * 사용자 한 명 조회(username)
+     */
     public User findByUsername(String username) {
         return em.createQuery(
                         "SELECT u from User u WHERE u.username = :username", User.class).
                 setParameter("username", username).getSingleResult();
     }
 
+    /**
+     * 사용자 한 명 조회(id)
+     */
     public User findOne(Long id) {
         return em.find(User.class, id);
     }
 
+    /**
+     * 조건에 맞는 사용자 전체 조회
+     */
     public List<User> findUser(BoardSearch userSearch) {
         String jpql = "select u from User u";
         String search = userSearch.getSearch();

@@ -18,12 +18,18 @@ public class UserController {
 
     private final UserService userService;
 
+    /**
+     * 회원가입 페이지 접속시
+     */
     @GetMapping("/user/new")
     public String createUserForm(Model model) {
         model.addAttribute("userForm", new UserForm());
         return "user/createUserForm";
     }
 
+    /**
+     * 회원가입 버튼 클릭시
+     */
     @PostMapping("/user/new")
     public String create(@Valid UserForm userForm, BindingResult result) {
         if (result.hasErrors()) {

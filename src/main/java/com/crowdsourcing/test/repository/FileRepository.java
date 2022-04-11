@@ -12,6 +12,9 @@ import java.util.List;
 public class FileRepository {
     private final EntityManager em;
 
+    /**
+     * 파일 저장
+     */
     public void save(File file) {
         em.persist(file);
     }

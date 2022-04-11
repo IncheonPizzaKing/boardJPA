@@ -19,12 +19,18 @@ public class Board {
     private String contentType;
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
-    private String author;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User author;
     @Column(nullable = false)
     private String content;
     private LocalDateTime time;
 
     @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
     private List<File> fileList = new ArrayList<>();
+
+    public void addUser(User author) {
+        this.author = author;
+        author.getBoardList().add(this);
+    }
 }
