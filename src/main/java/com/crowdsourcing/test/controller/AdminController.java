@@ -1,17 +1,16 @@
 package com.crowdsourcing.test.controller;
 
 import com.crowdsourcing.test.domain.User;
+import com.crowdsourcing.test.domain.UserId;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
 import java.io.PrintWriter;
+import java.util.Iterator;
 import java.util.List;
 
 @Controller
@@ -24,10 +23,10 @@ public class AdminController {
      * 관리자 페이지 접속시
      */
     @GetMapping("/admin")
-    public String list(@ModelAttribute("userSearch") BoardSearch userSearch, Model model) {
+    public String list(@ModelAttribute("userSearch") BoardSearch userSearch, Model model, SelectedForm selectedForm) {
         List<User> user = userService.findUser(userSearch);
         model.addAttribute("user", user);
-        model.addAttribute("selected", new AdminForm());
+        model.addAttribute("selected", selectedForm);
         return "admin/adminList";
     }
 
@@ -35,12 +34,18 @@ public class AdminController {
      * 사용자 삭제 버튼 클릭시
      */
     @PostMapping("/admin")
-    public String deleteBoard(@Valid AdminForm selected) {
-        List<Long> list = selected.getId();
-
-        for(int i = 0; i < list.size(); i++) {
-            User data = userService.findOne(list.get(i));
-            userService.remove(data);
+    public String deleteBoard(@ModelAttribute("selected") SelectedForm selectedForm) {
+        List<String> checked = selectedForm.getOpen();
+        List<Long> id = selectedForm.getId();
+        List<String> username = selectedForm.getUsername();
+        System.out.println("#####################################################");
+        System.out.println(checked);
+        for(int i = 0; i < checked.size(); i++) {
+            if (checked.get(i).equals("true")) {
+                UserId userId = new UserId(id.get(i), username.get(i));
+                User user = userService.findOne(userId);
+                userService.remove(user);
+            }
         }
 
         return "redirect:/admin";

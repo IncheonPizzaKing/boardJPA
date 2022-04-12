@@ -7,7 +7,9 @@ import java.util.List;
 
 @Getter
 @Setter
-public class AdminForm {
+public class SelectedForm {
 
+    private List<String> open;
     private List<Long> id;
+    private List<String> username;
 }

@@ -2,6 +2,7 @@ package com.crowdsourcing.test.service;
 
 import com.crowdsourcing.test.controller.BoardSearch;
 import com.crowdsourcing.test.domain.User;
+import com.crowdsourcing.test.domain.UserId;
 import com.crowdsourcing.test.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -40,7 +41,7 @@ public class UserService implements UserDetailsService {
     /**
      * 사용자 한 명 검색(id)
      */
-    public User findOne(Long id) {
+    public User findOne(UserId id) {
        return userRepository.findOne(id);
     }
 

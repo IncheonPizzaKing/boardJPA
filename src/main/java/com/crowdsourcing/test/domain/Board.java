@@ -20,7 +20,10 @@ public class Board {
     @Column(nullable = false)
     private String title;
     @ManyToOne
-    @JoinColumn(name = "userId")
+    @JoinColumns({
+            @JoinColumn(name = "userId"),
+            @JoinColumn(name = "username")
+    })
     private User author;
     @Column(nullable = false)
     private String content;

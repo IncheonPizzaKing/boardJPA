@@ -10,13 +10,14 @@ import java.util.*;
 
 @Entity
 @Getter @Setter
+@IdClass(UserId.class)
 public class User implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userId")
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Id
     private String username;
 
     @Column(nullable = false)

@@ -2,6 +2,7 @@ package com.crowdsourcing.test.repository;
 
 import com.crowdsourcing.test.controller.BoardSearch;
 import com.crowdsourcing.test.domain.User;
+import com.crowdsourcing.test.domain.UserId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -37,7 +38,7 @@ public class UserRepository {
     /**
      * 사용자 한 명 조회(id)
      */
-    public User findOne(Long id) {
+    public User findOne(UserId id) {
         return em.find(User.class, id);
     }
 

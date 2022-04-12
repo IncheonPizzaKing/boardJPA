@@ -25,6 +25,10 @@ public class TestDatabaseController {
      */
     public void create() {
         createTestDB("user", "user", "USER");
+        createTestDB("user1", "user", "USER");
+        createTestDB("user2", "user", "USER");
+        createTestDB("user3", "user", "USER");
+        createTestDB("user4", "user", "USER");
         createTestDB("admin", "admin", "ADMIN,USER");
 
         createTestDB2("free", "test1", "user", "test1");
