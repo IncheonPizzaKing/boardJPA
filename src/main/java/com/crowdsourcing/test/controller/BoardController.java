@@ -35,7 +35,7 @@ public class BoardController {
     private final FileService fileService;
 
     /**
-     * 게시글 업로드 페이지 접속시
+     * 게시글 작성 페이지 접속시
      * */
     @GetMapping("/board/new")
     public String createForm(Model model) {
@@ -49,7 +49,7 @@ public class BoardController {
     }
 
     /**
-     * 게시글 업로드 버튼 클릭시
+     * 게시글 작성 버튼 클릭시
      */
     @PostMapping("/board/new")
     public String create(@ModelAttribute("boardForm") @Valid BoardForm boardForm, BindingResult result, List<MultipartFile> multipartFile) throws Exception {
@@ -70,7 +70,7 @@ public class BoardController {
             if (!multipartFileIn.isEmpty()) {
                 String originFilename = multipartFileIn.getOriginalFilename();
                 String filename = new MD5Generator(originFilename).toString();
-                String savePath = System.getProperty("user.dir") + "\\files";
+                String savePath = System.getProperty("user.dir") + "/files";
                 if (!new File(savePath).exists()) {
 
                     try {
@@ -79,7 +79,7 @@ public class BoardController {
                         e.getStackTrace();
                     }
                 }
-                String filePath = savePath + "\\" + filename;
+                String filePath = savePath + "/" + filename;
                 multipartFileIn.transferTo(new File(filePath));
 
                 com.crowdsourcing.test.domain.File fileDto = new com.crowdsourcing.test.domain.File();
@@ -115,7 +115,7 @@ public class BoardController {
         Resource resource = new InputStreamResource(Files.newInputStream(path));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=\"" + new String(fileDto.getOriginFileName().getBytes("UTF-8"), "ISO-8859-1") + "\"")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=/" + new String(fileDto.getOriginFileName().getBytes("UTF-8"), "ISO-8859-1") + "/")
                 .body(resource);
     }
 

@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
@@ -23,10 +24,10 @@ public class AdminController {
      * 관리자 페이지 접속시
      */
     @GetMapping("/admin")
-    public String list(@ModelAttribute("userSearch") BoardSearch userSearch, Model model, SelectedForm selectedForm) {
+    public String list(@ModelAttribute("userSearch") BoardSearch userSearch, Model model, SelectedForm selected) {
         List<User> user = userService.findUser(userSearch);
         model.addAttribute("user", user);
-        model.addAttribute("selected", selectedForm);
+        model.addAttribute("selected", selected);
         return "admin/adminList";
     }
 
@@ -34,18 +35,12 @@ public class AdminController {
      * 사용자 삭제 버튼 클릭시
      */
     @PostMapping("/admin")
-    public String deleteBoard(@ModelAttribute("selected") SelectedForm selectedForm) {
-        List<String> checked = selectedForm.getOpen();
-        List<Long> id = selectedForm.getId();
-        List<String> username = selectedForm.getUsername();
-        System.out.println("#####################################################");
-        System.out.println(checked);
-        for(int i = 0; i < checked.size(); i++) {
-            if (checked.get(i).equals("true")) {
-                UserId userId = new UserId(id.get(i), username.get(i));
-                User user = userService.findOne(userId);
-                userService.remove(user);
-            }
+    public String deleteBoard(@ModelAttribute("selectedUser") SelectedForm selected){
+        List<String> users = selected.getSelectedUser();
+        for(String user : users) {
+            String[] userOne = user.split("::");
+            User one = userService.findOne(new UserId(Long.parseLong(userOne[0]), userOne[1]));
+            userService.remove(one);
         }
 
         return "redirect:/admin";

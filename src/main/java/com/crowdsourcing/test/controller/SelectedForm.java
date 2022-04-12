@@ -1,15 +1,16 @@
 package com.crowdsourcing.test.controller;
 
+import com.crowdsourcing.test.domain.User;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
 
 @Getter
 @Setter
+@NoArgsConstructor
 public class SelectedForm {
 
-    private List<String> open;
-    private List<Long> id;
-    private List<String> username;
+    private List<String> selectedUser;
 }

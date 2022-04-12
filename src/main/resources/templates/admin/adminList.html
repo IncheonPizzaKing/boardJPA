@@ -29,12 +29,10 @@
                 <tbody>
                 <tr th:each="admin : ${user}">
                     <td>
-                        <input type="checkbox" th:field="${admin}" />
+                        <input type="checkbox" th:value="|${admin.id}::${admin.username}|" th:field="*{selectedUser}" />
                     </td>
-                    <input type="hidden" th:field="*{id}"/>
-                    <input type="hidden" th:field="*{username}"/>
                     <td th:text="${admin.id}"></td>
-                    <td th:text="${admin.username}" th:name="username" th:value="${admin.username}"></td>
+                    <td th:text="${admin.username}"></td>
                     <td th:if="${admin.role.equals('USER')}" th:text="${'사용자'}"></td>
                     <td th:if="${admin.role.equals('ADMIN,USER')}" th:text="${'관리자'}"></td>
                 </tr>
