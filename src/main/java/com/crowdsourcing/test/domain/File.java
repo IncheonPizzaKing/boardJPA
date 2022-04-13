@@ -11,7 +11,7 @@ public class File {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "file_id")
+    @Column(name = "fileId")
     private Long id;
 
     @Column(nullable = false)
@@ -20,13 +20,15 @@ public class File {
     private String fileName;
     @Column(nullable = false)
     private String filePath;
+    @Column(nullable = false)
+    private String useFile;
 
     @ManyToOne
-    @JoinColumn(name = "board_id")
-    private Board board;
+    @JoinColumn(name = "fileMasterId")
+    private FileMaster fileMaster;
 
-    public void addBoard(Board board) {
-        this.board = board;
-        board.getFileList().add(this);
+    public void addFileMaster(FileMaster fileMaster) {
+        this.fileMaster = fileMaster;
+        fileMaster.getFileList().add(this);
     }
 }

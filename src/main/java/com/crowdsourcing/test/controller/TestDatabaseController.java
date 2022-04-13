@@ -1,6 +1,7 @@
 package com.crowdsourcing.test.controller;
 
 import com.crowdsourcing.test.domain.Board;
+import com.crowdsourcing.test.domain.FileMaster;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.service.BoardService;
 import com.crowdsourcing.test.service.UserService;
@@ -59,7 +60,6 @@ public class TestDatabaseController {
         board.setTitle(title);
         board.setContent(content);
         board.setTime(LocalDateTime.now());
-        List<MultipartFile> test = new ArrayList<>();
 
         boardService.write(board, author);
     }

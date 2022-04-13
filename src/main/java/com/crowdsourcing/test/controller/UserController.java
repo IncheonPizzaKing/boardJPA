@@ -1,5 +1,6 @@
 package com.crowdsourcing.test.controller;
 
+import com.crowdsourcing.test.controller.form.UserForm;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;

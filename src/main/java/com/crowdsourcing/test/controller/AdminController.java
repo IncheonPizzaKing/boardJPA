@@ -1,5 +1,7 @@
 package com.crowdsourcing.test.controller;
 
+import com.crowdsourcing.test.controller.form.BoardSearch;
+import com.crowdsourcing.test.controller.form.SelectedForm;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.domain.UserId;
 import com.crowdsourcing.test.service.UserService;
@@ -10,8 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 @Controller
@@ -35,10 +35,10 @@ public class AdminController {
      * 사용자 삭제 버튼 클릭시
      */
     @PostMapping("/admin")
-    public String deleteBoard(@ModelAttribute("selectedUser") SelectedForm selected){
-        List<String> users = selected.getSelectedUser();
-        for(String user : users) {
-            String[] userOne = user.split("::");
+    public String deleteBoard(@ModelAttribute("selected") SelectedForm selectedForm){
+        List<String> admin = selectedForm.getSelectedUser();
+        for(String user : admin) {
+            String[] userOne = user.split("_");
             User one = userService.findOne(new UserId(Long.parseLong(userOne[0]), userOne[1]));
             userService.remove(one);
         }

@@ -1,9 +1,11 @@
 package com.crowdsourcing.test.controller;
 
+import com.crowdsourcing.test.controller.form.BoardForm;
+import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.Board;
+import com.crowdsourcing.test.domain.FileMaster;
 import com.crowdsourcing.test.service.BoardService;
-import com.crowdsourcing.test.service.FileService;
-import com.crowdsourcing.test.util.MD5Generator;
+import com.crowdsourcing.test.service.FileMasterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -19,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -32,7 +33,7 @@ import java.util.List;
 public class BoardController {
 
     private final BoardService boardService;
-    private final FileService fileService;
+    private final FileMasterService fileMasterService;
 
     /**
      * 게시글 작성 페이지 접속시
@@ -62,33 +63,11 @@ public class BoardController {
         board.setTitle(boardForm.getTitle());
         board.setContent(boardForm.getContent());
         board.setTime(LocalDateTime.now());
-        boardService.write(board, boardForm.getAuthor());
-        /**
-         * 파일 업로드
-         */
-        for (MultipartFile multipartFileIn : multipartFile) {
-            if (!multipartFileIn.isEmpty()) {
-                String originFilename = multipartFileIn.getOriginalFilename();
-                String filename = new MD5Generator(originFilename).toString();
-                String savePath = System.getProperty("user.dir") + "/files";
-                if (!new File(savePath).exists()) {
-
-                    try {
-                        new File(savePath).mkdir();
-                    } catch (Exception e) {
-                        e.getStackTrace();
-                    }
-                }
-                String filePath = savePath + "/" + filename;
-                multipartFileIn.transferTo(new File(filePath));
-
-                com.crowdsourcing.test.domain.File fileDto = new com.crowdsourcing.test.domain.File();
-                fileDto.setFileName(filename);
-                fileDto.setFilePath(filePath);
-                fileDto.setOriginFileName(originFilename);
-                fileService.upload(board, fileDto);
-            }
+        if(!multipartFile.get(0).isEmpty()) {
+            FileMaster fileMasterIn = fileMasterService.upload(multipartFile);
+            board.setFileMaster(fileMasterIn);
         }
+        boardService.write(board, boardForm.getAuthor());
         return "redirect:/board";
     }
 
@@ -109,13 +88,13 @@ public class BoardController {
     @GetMapping("/download/{boardId}/{file}")
     public ResponseEntity<Resource> fileDownload(@PathVariable("boardId") Long id, @PathVariable("file") int file) throws IOException {
         Board board = boardService.findOne(id);
-        List<com.crowdsourcing.test.domain.File> fileList = board.getFileList();
+        List<com.crowdsourcing.test.domain.File> fileList = board.getFileMaster().getFileList();
         com.crowdsourcing.test.domain.File fileDto = fileList.get(file);
         Path path = Paths.get(fileDto.getFilePath());
         Resource resource = new InputStreamResource(Files.newInputStream(path));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=/" + new String(fileDto.getOriginFileName().getBytes("UTF-8"), "ISO-8859-1") + "/")
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; fileName=\\" + new String(fileDto.getOriginFileName().getBytes("UTF-8"), "ISO-8859-1") + "\\")
                 .body(resource);
     }
 

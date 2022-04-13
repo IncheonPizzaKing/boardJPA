@@ -36,12 +36,14 @@
                 <td th:text="${board.title}"></td>
                 <td th:text="${board.author.getUsername()}"></td>
                 <td th:text="${board.time}"></td>
-                <td th:if="${board.fileList.isEmpty()}">
+                <td th:if="${board.fileMaster == null}">
                     <span>첨부파일 없음</span>
                 </td>
-                <td th:unless="${board.fileList.isEmpty()}" th:each="file : ${board.fileList}">
-                    <a th:href="@{'/download/' + ${board.id} + '/' + ${fileStat.index}}"
-                       th:text="${file.originFileName}" class="btn btn-outline-dark"></a>
+                <td th:each="list : ${board.fileMaster}">
+                    <span th:each="file : ${list.fileList}">
+                        <a th:href="@{'/download/' + ${board.id} + '/' + ${fileStat.index}}"
+                           th:text="${file.originFileName}" class="btn btn-outline-dark"></a>
+                    </span>
                 </td>
             </tr>
             </tbody>

@@ -29,7 +29,7 @@
                 <tbody>
                 <tr th:each="admin : ${user}">
                     <td>
-                        <input type="checkbox" th:value="|${admin.id}::${admin.username}|" th:field="*{selectedUser}" />
+                        <input type="checkbox" th:value="|${admin.id}_${admin.username}|" th:field="*{selectedUser}" />
                     </td>
                     <td th:text="${admin.id}"></td>
                     <td th:text="${admin.username}"></td>

@@ -18,11 +18,11 @@ public class FileRepository {
     public void save(File file) {
         em.persist(file);
     }
-//
-//    public void remove(File file) {
-//        em.remove(file);
-//    }
-//
+
+    public void remove(File file) {
+        em.remove(file);
+    }
+
 //    public File findOne(Long id) {
 //        return em.find(File.class, id);
 //    }

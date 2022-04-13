@@ -1,4 +1,4 @@
-package com.crowdsourcing.test.controller;
+package com.crowdsourcing.test.controller.form;
 
 import com.crowdsourcing.test.domain.User;
 import lombok.Getter;

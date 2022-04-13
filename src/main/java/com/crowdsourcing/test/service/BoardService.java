@@ -1,8 +1,8 @@
 package com.crowdsourcing.test.service;
 
-import com.crowdsourcing.test.controller.BoardSearch;
+import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.Board;
-import com.crowdsourcing.test.domain.File;
+import com.crowdsourcing.test.domain.FileMaster;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +18,7 @@ public class BoardService {
 
     private final BoardRepository boardRepository;
     private final UserService userService;
+    private final FileMasterService fileMasterService;
 
     /**
      * 게시글 작성
@@ -35,6 +36,7 @@ public class BoardService {
     @Transactional
     public void delete(Long boardId) {
         Board board = boardRepository.findOne(boardId);
+        fileMasterService.deleteBoard(board.getFileMaster());
         boardRepository.remove(board);
     }
 

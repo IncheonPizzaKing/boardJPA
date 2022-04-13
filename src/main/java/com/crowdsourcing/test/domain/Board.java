@@ -5,15 +5,13 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter @Setter
 public class Board {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_id")
+    @Column(name = "boardId")
     private Long id;
     @Column(nullable = false)
     private String contentType;
@@ -29,8 +27,9 @@ public class Board {
     private String content;
     private LocalDateTime time;
 
-    @OneToMany(mappedBy = "board", cascade = CascadeType.ALL)
-    private List<File> fileList = new ArrayList<>();
+    @OneToOne
+    @JoinColumn(name = "fileMasterId")
+    private FileMaster fileMaster;
 
     public void addUser(User author) {
         this.author = author;

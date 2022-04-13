@@ -1,6 +1,6 @@
 package com.crowdsourcing.test.repository;
 
-import com.crowdsourcing.test.controller.BoardSearch;
+import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.domain.UserId;
 import lombok.RequiredArgsConstructor;
