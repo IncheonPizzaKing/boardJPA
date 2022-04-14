@@ -3,6 +3,7 @@ package com.crowdsourcing.test.service;
 import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.domain.UserId;
+import com.crowdsourcing.test.repository.CustomUserRepository;
 import com.crowdsourcing.test.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -27,7 +28,7 @@ public class UserService implements UserDetailsService {
     }
     @Transactional
     public void remove(User user) {
-        userRepository.remove(user);
+        userRepository.delete(user);
     }
 
     /**
@@ -40,9 +41,10 @@ public class UserService implements UserDetailsService {
 
     /**
      * 사용자 한 명 검색(id)
+     * @return
      */
     public User findOne(UserId id) {
-       return userRepository.findOne(id);
+        return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
     /**

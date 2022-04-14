@@ -2,7 +2,6 @@ package com.crowdsourcing.test.service;
 
 import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.Board;
-import com.crowdsourcing.test.domain.FileMaster;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -35,9 +34,11 @@ public class BoardService {
      */
     @Transactional
     public void delete(Long boardId) {
-        Board board = boardRepository.findOne(boardId);
-        fileMasterService.deleteBoard(board.getFileMaster());
-        boardRepository.remove(board);
+        Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
+        if(board.getFileMaster() != null) {
+            fileMasterService.deleteBoard(board.getFileMaster());
+        }
+        boardRepository.delete(board);
     }
 
     /**
@@ -45,7 +46,7 @@ public class BoardService {
      */
     @Transactional
     public void update(Long boardId, String title, String content) {
-        Board board = boardRepository.findOne(boardId);
+        Board board = boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
         board.setTitle(title);
         board.setContent(content);
     }
@@ -61,7 +62,7 @@ public class BoardService {
      * 게시글 한 개 조회(id)
      */
     public Board findOne(Long boardId) {
-        return boardRepository.findOne(boardId);
+        return boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
     }
 
 }
