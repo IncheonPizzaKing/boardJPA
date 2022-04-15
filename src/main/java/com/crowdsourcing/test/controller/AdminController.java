@@ -35,7 +35,7 @@ public class AdminController {
      * 사용자 삭제 버튼 클릭시
      */
     @PostMapping("/admin")
-    public String deleteBoard(@ModelAttribute("selected") SelectedForm selectedForm){
+    public String deleteUser(@ModelAttribute("selected") SelectedForm selectedForm){
         List<String> admin = selectedForm.getSelectedUser();
         for(String user : admin) {
             String[] userOne = user.split("_");

@@ -25,15 +25,13 @@ public class TestDatabaseController {
      * 테스트 데이터 주입
      */
     public void create() {
-        createTestDB("user", "user", "USER");
-        createTestDB("user1", "user", "USER");
-        createTestDB("user2", "user", "USER");
-        createTestDB("user3", "user", "USER");
-        createTestDB("user4", "user", "USER");
+        for(int i = 0; i < 100000; i++) {
+            createTestDB("user"+i, "user", "USER");
+        }
         createTestDB("admin", "admin", "ADMIN,USER");
 
-        createTestDB2("free", "test1", "user", "test1");
-        createTestDB2("sports", "test2", "user", "test2");
+        createTestDB2("free", "test1", "user0", "test1");
+        createTestDB2("sports", "test2", "user0", "test2");
         createTestDB2("movie", "test3", "admin", "test3");
         createTestDB2("music", "test4", "admin", "test4");
     }

@@ -1,0 +1,42 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div>
+        <form class="form-inline" th:object="${fileSearch}">
+            <input type="text" th:field="*{search}" class="form-control" placeholder="파일명을 입력하세요"/>
+            <button type="submit" class="btn btn-primary">검색</button>
+        </form>
+    </div>
+    <div>
+        <form action="/file" method="post" th:object="${selected}">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>체크</th>
+                    <th>파일 번호</th>
+                    <th>파일 이름</th>
+                    <th>사용 여부</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="file : ${file}">
+                    <td>
+                        <input type="checkbox" th:value="${file.id}" th:field="*{selectedUser}" />
+                    </td>
+                    <td th:text="${file.id}"></td>
+                    <td th:text="${file.originFileName}"></td>
+                    <td th:if="${file.useFile.equals('true')}" th:text="${'사용중'}"></td>
+                    <td th:if="${file.useFile.equals('false')}" th:text="${'사용X'}"></td>
+                </tr>
+                </tbody>
+            </table>
+            <input type="submit" class="btn btn-danger" value="파일 삭제" />
+        </form>
+    </div>
+    <div th:replace="fragments/footer :: footer"/>
+</div> <!-- /container -->
+</body>
+</html>
