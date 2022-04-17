@@ -31,7 +31,7 @@ public class FileMasterService {
             if (!multipartFileIn.isEmpty()) {
                 String originFilename = multipartFileIn.getOriginalFilename();
                 String filename = new MD5Generator(originFilename).toString();
-                String savePath = System.getProperty("user.dir") + "\\files";
+                String savePath = System.getProperty("user.dir") + "/files";
                 if (!new File(savePath).exists()) {
 
                     try {
@@ -40,7 +40,7 @@ public class FileMasterService {
                         e.getStackTrace();
                     }
                 }
-                String filePath = savePath + "\\" + filename;
+                String filePath = savePath + "/" + filename;
                 multipartFileIn.transferTo(new File(filePath));
 
                 com.crowdsourcing.test.domain.File fileDto = new com.crowdsourcing.test.domain.File();

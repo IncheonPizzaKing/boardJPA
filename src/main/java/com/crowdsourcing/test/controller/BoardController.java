@@ -94,7 +94,7 @@ public class BoardController {
         Resource resource = new InputStreamResource(Files.newInputStream(path));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment;fileName=\\" + new String(fileDto.getOriginFileName().getBytes("UTF-8"), "ISO-8859-1"))
+                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment;fileName=/" + new String(fileDto.getOriginFileName().getBytes("UTF-8"), "ISO-8859-1"))
                 .body(resource);
     }
 

@@ -25,7 +25,7 @@ public class TestDatabaseController {
      * 테스트 데이터 주입
      */
     public void create() {
-        for(int i = 0; i < 100000; i++) {
+        for(int i = 0; i < 100; i++) {
             createTestDB("user"+i, "user", "USER");
         }
         createTestDB("admin", "admin", "ADMIN,USER");

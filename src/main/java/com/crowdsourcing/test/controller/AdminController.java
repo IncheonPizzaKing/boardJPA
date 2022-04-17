@@ -6,8 +6,13 @@ import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.domain.UserId;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -23,9 +28,33 @@ public class AdminController {
     /**
      * 관리자 페이지 접속시
      */
+//    @GetMapping("/admin")
+//    public String list(@ModelAttribute("userSearch") BoardSearch userSearch, Model model, SelectedForm selected) {
+//        List<User> user = userService.findUser(userSearch);
+//        model.addAttribute("user", user);
+//        model.addAttribute("selected", selected);
+//        return "admin/adminList";
+//    }
     @GetMapping("/admin")
-    public String list(@ModelAttribute("userSearch") BoardSearch userSearch, Model model, SelectedForm selected) {
-        List<User> user = userService.findUser(userSearch);
+    public String list(@ModelAttribute("userSearch") BoardSearch userSearch, Model model,
+                       @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
+                       SelectedForm selected) {
+        String search = userSearch.getSearch();
+        String role = userSearch.getTypes();
+        Page<User> user;
+        if(!StringUtils.hasText(search)) {
+            search = "";
+        }
+        if(!StringUtils.hasText(role) || role.equals("none")) {
+            role = "";
+            user = userService.findByUsernameContaining(search, pageable);
+        } else {
+            user = userService.findByUsernameContainingAndRoleEquals(search, role, pageable);
+        }
+        int startPage = Math.max(1, user.getPageable().getPageNumber() - 5);
+        int endPage = Math.min(user.getTotalPages(), user.getPageable().getPageNumber() + 5);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
         model.addAttribute("user", user);
         model.addAttribute("selected", selected);
         return "admin/adminList";

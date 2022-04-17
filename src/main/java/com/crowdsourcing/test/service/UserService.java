@@ -1,17 +1,15 @@
 package com.crowdsourcing.test.service;
 
-import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.domain.UserId;
-import com.crowdsourcing.test.repository.CustomUserRepository;
 import com.crowdsourcing.test.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -50,7 +48,13 @@ public class UserService implements UserDetailsService {
     /**
      * 조건에 맞는 사용자 전체 검색
      */
-    public List<User> findUser(BoardSearch userSearch) {
-        return userRepository.findUser(userSearch);
+    @Transactional(readOnly = true)
+    public Page<User> findByUsernameContainingAndRoleEquals(String search, String role, Pageable pageable) {
+        return userRepository.findByUsernameContainingAndRoleEquals(search, role, pageable);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<User> findByUsernameContaining(String search, Pageable pageable) {
+        return userRepository.findByUsernameContaining(search, pageable);
     }
 }
