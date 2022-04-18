@@ -16,6 +16,7 @@ public class FileMaster {
     @Column(name = "fileMasterId")
     private Long id;
 
+    //file 엔티티와 양방향 매핑, fileMaster 엔티티 저장 시 file 엔티티도 같이 저장
     @OneToMany(mappedBy = "fileMaster", cascade = {CascadeType.PERSIST})
     private List<File> fileList = new ArrayList<>();
 

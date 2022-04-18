@@ -26,6 +26,8 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String role;
 
+    //Board 엔티티와 양방향 매핑
+    //저자가 계정을 수정, 삭제하면 게시글도 같이 수정,삭제된다(영속성 전이)
     @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
     private List<Board> boardList = new ArrayList<>();
 

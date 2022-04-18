@@ -17,16 +17,19 @@ public class Board {
     private String contentType;
     @Column(nullable = false)
     private String title;
+
+    //User 엔티티와 다대일 양방향 매핑
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "userId"),
-            @JoinColumn(name = "username")
+            @JoinColumn(name = "username"),
+            @JoinColumn(name = "userId")
     })
     private User author;
     @Column(nullable = false)
     private String content;
     private LocalDateTime time;
 
+    //FileMaster 엔티티와 1대1 단방향 매핑
     @OneToOne
     @JoinColumn(name = "fileMasterId")
     private FileMaster fileMaster;
