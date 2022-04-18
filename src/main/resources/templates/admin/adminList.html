@@ -38,21 +38,21 @@
                 </tr>
                 </tbody>
             </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination nav justify-content-center">
+                    <li class="page-item" th:classappend="${1 == user.pageable.pageNumber + 1} ? 'disabled' : '' ">
+                        <a class="page-link" th:href="@{/admin/(page=${user.pageable.pageNumber - 1}, search=${userSearch.search}, types=${userSearch.types})}">이전</a>
+                    </li>
+                    <li class="page-item" th:classappend="${i == user.pageable.pageNumber + 1} ? 'active' : '' " th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                        <a class="page-link" th:href="@{/admin/(page=${i - 1}, search=${userSearch.search}, types=${userSearch.types})}" th:text="${i}">1</a>
+                    </li>
+                    <li class="page-item" th:classappend="${user.totalPages == user.pageable.pageNumber + 1 || user.totalPages == 0} ? 'disabled' : '' ">
+                        <a class="page-link" th:href="@{/admin/(page=${user.pageable.pageNumber + 1}, search=${userSearch.search}, types=${userSearch.types})}">다음</a>
+                    </li>
+                </ul>
+            </nav>
             <input type="submit" class="btn btn-danger" value="계정 삭제" />
         </form>
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                <li class="page-item" th:classappend="${1 == user.pageable.pageNumber + 1} ? 'disabled' : '' ">
-                    <a class="page-link" th:href="@{/admin/(page=${user.pageable.pageNumber - 1}, search=${userSearch.search})}">Previous</a>
-                </li>
-                <li class="page-item" th:classappend="${i == user.pageable.pageNumber + 1} ? 'active' : '' " th:each="i : ${#numbers.sequence(startPage, endPage)}">
-                    <a class="page-link" th:href="@{/admin/(page=${i - 1}, search=${userSearch.search})}" th:text="${i}">1</a>
-                </li>
-                <li class="page-item" th:classappend="${user.totalPages == user.pageable.pageNumber + 1} ? 'disabled' : '' ">
-                    <a class="page-link" th:href="@{/admin/(page=${user.pageable.pageNumber + 1}, search=${userSearch.search})}">Next</a>
-                </li>
-            </ul>
-        </nav>
     </div>
     <div th:replace="fragments/footer :: footer"/>
 </div> <!-- /container -->

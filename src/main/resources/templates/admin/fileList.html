@@ -33,6 +33,19 @@
                 </tr>
                 </tbody>
             </table>
+            <nav aria-label="Page navigation example">
+                <ul class="pagination nav justify-content-center">
+                    <li class="page-item" th:classappend="${1 == file.pageable.pageNumber + 1} ? 'disabled' : '' ">
+                        <a class="page-link" th:href="@{/file/(page=${file.pageable.pageNumber - 1}, search=${fileSearch.search})}">이전</a>
+                    </li>
+                    <li class="page-item" th:classappend="${i == file.pageable.pageNumber + 1} ? 'active' : '' " th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                        <a class="page-link" th:href="@{/file/(page=${i - 1}, search=${fileSearch.search})}" th:text="${i}"></a>
+                    </li>
+                    <li class="page-item" th:classappend="${file.totalPages == file.pageable.pageNumber + 1 || file.totalPages == 0} ? 'disabled' : '' ">
+                        <a class="page-link" th:href="@{/file/(page=${file.pageable.pageNumber + 1}, search=${fileSearch.search})}">다음</a>
+                    </li>
+                </ul>
+            </nav>
             <input type="submit" class="btn btn-danger" value="파일 삭제" />
         </form>
     </div>

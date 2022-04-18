@@ -28,19 +28,11 @@ public class AdminController {
     /**
      * 관리자 페이지 접속시
      */
-//    @GetMapping("/admin")
-//    public String list(@ModelAttribute("userSearch") BoardSearch userSearch, Model model, SelectedForm selected) {
-//        List<User> user = userService.findUser(userSearch);
-//        model.addAttribute("user", user);
-//        model.addAttribute("selected", selected);
-//        return "admin/adminList";
-//    }
     @GetMapping("/admin")
     public String list(@ModelAttribute("userSearch") BoardSearch userSearch, Model model,
                        @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
                        SelectedForm selected) {
-        String search = userSearch.getSearch();
-        String role = userSearch.getTypes();
+        String search = userSearch.getSearch() , role = userSearch.getTypes();
         Page<User> user;
         if(!StringUtils.hasText(search)) {
             search = "";
@@ -51,8 +43,13 @@ public class AdminController {
         } else {
             user = userService.findByUsernameContainingAndRoleEquals(search, role, pageable);
         }
-        int startPage = Math.max(1, user.getPageable().getPageNumber() - 5);
-        int endPage = Math.min(user.getTotalPages(), user.getPageable().getPageNumber() + 5);
+        int startPage = 1, endPage;
+        int totalPages = user.getTotalPages();
+        if(totalPages == 0) {
+            endPage = 1;
+        } else {
+            endPage = totalPages;
+        }
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("user", user);

@@ -3,20 +3,18 @@ package com.crowdsourcing.test.controller;
 import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.controller.form.SelectedForm;
 import com.crowdsourcing.test.domain.File;
-import com.crowdsourcing.test.domain.User;
-import com.crowdsourcing.test.domain.UserId;
-import com.crowdsourcing.test.service.FileMasterService;
-import com.crowdsourcing.test.service.UserService;
+import com.crowdsourcing.test.service.FileService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.PrintWriter;
 import java.util.List;
 
 @Controller
@@ -29,10 +27,21 @@ public class FileController {
      * 관리자 페이지 접속시
      */
     @GetMapping("/file")
-    public String list(@ModelAttribute("fileSearch") BoardSearch fileSearch, Model model, SelectedForm selectedForm) {
-        List<File> file = fileService.findFile(fileSearch);
+    public String list(@ModelAttribute("fileSearch") BoardSearch fileSearch, Model model, SelectedForm selectedForm,
+                       @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        Page<File> file = fileService.findFile(fileSearch, pageable);
+        int startPage = 1, endPage;
+        int totalPages = file.getTotalPages();
+        if(totalPages == 0) {
+            endPage = 1;
+        }
+        else {
+            endPage = totalPages;
+        }
         model.addAttribute("file", file);
         model.addAttribute("selected", selectedForm);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
         return "admin/fileList";
     }
 

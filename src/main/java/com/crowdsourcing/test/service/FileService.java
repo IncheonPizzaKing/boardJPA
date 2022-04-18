@@ -1,14 +1,17 @@
-package com.crowdsourcing.test.controller;
+package com.crowdsourcing.test.service;
 
 import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.File;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.concurrent.locks.ReadWriteLock;
 
 @Service
 @Transactional(readOnly = true)
@@ -24,8 +27,9 @@ public class FileService {
     /**
      * 조건에 맞는 파일 전체 검색
      */
-    public List<File> findFile(BoardSearch fileSearch) {
-        return fileRepository.findFile(fileSearch);
+    @Transactional(readOnly = true)
+    public Page<File> findFile(BoardSearch fileSearch, Pageable pageable) {
+        return fileRepository.findFile(fileSearch, pageable);
     }
 
     @Transactional
