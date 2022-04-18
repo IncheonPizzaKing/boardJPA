@@ -26,13 +26,14 @@
                     <td>
                         <input type="checkbox" th:value="${file.id}" th:field="*{selectedUser}" />
                     </td>
-                    <td th:text="${file.id}"></td>
-                    <td th:text="${file.originFileName}"></td>
+                    <td th:text="${file.id}" ></td>
+                    <td><a th:href="@{'/download/' + ${file.id}}" th:text="${file.originFileName}"></a></td>
                     <td th:if="${file.useFile.equals('true')}" th:text="${'사용중'}"></td>
                     <td th:if="${file.useFile.equals('false')}" th:text="${'사용X'}"></td>
                 </tr>
                 </tbody>
             </table>
+<!--            페이지 네비게이션-->
             <nav aria-label="Page navigation example">
                 <ul class="pagination nav justify-content-center">
                     <li class="page-item" th:classappend="${1 == file.pageable.pageNumber + 1} ? 'disabled' : '' ">

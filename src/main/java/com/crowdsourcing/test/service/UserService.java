@@ -46,13 +46,16 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * 조건에 맞는 사용자 전체 검색
+     * 조건에 맞는 사용자 전체 검색(role, search 값 전달 받았을때)
      */
     @Transactional(readOnly = true)
     public Page<User> findByUsernameContainingAndRoleEquals(String search, String role, Pageable pageable) {
         return userRepository.findByUsernameContainingAndRoleEquals(search, role, pageable);
     }
 
+    /**
+     * 조건에 맞는 사용자 전체 검색(search 값만 전달 받았을때)
+     */
     @Transactional(readOnly = true)
     public Page<User> findByUsernameContaining(String search, Pageable pageable) {
         return userRepository.findByUsernameContaining(search, pageable);

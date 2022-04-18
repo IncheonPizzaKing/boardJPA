@@ -26,6 +26,7 @@ public class CustomFileRepositoryImpl implements CustomFileRepository {
 
     /**
      * 조건에 맞는 파일 전체 조회
+     * querydsl 사용 -> 쿼리를 자바 코드로 작성할 수 있게 도와주는 기술
      */
     @Override
     public Page<File> findFile(BoardSearch fileSearch, Pageable pageable) {
@@ -43,6 +44,7 @@ public class CustomFileRepositoryImpl implements CustomFileRepository {
         if(!StringUtils.hasText(search)) {
             return null;
         }
+//        where originFileName like %:search%
         return file.originFileName.contains(search);
     }
 }
