@@ -5,6 +5,8 @@ import com.crowdsourcing.test.domain.Board;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -54,8 +56,8 @@ public class BoardService {
     /**
      * 조건에 맞는 게시글 전체 조회
      */
-    public List<Board> findBoard(BoardSearch boardSearch) {
-        return boardRepository.findAll(boardSearch);
+    public Page<Board> findBoard(BoardSearch boardSearch, Pageable pageable) {
+        return boardRepository.findAll(boardSearch, pageable);
     }
 
     /**

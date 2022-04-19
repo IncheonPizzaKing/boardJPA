@@ -5,20 +5,19 @@
 <div class="container">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div>
-        <form th:object="${boardSearch}" class="form-inline">
-            <select th:field="*{types}" class="form-control">
+            <select id="types" name="types" class="form-control">
                 <option value="none">전체</option>
                 <option value="free">자유</option>
                 <option value="sports">스포츠</option>
                 <option value="music">음악</option>
                 <option value="movie">영화</option>
             </select>
-            <input type="text" th:field="*{search}" class="form-control" placeholder="제목을 입력하세요"/>
-            <button type="submit" class="btn btn-primary">검색</button>
-        </form>
+            <input type="text" id="search" name="search" class="form-control"
+                   placeholder="제목을 입력하세요"/>
+            <button id="btnSearch" name="btnSearch" class="btn btn-primary">검색</button>
     </div>
     <div>
-        <table class="table table-striped">
+        <table class="table table-striped" id="bList">
             <thead>
             <tr>
                 <th>글 번호</th>
@@ -34,7 +33,7 @@
                 <td><a th:href="@{/board/{id}/update (id=${board.id})}" th:text="${board.id}"></a></td>
                 <td th:text="${board.contentType}"></td>
                 <td th:text="${board.title}"></td>
-                <td th:text="${board.author.getUsername()}"></td>
+                <td th:if="${board.author != null}" th:text="${board.author.getUsername()}"></td>
                 <td th:text="${board.time}"></td>
                 <td th:if="${board.fileMaster == null}">
                     <span>첨부파일 없음</span>
@@ -48,8 +47,51 @@
             </tr>
             </tbody>
         </table>
+        <!--            페이지 네비게이션-->
+        <nav th:if="${!board.isEmpty()}" aria-label="Page navigation example">
+            <ul class="pagination nav justify-content-center">
+                <li class="page-item" th:classappend="${1 == board.pageable.pageNumber + 1} ? 'disabled' : '' ">
+<!--                    <a class="page-link" th:href="@{/board/(page=${board.pageable.pageNumber - 1}, search=${boardSearch.search})}">이전</a>-->
+                    <a class="page-link">이전</a>
+                </li>
+                <li class="page-item" th:classappend="${i == board.pageable.pageNumber + 1} ? 'active' : '' " th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                    <a class="page-link" th:text="${i}"></a>
+<!--                    <a class="page-link" th:href="@{/board/(page=${i - 1}, search=${boardSearch.search})}" th:text="${i}"></a>-->
+                </li>
+                <li class="page-item" th:classappend="${board.totalPages == board.pageable.pageNumber + 1 || board.totalPages == 0} ? 'disabled' : '' ">
+                    <a class="page-link">다음</a>
+<!--                    <a class="page-link" th:href="@{/board/(page=${board.pageable.pageNumber + 1}, search=${boardSearch.search})}">다음</a>-->
+                </li>
+            </ul>
+        </nav>
     </div>
-    <div th:replace="fragments/footer :: footer"/>
-</div> <!-- /container -->
+</div>
+<div th:replace="fragments/footer :: footer"/>
+</div>
+<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+<!-- /container -->
 <!--</body>-->
+<script>
+    const btnSearch = document.querySelector("#btnSearch");
+    const types = document.querySelector("#types");
+    const search = document.querySelector("#search");
+    $(function() {
+        dataSend();
+    });
+    $(document).on('click', btnSearch, dataSend);
+    function dataSend() {
+                var boardSearch={
+                    types:$(types).val(),
+                    search:$(search).val()
+                };
+                $.ajax({
+                    url: "/board",
+                    data: boardSearch,
+                    type: "POST",
+                    success : function(fragment) {
+                        $("#bList").replaceWith(fragment);
+                    }
+                });
+    }
+</script>
 <!--</html>-->

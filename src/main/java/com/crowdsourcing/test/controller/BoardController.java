@@ -9,6 +9,10 @@ import com.crowdsourcing.test.service.FileMasterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +31,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -75,10 +80,55 @@ public class BoardController {
      * 게시글 조회시
      */
     @GetMapping("/board")
-    public String list(@ModelAttribute("boardSearch") BoardSearch boardSearch, Model model) {
-        List<Board> boardList = boardService.findBoard(boardSearch);
-        model.addAttribute("board", boardList);
+    public String list(Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        model.addAttribute("board", new Board());
+        model.addAttribute("boardSearch", new BoardSearch());
         return "board/boardList";
+    }
+
+    /**
+     * 관리자 페이지 접속시
+     */
+//    @GetMapping("/file")
+//    public String list(@ModelAttribute("fileSearch") BoardSearch fileSearch, Model model, SelectedForm selectedForm,
+//                       @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+//        Page<File> file = fileService.findFile(fileSearch, pageable);
+//        int startPage = 1, endPage;
+//        int totalPages = file.getTotalPages();
+//        if(totalPages == 0) {
+//            endPage = 1;
+//        }
+//        else {
+//            endPage = totalPages;
+//        }
+//        model.addAttribute("file", file);
+//        model.addAttribute("selected", selectedForm);
+//        model.addAttribute("startPage", startPage);
+//        model.addAttribute("endPage", endPage);
+//        return "admin/fileList";
+//    }
+
+    /**
+     * 게시글 검색시
+     */
+    @PostMapping("/board")
+    public String SearchList(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        BoardSearch boardSearch = new BoardSearch();
+        boardSearch.setTypes(param.get("types").toString());
+        boardSearch.setSearch(param.get("search").toString());
+        Page<Board> boardList = boardService.findBoard(boardSearch, pageable);
+        int startPage = 1, endPage;
+        int totalPages = boardList.getTotalPages();
+        if(totalPages == 0) {
+            endPage = 1;
+        }
+        else {
+            endPage = totalPages;
+        }
+        model.addAttribute("board", boardList);
+        model.addAttribute("startPage", startPage);
+        model.addAttribute("endPage", endPage);
+        return "board/boardList :: #bList";
     }
 
 

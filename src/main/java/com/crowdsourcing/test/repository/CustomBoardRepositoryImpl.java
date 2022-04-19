@@ -1,17 +1,18 @@
 package com.crowdsourcing.test.repository;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.Board;
+import com.crowdsourcing.test.domain.File;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 
 import static com.crowdsourcing.test.domain.QBoard.board;
@@ -27,13 +28,17 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
      * 검색 조건에 만족하는 모든 게시글 조회
      */
     @Override
-    public List<Board> findAll(BoardSearch boardSearch) {
+    public Page<Board> findAll(BoardSearch boardSearch, Pageable pageable) {
         String search = boardSearch.getSearch();
         String types = boardSearch.getTypes();
-        return query.selectFrom(board)
+        List<Board> list = query.selectFrom(board)
                 .where(eqSearch(search),
                         eqType(types))
                 .fetch();
+        int start = (int)pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), list.size());
+        Page<Board> page = new PageImpl<Board>(list.subList(start, end), pageable, list.size());
+        return page;
     }
 
     private BooleanExpression eqSearch(String search) {
