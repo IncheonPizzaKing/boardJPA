@@ -30,7 +30,9 @@ public class TestDatabaseController {
         }
         createTestDB("admin", "admin", "ADMIN,USER");
 
-        createTestDB2("free", "test1", "user0", "test1");
+        for(int i = 0; i < 100; i++) {
+            createTestDB2("free", "test"+i, "user"+i, "test"+i);
+        }
         createTestDB2("sports", "test2", "user0", "test2");
         createTestDB2("movie", "test3", "admin", "test3");
         createTestDB2("music", "test4", "admin", "test4");

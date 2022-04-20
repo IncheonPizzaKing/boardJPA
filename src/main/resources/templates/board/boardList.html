@@ -16,8 +16,8 @@
                    placeholder="제목을 입력하세요"/>
             <button id="btnSearch" name="btnSearch" class="btn btn-primary">검색</button>
     </div>
-    <div>
-        <table class="table table-striped" id="bList">
+    <div id="boardList">
+        <table class="table table-striped">
             <thead>
             <tr>
                 <th>글 번호</th>
@@ -47,38 +47,34 @@
             </tr>
             </tbody>
         </table>
-        <!--            페이지 네비게이션-->
-        <nav th:if="${!board.isEmpty()}" aria-label="Page navigation example">
+        <nav th:if="${board != null}" aria-label="Page navigation example">
             <ul class="pagination nav justify-content-center">
                 <li class="page-item" th:classappend="${1 == board.pageable.pageNumber + 1} ? 'disabled' : '' ">
-<!--                    <a class="page-link" th:href="@{/board/(page=${board.pageable.pageNumber - 1}, search=${boardSearch.search})}">이전</a>-->
-                    <a class="page-link">이전</a>
+                    <button class="page-link" th:onclick="|paging(${board.pageable.pageNumber - 1})|">이전</button>
                 </li>
                 <li class="page-item" th:classappend="${i == board.pageable.pageNumber + 1} ? 'active' : '' " th:each="i : ${#numbers.sequence(startPage, endPage)}">
-                    <a class="page-link" th:text="${i}"></a>
-<!--                    <a class="page-link" th:href="@{/board/(page=${i - 1}, search=${boardSearch.search})}" th:text="${i}"></a>-->
+                    <button class="page-link" th:onclick="|paging(${i - 1})|" th:text="${i}"></button>
                 </li>
-                <li class="page-item" th:classappend="${board.totalPages == board.pageable.pageNumber + 1 || board.totalPages == 0} ? 'disabled' : '' ">
-                    <a class="page-link">다음</a>
-<!--                    <a class="page-link" th:href="@{/board/(page=${board.pageable.pageNumber + 1}, search=${boardSearch.search})}">다음</a>-->
+                <li class="page-item" th:classappend="${board.totalPages == board.pageable.pageNumber + 1} ? 'disabled' : '' ">
+                    <button class="page-link" th:onclick="|paging(${board.pageable.pageNumber + 1})|">다음</button>
                 </li>
             </ul>
         </nav>
+        <p th:if="${board != null}" th:text="${board.pageable.pageNumber}"></p>
     </div>
 </div>
 <div th:replace="fragments/footer :: footer"/>
-</div>
 <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 <!-- /container -->
 <!--</body>-->
-<script>
+<script th:inline="javascript">
     const btnSearch = document.querySelector("#btnSearch");
     const types = document.querySelector("#types");
     const search = document.querySelector("#search");
+
     $(function() {
         dataSend();
     });
-    $(document).on('click', btnSearch, dataSend);
     function dataSend() {
                 var boardSearch={
                     types:$(types).val(),
@@ -88,10 +84,29 @@
                     url: "/board",
                     data: boardSearch,
                     type: "POST",
-                    success : function(fragment) {
-                        $("#bList").replaceWith(fragment);
+                    success : function(data) {
+                        $('#boardList').replaceWith(data);
                     }
                 });
     }
+
+    function paging(now) {
+                var boardSearch={
+                    page:now,
+                    search:$(search).val(),
+                    types:$(types).val()
+                };
+                $.ajax({
+                    url: "/board/",
+                    data: boardSearch,
+                    type: "POST",
+                    success : function(data) {
+                        console.log(data);
+                        $('#boardList').replaceWith(data);
+                    }
+                });
+    }
+
+    btnSearch.addEventListener("click", dataSend);
 </script>
 <!--</html>-->

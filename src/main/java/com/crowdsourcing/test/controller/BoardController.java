@@ -42,7 +42,7 @@ public class BoardController {
 
     /**
      * 게시글 작성 페이지 접속시
-     * */
+     */
     @GetMapping("/board/new")
     public String createForm(Model model) {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -68,7 +68,7 @@ public class BoardController {
         board.setTitle(boardForm.getTitle());
         board.setContent(boardForm.getContent());
         board.setTime(LocalDateTime.now());
-        if(!multipartFile.get(0).isEmpty()) {
+        if (!multipartFile.get(0).isEmpty()) {
             FileMaster fileMasterIn = fileMasterService.upload(multipartFile);
             board.setFileMaster(fileMasterIn);
         }
@@ -80,57 +80,36 @@ public class BoardController {
      * 게시글 조회시
      */
     @GetMapping("/board")
-    public String list(Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-        model.addAttribute("board", new Board());
-        model.addAttribute("boardSearch", new BoardSearch());
+    public String list() {
         return "board/boardList";
     }
-
-    /**
-     * 관리자 페이지 접속시
-     */
-//    @GetMapping("/file")
-//    public String list(@ModelAttribute("fileSearch") BoardSearch fileSearch, Model model, SelectedForm selectedForm,
-//                       @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
-//        Page<File> file = fileService.findFile(fileSearch, pageable);
-//        int startPage = 1, endPage;
-//        int totalPages = file.getTotalPages();
-//        if(totalPages == 0) {
-//            endPage = 1;
-//        }
-//        else {
-//            endPage = totalPages;
-//        }
-//        model.addAttribute("file", file);
-//        model.addAttribute("selected", selectedForm);
-//        model.addAttribute("startPage", startPage);
-//        model.addAttribute("endPage", endPage);
-//        return "admin/fileList";
-//    }
 
     /**
      * 게시글 검색시
      */
     @PostMapping("/board")
-    public String SearchList(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public String paging(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
         BoardSearch boardSearch = new BoardSearch();
-        boardSearch.setTypes(param.get("types").toString());
-        boardSearch.setSearch(param.get("search").toString());
+        if (param.get("types") != null) {
+            boardSearch.setTypes(param.get("types").toString());
+        }
+        if (param.get("search") != null) {
+            boardSearch.setSearch(param.get("search").toString());
+        }
         Page<Board> boardList = boardService.findBoard(boardSearch, pageable);
         int startPage = 1, endPage;
         int totalPages = boardList.getTotalPages();
-        if(totalPages == 0) {
+        if (totalPages == 0) {
             endPage = 1;
-        }
-        else {
+        } else {
             endPage = totalPages;
         }
         model.addAttribute("board", boardList);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        return "board/boardList :: #bList";
-    }
 
+        return "board/boardList :: #boardList";
+    }
 
     /**
      * 첨부파일 다운로드 버튼 클릭시
@@ -144,7 +123,7 @@ public class BoardController {
         Resource resource = new InputStreamResource(Files.newInputStream(path));
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment;fileName=\\" + new String(fileDto.getOriginFileName().getBytes("UTF-8"), "ISO-8859-1"))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=\\" + new String(fileDto.getOriginFileName().getBytes("UTF-8"), "ISO-8859-1"))
                 .body(resource);
     }
 
