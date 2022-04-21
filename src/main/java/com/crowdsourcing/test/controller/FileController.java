@@ -6,6 +6,7 @@ import com.crowdsourcing.test.service.FileService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONArray;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -44,7 +45,7 @@ public class FileController {
      * 관리자 페이지 접속시
      */
     @PostMapping("/file")
-    public String paging(@RequestParam Map<String, Object> param, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
+    public String paging(@RequestParam Map<String, Object> param, @PageableDefault(size = 10, sort = "file_id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         BoardSearch fileSearch = new BoardSearch();
         if (param.get("search") != null) {
             fileSearch.setSearch(param.get("search").toString());
@@ -75,15 +76,19 @@ public class FileController {
     }
 
     /**
-     * 사용자 삭제 버튼 클릭시
+     * 파일 삭제 버튼 클릭시
      */
     @PostMapping("/file/delete")
-    public void deleteBoard(@RequestParam(value="selectedList[]") List<Integer> list) {
-        System.out.println(list);
-//        for (int file : list) {
-//            Long fileId = Long.parseLong(String.valueOf(file));
-//            File findFile = fileService.findById(fileId);
-//            fileService.deleteFile(findFile);
-//        }
+    public String deleteBoard(@RequestParam("sList[]") List<Integer> selectedValues) {
+        System.out.println(selectedValues);
+        for(int i : selectedValues) {
+            System.out.println(i);
+        }
+        for (int file : selectedValues) {
+            Long fileId = Long.parseLong(String.valueOf(file));
+            File findFile = fileService.findById(fileId);
+            fileService.deleteFile(findFile);
+        }
+        return "admin/fileList";
     }
 }

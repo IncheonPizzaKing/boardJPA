@@ -2,7 +2,6 @@ package com.crowdsourcing.test.repository;
 
 import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.Board;
-import com.crowdsourcing.test.domain.File;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -34,6 +33,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
         List<Board> list = query.selectFrom(board)
                 .where(eqSearch(search),
                         eqType(types))
+                .orderBy(board.id.desc())
                 .fetch();
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), list.size());

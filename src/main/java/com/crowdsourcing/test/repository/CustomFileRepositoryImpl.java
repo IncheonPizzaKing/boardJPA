@@ -12,7 +12,6 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
-import java.awt.*;
 import java.util.List;
 
 import static com.crowdsourcing.test.domain.QFile.file;
@@ -33,6 +32,7 @@ public class CustomFileRepositoryImpl implements CustomFileRepository {
         String search = fileSearch.getSearch();
         List<File> list = query.selectFrom(file)
                 .where(eqSearch(search))
+                .orderBy(file.id.desc())
                 .fetch();
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), list.size());

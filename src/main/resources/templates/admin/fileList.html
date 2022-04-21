@@ -40,7 +40,7 @@
                     <li class="page-item" th:classappend="${i == file.pageable.pageNumber + 1} ? 'active' : '' " th:each="i : ${#numbers.sequence(startPage, endPage)}">
                         <button class="page-link" th:onclick="|paging(${i - 1})|" th:text="${i}"></button>                
                     </li>
-                    <li class="page-item" th:classappend="${file.totalPages == file.pageable.pageNumber + 1} ? 'disabled' : '' ">
+                    <li class="page-item" th:classappend="${file.totalPages == file.pageable.pageNumber + 1 || file.totalPages == 0} ? 'disabled' : '' ">
                         <button class="page-link" th:onclick="|paging(${file.pageable.pageNumber + 1})|">다음</button>
                     </li>
                 </ul>
@@ -93,20 +93,20 @@
 
                 const query = 'input[name="selected"]:checked';
                 const selectedAll = document.querySelectorAll(query);
-                let selectedValues = [];
-                selectedAll.forEach(e => {
-                    selectedValues.push(e.value);
-                });
+                let selectedValues = new Array();
+                for(i=0; i<selectedAll.length; i++) {
+                    selectedValues[i] = selectedAll[i].value;
+                    console.log(selectedAll[i].value);
+                }
                 console.log(selectedValues);
-                var paramList = {
-                    "selectedList" : selectedValues
-                };
                 $.ajax({
                     url: "/file/delete",
-                    data: paramList,
+                    data: { 
+                        sList: selectedValues
+                    },
                     type: "POST",
-                    success : function() {
-                        console.log("success!!");
+                    success : function(data) {
+                        console.log(data);
                         dataSend();
                     }
                 });

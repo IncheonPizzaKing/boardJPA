@@ -1,60 +1,124 @@
 <!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments/header :: header"/>
+
+<head th:replace="fragments/header :: header" />
+
 <body>
-<div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <div>
-        <form th:object="${userSearch}" class="form-inline">
-            <select th:field="*{types}" class="form-control">
+    <div class="container">
+        <div th:replace="fragments/bodyHeader :: bodyHeader" />
+        <div>
+            <select id="types" name="types" class="form-control">
                 <option value="none">전체</option>
                 <option value="ADMIN,USER">관리자</option>
                 <option value="USER">사용자</option>
             </select>
-            <input type="text" th:field="*{search}" class="form-control" placeholder="사용자명을 입력하세요"/>
-            <button type="submit" class="btn btn-primary">검색</button>
-        </form>
-    </div>
-    <div>
-        <form action="/admin" method="post" th:object="${selected}">
+            <input type="text" id="search" name="search" class="form-control" placeholder="사용자명을 입력하세요" />
+            <button id="btnSearch" name="btnSearch" class="btn btn-primary">검색</button>
+        </div>
+        <div id="adminList">
             <table class="table table-striped">
                 <thead>
-                <tr>
-                    <th>체크</th>
-                    <th>사용자 번호</th>
-                    <th>계정</th>
-                    <th>권한</th>
-                </tr>
+                    <tr>
+                        <th>체크</th>
+                        <th>사용자 번호</th>
+                        <th>계정</th>
+                        <th>권한</th>
+                    </tr>
                 </thead>
                 <tbody>
-                <tr th:each="admin : ${user}">
-                    <td>
-                        <input type="checkbox" th:value="|${admin.id}_${admin.username}|" th:field="*{selectedUser}" />
-                    </td>
-                    <td th:text="${admin.id}"></td>
-                    <td th:text="${admin.username}"></td>
-                    <td th:if="${admin.role.equals('USER')}" th:text="${'사용자'}"></td>
-                    <td th:if="${admin.role.equals('ADMIN,USER')}" th:text="${'관리자'}"></td>
-                </tr>
+                    <tr th:each="admin : ${admin}">
+                        <td>
+                            <input type="checkbox" name="selected" th:value="|${admin.id}_${admin.username}|" />
+                        </td>
+                        <td th:text="${admin.id}"></td>
+                        <td th:text="${admin.username}"></td>
+                        <td th:if="${admin.role.equals('USER')}" th:text="${'사용자'}"></td>
+                        <td th:if="${admin.role.equals('ADMIN,USER')}" th:text="${'관리자'}"></td>
+                    </tr>
                 </tbody>
             </table>
-            <nav aria-label="Page navigation example">
+            <nav th:if="${admin != null}" aria-label="Page navigation example">
                 <ul class="pagination nav justify-content-center">
-                    <li class="page-item" th:classappend="${1 == user.pageable.pageNumber + 1} ? 'disabled' : '' ">
-                        <a class="page-link" th:href="@{/admin/(page=${user.pageable.pageNumber - 1}, search=${userSearch.search}, types=${userSearch.types})}">이전</a>
+                    <li class="page-item" th:classappend="${1 == admin.pageable.pageNumber + 1} ? 'disabled' : '' ">
+                        <button class="page-link" th:onclick="|paging(${admin.pageable.pageNumber - 1})|">이전</button>
                     </li>
-                    <li class="page-item" th:classappend="${i == user.pageable.pageNumber + 1} ? 'active' : '' " th:each="i : ${#numbers.sequence(startPage, endPage)}">
-                        <a class="page-link" th:href="@{/admin/(page=${i - 1}, search=${userSearch.search}, types=${userSearch.types})}" th:text="${i}">1</a>
+                    <li class="page-item" th:classappend="${i == admin.pageable.pageNumber + 1} ? 'active' : '' " th:each="i : ${#numbers.sequence(startPage, endPage)}">
+                        <button class="page-link" th:onclick="|paging(${i - 1})|" th:text="${i}"></button>
                     </li>
-                    <li class="page-item" th:classappend="${user.totalPages == user.pageable.pageNumber + 1 || user.totalPages == 0} ? 'disabled' : '' ">
-                        <a class="page-link" th:href="@{/admin/(page=${user.pageable.pageNumber + 1}, search=${userSearch.search}, types=${userSearch.types})}">다음</a>
+                    <li class="page-item" th:classappend="${admin.totalPages == admin.pageable.pageNumber + 1 || admin.totalPages == 0} ? 'disabled' : '' ">
+                        <button class="page-link" th:onclick="|paging(${admin.pageable.pageNumber + 1})|">다음</button>
                     </li>
                 </ul>
             </nav>
-            <input type="submit" class="btn btn-danger" value="계정 삭제" />
-        </form>
+            <button th:onclick="|remove()|">계정 삭제</button>
+        </div>
+        <div th:replace="fragments/footer :: footer" />
     </div>
-    <div th:replace="fragments/footer :: footer"/>
-</div> <!-- /container -->
+    <script src="https://code.jquery.com/jquery-3.5.0.js"></script>
+    <script th:inline="javascript">
+        const btnSearch = document.querySelector("#btnSearch");
+        const types = document.querySelector("#types");
+        const search = document.querySelector("#search");
+
+        $(function () {
+            dataSend();
+        });
+        function dataSend() {
+            var adminSearch = {
+                types: $(types).val(),
+                search: $(search).val()
+            };
+            $.ajax({
+                url: "/admin",
+                data: adminSearch,
+                type: "POST",
+                success: function (data) {
+                    $('#adminList').replaceWith(data);
+                }
+            });
+        }
+
+        function paging(now) {
+            var adminSearch = {
+                page: now,
+                types: $(types).val(),
+                search: $(search).val()
+            };
+            $.ajax({
+                url: "/admin/",
+                data: adminSearch,
+                type: "POST",
+                success: function (data) {
+                    console.log(data);
+                    $('#adminList').replaceWith(data);
+                }
+            });
+        }
+        function remove() {
+
+            const query = 'input[name="selected"]:checked';
+            const selectedAll = document.querySelectorAll(query);
+            let selectedValues = new Array();
+            for (i = 0; i < selectedAll.length; i++) {
+                selectedValues[i] = selectedAll[i].value;
+                console.log(selectedAll[i].value);
+            }
+            console.log(selectedValues);
+            $.ajax({
+                url: "/admin/delete",
+                data: {
+                    sList: selectedValues
+                },
+                type: "POST",
+                success: function (data) {
+                    console.log(data);
+                    dataSend();
+                }
+            });
+        }
+
+        btnSearch.addEventListener("click", dataSend);
+    </script>
 </body>
+
 </html>

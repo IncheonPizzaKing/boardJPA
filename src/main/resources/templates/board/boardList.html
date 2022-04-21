@@ -55,7 +55,7 @@
                 <li class="page-item" th:classappend="${i == board.pageable.pageNumber + 1} ? 'active' : '' " th:each="i : ${#numbers.sequence(startPage, endPage)}">
                     <button class="page-link" th:onclick="|paging(${i - 1})|" th:text="${i}"></button>
                 </li>
-                <li class="page-item" th:classappend="${board.totalPages == board.pageable.pageNumber + 1} ? 'disabled' : '' ">
+                <li class="page-item" th:classappend="${board.totalPages == board.pageable.pageNumber + 1 || board.totalPages == 0} ? 'disabled' : '' ">
                     <button class="page-link" th:onclick="|paging(${board.pageable.pageNumber + 1})|">다음</button>
                 </li>
             </ul>

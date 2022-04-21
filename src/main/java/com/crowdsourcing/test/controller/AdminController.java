@@ -1,7 +1,5 @@
 package com.crowdsourcing.test.controller;
 
-import com.crowdsourcing.test.controller.form.BoardSearch;
-import com.crowdsourcing.test.controller.form.SelectedForm;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.domain.UserId;
 import com.crowdsourcing.test.service.UserService;
@@ -18,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -29,10 +28,16 @@ public class AdminController {
      * 관리자 페이지 접속시
      */
     @GetMapping("/admin")
-    public String list(@ModelAttribute("userSearch") BoardSearch userSearch, Model model,
-                       @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable,
-                       SelectedForm selected) {
-        String search = userSearch.getSearch() , role = userSearch.getTypes();
+    public String list() {
+        return "admin/adminList";
+    }
+
+    /**
+     * 관리자 페이지 접속시
+     */
+    @PostMapping("/admin")
+    public String paging(@RequestParam Map<String, Object> param, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
+        String search = param.get("search").toString() , role = param.get("types").toString();
         Page<User> user;
         if(!StringUtils.hasText(search)) {
             search = "";
@@ -52,24 +57,26 @@ public class AdminController {
         }
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        model.addAttribute("user", user);
-        model.addAttribute("selected", selected);
-        return "admin/adminList";
+        model.addAttribute("admin", user);
+
+        return "admin/adminList :: #adminList";
     }
 
     /**
      * 사용자 삭제 버튼 클릭시
      */
-    @PostMapping("/admin")
-    public String deleteUser(@ModelAttribute("selected") SelectedForm selectedForm){
-        List<String> admin = selectedForm.getSelectedUser();
-        for(String user : admin) {
+    @PostMapping("/admin/delete")
+    public String deleteBoard(@RequestParam("sList[]") List<String> selectedValues) {
+        System.out.println(selectedValues);
+        for(String i : selectedValues) {
+            System.out.println(i);
+        }
+        for (String user : selectedValues) {
             String[] userOne = user.split("_");
             User one = userService.findOne(new UserId(Long.parseLong(userOne[0]), userOne[1]));
             userService.remove(one);
         }
-
-        return "redirect:/admin";
+        return "admin/adminList";
     }
 
     /**

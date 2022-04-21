@@ -88,7 +88,7 @@ public class BoardController {
      * 게시글 검색시
      */
     @PostMapping("/board")
-    public String paging(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public String paging(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "board_id", direction = Sort.Direction.DESC) Pageable pageable) {
         BoardSearch boardSearch = new BoardSearch();
         if (param.get("types") != null) {
             boardSearch.setTypes(param.get("types").toString());
@@ -110,7 +110,6 @@ public class BoardController {
 
         return "board/boardList :: #boardList";
     }
-
     /**
      * 첨부파일 다운로드 버튼 클릭시
      */
