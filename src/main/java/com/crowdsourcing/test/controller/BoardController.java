@@ -2,9 +2,11 @@ package com.crowdsourcing.test.controller;
 
 import com.crowdsourcing.test.controller.form.BoardForm;
 import com.crowdsourcing.test.controller.form.BoardSearch;
-import com.crowdsourcing.test.domain.Board;
-import com.crowdsourcing.test.domain.FileMaster;
+import com.crowdsourcing.test.domain.*;
+import com.crowdsourcing.test.repository.CommonGroupRepository;
 import com.crowdsourcing.test.service.BoardService;
+import com.crowdsourcing.test.service.CommonCodeService;
+import com.crowdsourcing.test.service.CommonGroupService;
 import com.crowdsourcing.test.service.FileMasterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -39,6 +41,8 @@ public class BoardController {
 
     private final BoardService boardService;
     private final FileMasterService fileMasterService;
+    private final CommonGroupService commonGroupService;
+    private final CommonCodeService commonCodeService;
 
     /**
      * 게시글 작성 페이지 접속시
@@ -50,6 +54,7 @@ public class BoardController {
         String username = ((UserDetails) principal).getUsername();
         BoardForm board = new BoardForm();
         board.setAuthor(username);
+        board.setCommonCodeList(commonGroupService.findById("G001").getCommonCodeList());
         model.addAttribute("boardForm", board);
         return "board/createBoardForm";
     }
@@ -64,7 +69,9 @@ public class BoardController {
             return "board/createBoardForm";
         }
         Board board = new Board();
-        board.setContentType(boardForm.getContentType());
+        String[] commonCodeOne = boardForm.getCommonCodeId().split("_");
+        CommonCode one = commonCodeService.findById(new CommonCodeId(commonGroupService.findById(commonCodeOne[0]), commonCodeOne[1]));
+        board.setCommonCode(one);
         board.setTitle(boardForm.getTitle());
         board.setContent(boardForm.getContent());
         board.setTime(LocalDateTime.now());
@@ -89,6 +96,7 @@ public class BoardController {
      */
     @PostMapping("/board")
     public String paging(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "board_id", direction = Sort.Direction.DESC) Pageable pageable) {
+        List<CommonCode> commonCodeList = commonGroupService.findById("G001").getCommonCodeList();
         BoardSearch boardSearch = new BoardSearch();
         if (param.get("types") != null) {
             boardSearch.setTypes(param.get("types").toString());
@@ -104,7 +112,10 @@ public class BoardController {
         } else {
             endPage = totalPages;
         }
+        System.out.println("#####################################################################################################################################################");
+        System.out.println(commonCodeList);
         model.addAttribute("board", boardList);
+        model.addAttribute("commonCodeList", commonCodeList);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
@@ -134,7 +145,7 @@ public class BoardController {
     public String updateBoardForm(@PathVariable("boardId") Long boardId, Model model) {
         Board board = (Board) boardService.findOne(boardId);
         BoardForm form = new BoardForm();
-        form.setContentType(board.getContentType());
+        form.setCommonCode(board.getCommonCode());
         form.setTitle(board.getTitle());
         form.setAuthor(board.getAuthor().getUsername());
         form.setContent(board.getContent());

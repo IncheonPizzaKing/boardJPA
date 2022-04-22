@@ -15,7 +15,7 @@
     <form role="form" th:object="${form}" method="post">
         <div class="form-group">
             <label th:for="contentType">분류</label>
-            <input type="text" th:field="*{contentType}" class="form-control" readonly>
+            <input type="text" th:field="*{commonCode.codeNameKor}" class="form-control" readonly>
         </div>
         <div class="form-group">
             <label th:for="title">제목</label>

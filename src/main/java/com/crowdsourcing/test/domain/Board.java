@@ -13,8 +13,12 @@ public class Board {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "boardId")
     private Long id;
-    @Column(nullable = false)
-    private String contentType;
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "code"),
+            @JoinColumn(name = "codeName")
+    })
+    private CommonCode commonCode;
     @Column(nullable = false)
     private String title;
 

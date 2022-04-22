@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -19,9 +17,11 @@ public class CommonCodeId implements Serializable {
 
     @EqualsAndHashCode.Include
     @Id
-    private String groupCode;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "groupCode")
+    private CommonGroup commonGroup;
 
     @EqualsAndHashCode.Include
-    @Id
+    @Id @Column(columnDefinition = "char(4)")
     private String code;
 }

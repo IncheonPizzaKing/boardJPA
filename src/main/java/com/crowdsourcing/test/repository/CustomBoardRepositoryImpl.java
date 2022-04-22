@@ -29,10 +29,16 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
     @Override
     public Page<Board> findAll(BoardSearch boardSearch, Pageable pageable) {
         String search = boardSearch.getSearch();
-        String types = boardSearch.getTypes();
+        String[] types = boardSearch.getTypes().split("_");
+        String groupCode = types[0];
+        String code = "null";
+        if(types.length >= 2) {
+            code = types[1];
+        }
         List<Board> list = query.selectFrom(board)
                 .where(eqSearch(search),
-                        eqType(types))
+                        eqGroupCode(groupCode),
+                        eqCode(code))
                 .orderBy(board.id.desc())
                 .fetch();
         int start = (int)pageable.getOffset();
@@ -48,13 +54,19 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
         return board.title.contains(search);
     }
 
-    private BooleanExpression eqType(String types) {
-        if(types == null) {
+    private BooleanExpression eqGroupCode(String groupCode) {
+        if(groupCode.equals("null")) {
             return null;
         }
-        if(types.equals("none")) {
+        if(groupCode.equals("none")) {
             return null;
         }
-        return board.contentType.eq(types);
+        return board.commonCode.commonGroup.groupCode.eq(groupCode);
+    }
+    private BooleanExpression eqCode(String code) {
+        if(code.equals("null")) {
+            return null;
+        }
+        return board.commonCode.code.eq(code);
     }
 }
