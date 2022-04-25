@@ -23,8 +23,12 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false)
-    private String role;
+    @ManyToOne
+    @JoinColumns({
+            @JoinColumn(name = "codeGroup"),
+            @JoinColumn(name = "code")
+    })
+    private CommonCode commonCode;
 
     //Board 엔티티와 양방향 매핑
     //저자가 계정을 수정, 삭제하면 게시글도 같이 수정,삭제된다(영속성 전이)
@@ -34,7 +38,7 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> roles = new HashSet<>();
-        for (String role : role.split(",")) {
+        for (String role : commonCode.getCodeName().split(",")) {
             roles.add(new SimpleGrantedAuthority(role));
         }
         return roles;

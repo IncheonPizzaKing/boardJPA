@@ -15,8 +15,8 @@ public class Board {
     private Long id;
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "code"),
-            @JoinColumn(name = "codeName")
+            @JoinColumn(name = "codeGroup"),
+            @JoinColumn(name = "code")
     })
     private CommonCode commonCode;
     @Column(nullable = false)

@@ -1,5 +1,6 @@
 package com.crowdsourcing.test.service;
 
+import com.crowdsourcing.test.domain.CommonCode;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.domain.UserId;
 import com.crowdsourcing.test.repository.UserRepository;
@@ -49,8 +50,8 @@ public class UserService implements UserDetailsService {
      * 조건에 맞는 사용자 전체 검색(role, search 값 전달 받았을때)
      */
     @Transactional(readOnly = true)
-    public Page<User> findByUsernameContainingAndRoleEquals(String search, String role, Pageable pageable) {
-        return userRepository.findByUsernameContainingAndRoleEquals(search, role, pageable);
+    public Page<User> findByUsernameContainingAndRoleEquals(String search, CommonCode commonCode, Pageable pageable) {
+        return userRepository.findByUsernameContainingAndCommonCodeEquals(search, commonCode, pageable);
     }
 
     /**

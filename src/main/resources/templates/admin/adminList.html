@@ -9,8 +9,7 @@
         <div>
             <select id="types" name="types" class="form-control">
                 <option value="none">전체</option>
-                <option value="ADMIN,USER">관리자</option>
-                <option value="USER">사용자</option>
+                <option th:each="list : ${commonCodeList}" th:value="${list.commonGroup + '_' + list.code}" th:text="${list.codeNameKor}">
             </select>
             <input type="text" id="search" name="search" class="form-control" placeholder="사용자명을 입력하세요" />
             <button id="btnSearch" name="btnSearch" class="btn btn-primary">검색</button>
@@ -32,8 +31,8 @@
                         </td>
                         <td th:text="${admin.id}"></td>
                         <td th:text="${admin.username}"></td>
-                        <td th:if="${admin.role.equals('USER')}" th:text="${'사용자'}"></td>
-                        <td th:if="${admin.role.equals('ADMIN,USER')}" th:text="${'관리자'}"></td>
+                        <td th:if="${admin.commonCode.codeName.equals('USER')}" th:text="${'사용자'}"></td>
+                        <td th:if="${admin.commonCode.codeName.equals('ADMIN,USER')}" th:text="${'관리자'}"></td>
                     </tr>
                 </tbody>
             </table>

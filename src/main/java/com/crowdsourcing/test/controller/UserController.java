@@ -1,7 +1,11 @@
 package com.crowdsourcing.test.controller;
 
 import com.crowdsourcing.test.controller.form.UserForm;
+import com.crowdsourcing.test.domain.CommonCode;
+import com.crowdsourcing.test.domain.CommonCodeId;
 import com.crowdsourcing.test.domain.User;
+import com.crowdsourcing.test.service.CommonCodeService;
+import com.crowdsourcing.test.service.CommonGroupService;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,13 +22,17 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
+    private final CommonGroupService commonGroupService;
+    private final CommonCodeService commonCodeService;
 
     /**
      * 회원가입 페이지 접속시
      */
     @GetMapping("/user/new")
     public String createUserForm(Model model) {
-        model.addAttribute("userForm", new UserForm());
+        UserForm user = new UserForm();
+        user.setCommonCodeList(commonGroupService.findById("G002").getCommonCodeList());
+        model.addAttribute("userForm", user);
         return "user/createUserForm";
     }
 
@@ -40,8 +48,9 @@ public class UserController {
         user.setUsername(userForm.getUsername());
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(userForm.getPassword()));
-        user.setRole(userForm.getRole());
-
+        String[] commonCodeOne = userForm.getCommonCodeId().split("_");
+        CommonCode one = commonCodeService.findById(new CommonCodeId(commonGroupService.findById(commonCodeOne[0]), commonCodeOne[1]));
+        user.setCommonCode(one);
         userService.save(user);
 
         return "redirect:/";

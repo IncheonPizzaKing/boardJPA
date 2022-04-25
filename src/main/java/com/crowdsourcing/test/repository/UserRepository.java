@@ -1,5 +1,6 @@
 package com.crowdsourcing.test.repository;
 
+import com.crowdsourcing.test.domain.CommonCode;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.domain.UserId;
 import org.springframework.data.domain.Page;
@@ -18,5 +19,5 @@ public interface UserRepository extends JpaRepository<User,UserId> {
      * ex) findByUsernameContaining == Select * from user where username like %search%
      */
     Page<User> findByUsernameContaining(String search, Pageable pageable);
-    Page<User> findByUsernameContainingAndRoleEquals(String search, String role, Pageable pageable);
+    Page<User> findByUsernameContainingAndCommonCodeEquals(String search, CommonCode commonCode, Pageable pageable);
 }

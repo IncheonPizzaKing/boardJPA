@@ -1,7 +1,11 @@
 package com.crowdsourcing.test.controller;
 
+import com.crowdsourcing.test.domain.CommonCode;
+import com.crowdsourcing.test.domain.CommonCodeId;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.domain.UserId;
+import com.crowdsourcing.test.service.CommonCodeService;
+import com.crowdsourcing.test.service.CommonGroupService;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -23,12 +27,15 @@ import java.util.Map;
 public class AdminController {
 
     private final UserService userService;
+    private final CommonGroupService commonGroupService;
+    private final CommonCodeService commonCodeService;
 
     /**
      * 관리자 페이지 접속시
      */
     @GetMapping("/admin")
-    public String list() {
+    public String list(Model model) {
+        model.addAttribute("commonCodeList", commonGroupService.findById("G002").getCommonCodeList());
         return "admin/adminList";
     }
 
@@ -37,16 +44,19 @@ public class AdminController {
      */
     @PostMapping("/admin")
     public String paging(@RequestParam Map<String, Object> param, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-        String search = param.get("search").toString() , role = param.get("types").toString();
+        String search = param.get("search").toString();
+        String types = param.get("types").toString();
         Page<User> user;
         if(!StringUtils.hasText(search)) {
             search = "";
         }
-        if(!StringUtils.hasText(role) || role.equals("none")) {
-            role = "";
+        if(!StringUtils.hasText(types) || types.equals("none")) {
+            types = "";
             user = userService.findByUsernameContaining(search, pageable);
         } else {
-            user = userService.findByUsernameContainingAndRoleEquals(search, role, pageable);
+            String[] common = types.split("_");
+            CommonCode commonCode = commonCodeService.findById(new CommonCodeId(commonGroupService.findById(common[0]), common[1]));
+            user = userService.findByUsernameContainingAndRoleEquals(search, commonCode, pageable);
         }
         int startPage = 1, endPage;
         int totalPages = user.getTotalPages();

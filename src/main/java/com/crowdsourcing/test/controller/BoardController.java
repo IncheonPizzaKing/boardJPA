@@ -3,7 +3,6 @@ package com.crowdsourcing.test.controller;
 import com.crowdsourcing.test.controller.form.BoardForm;
 import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.*;
-import com.crowdsourcing.test.repository.CommonGroupRepository;
 import com.crowdsourcing.test.service.BoardService;
 import com.crowdsourcing.test.service.CommonCodeService;
 import com.crowdsourcing.test.service.CommonGroupService;
@@ -87,7 +86,12 @@ public class BoardController {
      * 게시글 조회시
      */
     @GetMapping("/board")
-    public String list() {
+    public String list(Model model) {
+        model.addAttribute("commonCodeList", commonGroupService.findById("G001").getCommonCodeList());
+        List<CommonCode> common = commonGroupService.findById("G002").getCommonCodeList();
+        for(CommonCode i : common) {
+            System.out.println(i.getCodeNameKor());
+        }
         return "board/boardList";
     }
 
@@ -96,7 +100,6 @@ public class BoardController {
      */
     @PostMapping("/board")
     public String paging(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "board_id", direction = Sort.Direction.DESC) Pageable pageable) {
-        List<CommonCode> commonCodeList = commonGroupService.findById("G001").getCommonCodeList();
         BoardSearch boardSearch = new BoardSearch();
         if (param.get("types") != null) {
             boardSearch.setTypes(param.get("types").toString());
@@ -112,10 +115,7 @@ public class BoardController {
         } else {
             endPage = totalPages;
         }
-        System.out.println("#####################################################################################################################################################");
-        System.out.println(commonCodeList);
         model.addAttribute("board", boardList);
-        model.addAttribute("commonCodeList", commonCodeList);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 

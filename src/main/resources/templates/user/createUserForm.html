@@ -13,7 +13,7 @@
     <form role="form" method="post" th:object="${userForm}" th:action="@{/user/new} ">
         <div class="form-group">
             <label>email</label>
-            <input type="email" th:field="*{username}" class="form-control" th:class="${#fields.hasErrors('username')}? 'form-control fieldError' : 'form-control'">
+            <input type="email" th:field="*{username}" class="form-control" th:class="${#fields.hasErrors('username')}? 'form-control fieldError' : 'form-control'" required>
             <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Incorrect date</p>
         </div>
         <div class="form-group">
@@ -23,9 +23,8 @@
         </div>
         <div class="form-group">
             <label>auth</label>
-            <select th:field="*{role}" class="form-control">
-                <option value="USER">USER</option>
-                <option value="ADMIN,USER">ADMIN</option>
+            <select th:field="*{commonCodeId}" class="form-control">
+                <option th:each="list : ${userForm.commonCodeList}" th:if="${list.isUse == true}" th:value="${list.commonGroup + '_' + list.code}" th:text="${list.codeNameKor}">
             </select>
         </div>
         <input type="submit" value="회원가입" class="form-control btn btn-success">
