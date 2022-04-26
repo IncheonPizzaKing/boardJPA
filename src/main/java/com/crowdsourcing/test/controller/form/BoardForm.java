@@ -11,9 +11,7 @@ import java.util.List;
 @Setter
 public class BoardForm {
 
-    @NotEmpty
     private String commonCodeId;
-    @NotEmpty
     @NotEmpty(message = "제목은 필수 입력 값입니다")
     private String title;
     @NotEmpty

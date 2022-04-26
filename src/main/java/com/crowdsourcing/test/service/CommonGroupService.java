@@ -1,13 +1,12 @@
 package com.crowdsourcing.test.service;
 
-import com.crowdsourcing.test.domain.CommonCode;
-import com.crowdsourcing.test.domain.CommonCodeId;
 import com.crowdsourcing.test.domain.CommonGroup;
-import com.crowdsourcing.test.repository.CommonCodeRepository;
 import com.crowdsourcing.test.repository.CommonGroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -17,7 +16,7 @@ public class CommonGroupService {
     private final CommonGroupRepository commonGroupRepository;
 
     /**
-     * 사용자 저장, 삭제
+     * 공통코드 저장, 삭제
      */
     @Transactional
     public void save(CommonGroup commonGroup) {
@@ -29,12 +28,18 @@ public class CommonGroupService {
     }
 
     /**
-     * 사용자 한 명 검색(id)
+     * 공통코드 한 개 검색(id)
      * @return
      */
-    public CommonGroup findById(String id) {
-        return commonGroupRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    public CommonGroup findById(String groupCode) {
+        return commonGroupRepository.findById(groupCode).orElseThrow(IllegalArgumentException::new);
     }
 
-
+    /**
+     * 공통코드 전체 검색
+     * @return
+     */
+    public List<CommonGroup> findAll() {
+        return commonGroupRepository.findAll();
+    }
 }

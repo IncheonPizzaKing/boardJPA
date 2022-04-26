@@ -69,7 +69,7 @@ public class BoardController {
         }
         Board board = new Board();
         String[] commonCodeOne = boardForm.getCommonCodeId().split("_");
-        CommonCode one = commonCodeService.findById(new CommonCodeId(commonGroupService.findById(commonCodeOne[0]), commonCodeOne[1]));
+        CommonCode one = commonCodeService.findById(new CommonCodeId(commonCodeOne[0], commonCodeOne[1]));
         board.setCommonCode(one);
         board.setTitle(boardForm.getTitle());
         board.setContent(boardForm.getContent());

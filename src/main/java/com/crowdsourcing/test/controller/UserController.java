@@ -49,7 +49,7 @@ public class UserController {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         user.setPassword(encoder.encode(userForm.getPassword()));
         String[] commonCodeOne = userForm.getCommonCodeId().split("_");
-        CommonCode one = commonCodeService.findById(new CommonCodeId(commonGroupService.findById(commonCodeOne[0]), commonCodeOne[1]));
+        CommonCode one = commonCodeService.findById(new CommonCodeId(commonCodeOne[0], commonCodeOne[1]));
         user.setCommonCode(one);
         userService.save(user);
 

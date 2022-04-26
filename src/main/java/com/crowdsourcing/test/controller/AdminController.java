@@ -55,7 +55,7 @@ public class AdminController {
             user = userService.findByUsernameContaining(search, pageable);
         } else {
             String[] common = types.split("_");
-            CommonCode commonCode = commonCodeService.findById(new CommonCodeId(commonGroupService.findById(common[0]), common[1]));
+            CommonCode commonCode = commonCodeService.findById(new CommonCodeId(common[0],common[1]));
             user = userService.findByUsernameContainingAndRoleEquals(search, commonCode, pageable);
         }
         int startPage = 1, endPage;

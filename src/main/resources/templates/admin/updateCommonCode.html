@@ -14,27 +14,35 @@
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <form role="form" th:object="${form}" method="post">
         <div class="form-group">
-            <label th:for="contentType">분류</label>
-            <input type="text" th:field="*{commonCode.codeNameKor}" class="form-control" readonly>
+            <label th:for="commonGroup">그룹</label>
+            <input type="text" th:field="*{commonGroup}" class="form-control" readonly>
         </div>
         <div class="form-group">
-            <label th:for="title">제목</label>
-            <input type="text" th:field="*{title}" class="form-control"
-                   th:class="${#fields.hasErrors('title')}? 'form-control fieldError' : 'form-control'">
-            <p th:if="${#fields.hasErrors('title')}"
-               th:errors="*{title}">Incorrect date</p>
+            <label th:for="code">코드</label>
+            <input type="text" th:field="*{code}" class="form-control" readonly>
         </div>
         <div class="form-group">
-            <label th:for="author">작성자</label>
-            <input type="text" th:field="*{author}" class="form-control" readonly>
+            <label th:for="codeName">코드 이름</label>
+            <input type="text" th:field="*{codeName}" class="form-control" readonly>
         </div>
         <div class="form-group">
-            <label th:for="content">내용</label>
-            <textarea rows="5" th:field="*{content}" class="form-control"></textarea>
+            <label th:for="codeNameKor">코드 이름(한국어)</label>
+            <input type="text" th:field="*{codeNameKor}" class="form-control" readonly>
         </div>
-        <div th:if="${form.author.equals(#authentication.name)}" class="form-group">
+        <div class="form-group">
+            <label th:for="use">사용 여부</label>
+            <select th:field="*{use}" class="form-control">
+                <option th:text="${'사용'}" th:value="1" />
+                <option th:text="${'사용x'}" th:value="0" />
+            </select>
+        </div>
+        <div class="form-group">
+            <label th:for="description">설명</label>
+            <textarea rows="5" th:field="*{description}" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
             <button type="submit" class="btn btn-success">수정</button>
-            <a th:href="@{/board/{boardId}/delete (boardId=${boardId})}" class="btn btn-danger">삭제</a>
+            <a th:href="@{/commonCode/{code}/delete (code=${form.commonGroup.groupCode + '_' + form.code})}" class="btn btn-danger">삭제</a>
         </div>
     </form>
     <br/>

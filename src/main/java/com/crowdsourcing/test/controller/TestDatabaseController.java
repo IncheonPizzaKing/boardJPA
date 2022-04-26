@@ -24,29 +24,29 @@ public class TestDatabaseController {
      * 테스트 데이터 주입
      */
     public void create() {
-        CommonGroup commonGroup = createCommonGroup("001", "board_select", "게시판_선택");
+        CommonGroup commonGroup = createCommonGroup("001", "board_select", "게시판_선택", true);
         createCommonCode("001", "free", "자유", true, commonGroup);
         createCommonCode("002", "music", "음악", true, commonGroup);
         createCommonCode("003", "movie", "영화", true, commonGroup);
         createCommonCode("004", "sports", "스포츠", true, commonGroup);
         commonGroupService.save(commonGroup);
 
-        CommonGroup commonGroup2 = createCommonGroup("002", "user_role", "사용자_권한");
+        CommonGroup commonGroup2 = createCommonGroup("002", "user_role", "사용자_권한", true);
         createCommonCode2("001", "USER", "사용자", true, commonGroup2);
         createCommonCode2("002", "ADMIN,USER", "관리자", true, commonGroup2);
         commonGroupService.save(commonGroup2);
         for(int i = 0; i < 100; i++) {
-            createTestDB("user"+i, "user", commonCodeService.findById(new CommonCodeId(commonGroup2, "U001")));
+            createTestDB("user"+i, "user", commonCodeService.findById(new CommonCodeId(commonGroup2.getGroupCode(), "U001")));
         }
-        createTestDB("admin", "admin", commonCodeService.findById(new CommonCodeId(commonGroup2, "U002")));
+        createTestDB("admin", "admin", commonCodeService.findById(new CommonCodeId(commonGroup2.getGroupCode(), "U002")));
 
 
         for(int i = 0; i < 100; i++) {
-            createTestDB2("free", "test"+i, "user"+i, "test"+i, commonCodeService.findById(new CommonCodeId(commonGroup, "B001")));
+            createTestDB2("free", "test"+i, "user"+i, "test"+i, commonCodeService.findById(new CommonCodeId(commonGroup.getGroupCode(), "B001")));
         }
-        createTestDB2("sports", "test2", "user0", "test2" ,commonCodeService.findById(new CommonCodeId(commonGroup, "B002")));
-        createTestDB2("movie", "test3", "admin", "test3" ,commonCodeService.findById(new CommonCodeId(commonGroup, "B003")));
-        createTestDB2("music", "test4", "admin", "test4" ,commonCodeService.findById(new CommonCodeId(commonGroup, "B004")));
+        createTestDB2("sports", "test2", "user0", "test2" ,commonCodeService.findById(new CommonCodeId(commonGroup.getGroupCode(), "B002")));
+        createTestDB2("movie", "test3", "admin", "test3" ,commonCodeService.findById(new CommonCodeId(commonGroup.getGroupCode(), "B003")));
+        createTestDB2("music", "test4", "admin", "test4" ,commonCodeService.findById(new CommonCodeId(commonGroup.getGroupCode(), "B004")));
     }
 
     /**
@@ -75,27 +75,32 @@ public class TestDatabaseController {
         boardService.write(board, author);
     }
 
-    public CommonGroup createCommonGroup(String groupCode, String groupName, String groupNameKor) {
+    public CommonGroup createCommonGroup(String groupCode, String groupName, String groupNameKor, Boolean isUse) {
         CommonGroup commonGroup = new CommonGroup();
         commonGroup.setGroupCode("G" + groupCode);
         commonGroup.setGroupName(groupName);
         commonGroup.setGroupNameKor(groupNameKor);
+        commonGroup.setUse(isUse);
         return commonGroup;
     }
     public void createCommonCode(String code, String codeName, String codeNameKor, Boolean isUse, CommonGroup commonGroup) {
-        CommonCode commonCode = new CommonCode();
-        commonCode.setCode("B" + code);
-        commonCode.setCodeName(codeName);
-        commonCode.setCodeNameKor(codeNameKor);
-        commonCode.setUse(isUse);
+        CommonCode commonCode = CommonCode.builder()
+                .code("B" + code)
+                .codeName(codeName)
+                .codeNameKor(codeNameKor)
+                .isUse(isUse)
+                .groupCode(commonGroup.getGroupCode())
+                .build();
         commonCode.addCommonGroup(commonGroup);
     }
     public void createCommonCode2(String code, String codeName, String codeNameKor, Boolean isUse, CommonGroup commonGroup) {
-        CommonCode commonCode = new CommonCode();
-        commonCode.setCode("U" + code);
-        commonCode.setCodeName(codeName);
-        commonCode.setCodeNameKor(codeNameKor);
-        commonCode.setUse(isUse);
+        CommonCode commonCode = CommonCode.builder()
+                .code("U" + code)
+                .codeName(codeName)
+                .codeNameKor(codeNameKor)
+                .isUse(isUse)
+                .groupCode(commonGroup.getGroupCode())
+                .build();
         commonCode.addCommonGroup(commonGroup);
     }
 }

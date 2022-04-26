@@ -10,18 +10,16 @@ import java.io.Serializable;
 /**
  * User 엔티티 IdClass
  */
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 public class CommonCodeId implements Serializable {
 
     @EqualsAndHashCode.Include
     @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "groupCode")
-    private CommonGroup commonGroup;
+    private String groupCode;
 
     @EqualsAndHashCode.Include
-    @Id @Column(columnDefinition = "char(4)")
+    @Id
     private String code;
 }
