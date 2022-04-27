@@ -18,6 +18,7 @@ public class CommonCode {
     @Column(nullable = false)
     private String codeName;
 
+    @Column(nullable = false)
     private String codeNameKor;
     private String description;
 
