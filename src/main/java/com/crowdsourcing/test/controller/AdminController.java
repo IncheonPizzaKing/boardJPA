@@ -35,7 +35,8 @@ public class AdminController {
      */
     @GetMapping("/admin")
     public String list(Model model) {
-        model.addAttribute("commonCodeList", commonGroupService.findById("G002").getCommonCodeList());
+        model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G002"));
+        model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "admin/adminList";
     }
 
@@ -69,7 +70,7 @@ public class AdminController {
         model.addAttribute("endPage", endPage);
         model.addAttribute("admin", user);
 
-        return "admin/adminList :: #adminList";
+        return "admin/adminList :: #viewList";
     }
 
     /**

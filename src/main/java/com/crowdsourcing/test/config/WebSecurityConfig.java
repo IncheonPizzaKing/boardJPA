@@ -19,7 +19,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/resources/**", "/error");
+        web.ignoring().antMatchers("/css/**", "/templates/js/**", "/img/**", "/favicon.ico", "/resources/**", "/error");
     }
 
     @Override
@@ -29,7 +29,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers("/login", "/user/new").anonymous()
                 .antMatchers("/download/**", "/board/**").hasAuthority("USER")
-                .antMatchers("/admin/**", "/file/**", "/commonCode/**").hasAuthority("ADMIN")
+                .antMatchers("/admin/**", "/file/**", "/commonCode/**", "/commonGroup/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()

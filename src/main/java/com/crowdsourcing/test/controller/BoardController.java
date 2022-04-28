@@ -40,7 +40,6 @@ public class BoardController {
 
     private final BoardService boardService;
     private final FileMasterService fileMasterService;
-    private final CommonGroupService commonGroupService;
     private final CommonCodeService commonCodeService;
 
     /**
@@ -53,7 +52,7 @@ public class BoardController {
         String username = ((UserDetails) principal).getUsername();
         BoardForm board = new BoardForm();
         board.setAuthor(username);
-        board.setCommonCodeList(commonGroupService.findById("G001").getCommonCodeList());
+        board.setCommonCodeList(commonCodeService.findByGroupCode("G001"));
         model.addAttribute("boardForm", board);
         return "board/createBoardForm";
     }
@@ -87,11 +86,8 @@ public class BoardController {
      */
     @GetMapping("/board")
     public String list(Model model) {
-        model.addAttribute("commonCodeList", commonGroupService.findById("G001").getCommonCodeList());
-        List<CommonCode> common = commonGroupService.findById("G002").getCommonCodeList();
-        for(CommonCode i : common) {
-            System.out.println(i.getCodeNameKor());
-        }
+        model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G001"));
+        model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "board/boardList";
     }
 
@@ -119,7 +115,7 @@ public class BoardController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-        return "board/boardList :: #boardList";
+        return "board/boardList :: #viewList";
     }
     /**
      * 첨부파일 다운로드 버튼 클릭시

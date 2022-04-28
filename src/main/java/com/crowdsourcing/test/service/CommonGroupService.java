@@ -1,10 +1,15 @@
 package com.crowdsourcing.test.service;
 
+import com.crowdsourcing.test.controller.form.BoardSearch;
+import com.crowdsourcing.test.controller.form.CommonGroupForm;
 import com.crowdsourcing.test.domain.CommonGroup;
 import com.crowdsourcing.test.repository.CommonGroupRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -19,12 +24,34 @@ public class CommonGroupService {
      * 공통코드 저장, 삭제
      */
     @Transactional
-    public void save(CommonGroup commonGroup) {
+    public void save(CommonGroupForm commonGroupForm) {
+        CommonGroup commonGroup = CommonGroup.builder()
+                .groupCode(commonGroupForm.getGroupCode())
+                .groupName(commonGroupForm.getGroupName())
+                .groupNameKor(commonGroupForm.getGroupNameKor())
+                .description(commonGroupForm.getDescription())
+                .isUse(commonGroupForm.getIsUse())
+                .build();
         commonGroupRepository.save(commonGroup);
     }
     @Transactional
-    public void remove(CommonGroup commonGroup) {
-        commonGroupRepository.delete(commonGroup);
+    public void remove(String groupCode) {
+        commonGroupRepository.delete(findById(groupCode));
+    }
+
+    @Transactional
+    public void update(String code, Boolean isUse, String description) {
+        CommonGroup commonGroup = findById(code);
+        commonGroup.setUse(isUse);
+        commonGroup.setDescription(description);
+    }
+
+    public Page<CommonGroup> findCommonGroup(BoardSearch commonGroupSearch, Pageable pageable) {
+        String commonGroupNameKor = commonGroupSearch.getSearch();
+        if(!StringUtils.hasText(commonGroupNameKor)) {
+            commonGroupNameKor = "";
+        }
+        return commonGroupRepository.findByGroupNameKorContaining(commonGroupNameKor, pageable);
     }
 
     /**

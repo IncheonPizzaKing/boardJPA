@@ -29,15 +29,27 @@ public class CustomFileRepositoryImpl implements CustomFileRepository {
      */
     @Override
     public Page<File> findFile(BoardSearch fileSearch, Pageable pageable) {
+        String types = fileSearch.getTypes();
         String search = fileSearch.getSearch();
         List<File> list = query.selectFrom(file)
-                .where(eqSearch(search))
+                .where(eqTypes(types),
+                        eqSearch(search))
                 .orderBy(file.id.desc())
                 .fetch();
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), list.size());
         Page<File> page = new PageImpl<File>(list.subList(start, end), pageable, list.size());
         return page;
+    }
+
+    private BooleanExpression eqTypes(String types) {
+        if(!StringUtils.hasText(types)) {
+            return null;
+        }
+        if(types.equals("none")) {
+            return null;
+        }
+        return file.useFile.eq(types);
     }
 
     private BooleanExpression eqSearch(String search) {

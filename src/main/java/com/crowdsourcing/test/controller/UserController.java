@@ -31,7 +31,7 @@ public class UserController {
     @GetMapping("/user/new")
     public String createUserForm(Model model) {
         UserForm user = new UserForm();
-        user.setCommonCodeList(commonGroupService.findById("G002").getCommonCodeList());
+        user.setCommonCodeList(commonCodeService.findByGroupCode("G002"));
         model.addAttribute("userForm", user);
         return "user/createUserForm";
     }

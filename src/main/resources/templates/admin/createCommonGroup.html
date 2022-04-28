@@ -1,0 +1,53 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<style>
+ .fieldError {
+ border-color: #bd2130;
+ }
+
+</style>
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <form role="form" action="/commonGroup/new" th:object="${commonGroupForm}" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label th:for="groupCode">그룹 코드</label>
+            <input type="text" th:field="*{groupCode}" class="form-control" placeholder="코드를 입력하세요"
+                   th:class="${#fields.hasErrors('groupCode')}? 'form-control fieldError' : 'form-control'">
+            <p th:if="${#fields.hasErrors('groupCode')}"
+               th:errors="*{groupCode}">Incorrect date</p>
+        </div>
+        <div class="form-group">
+            <label th:for="groupName">그룹 이름</label>
+            <input type="text" th:field="*{groupName}" class="form-control" placeholder="그룹 이름을 입력하세요"
+                   th:class="${#fields.hasErrors('groupName')}? 'form-control fieldError' : 'form-control'">
+            <p th:if="${#fields.hasErrors('groupName')}"
+               th:errors="*{groupName}">Incorrect date</p>
+        </div>
+        <div class="form-group">
+            <label th:for="groupNameKor">그룹 이름(한국어)</label>
+            <input type="text" th:field="*{groupNameKor}" class="form-control"
+                   th:class="${#fields.hasErrors('groupNameKor')}? 'form-control fieldError' : 'form-control'">
+            <p th:if="${#fields.hasErrors('groupNameKor')}"
+               th:errors="*{groupNameKor}">Incorrect date</p>
+        </div>
+        <div class="form-group">
+            <label th:for="isUse">사용 여부</label>
+            <select th:field="*{isUse}" class="form-control">
+                <option th:text="${'사용'}" th:value="1" />
+                <option th:text="${'사용x'}" th:value="0" />
+            </select>
+        </div>
+        <div class="form-group">
+            <label th:for="description">설명</label>
+            <textarea rows="5" th:field="*{description}" th:class="form-control"
+                      placeholder="설명을 입력하세요"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success">Submit</button>
+    </form>
+    <br/>
+    <div th:replace="fragments/footer :: footer"/>
+</div> <!-- /container -->
+</body>
+</html>

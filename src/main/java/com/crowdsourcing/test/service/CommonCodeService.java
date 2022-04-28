@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -32,13 +33,13 @@ public class CommonCodeService {
         CommonCode commonCode = CommonCode.builder()
                 .code(commonCodeForm.getCode())
                 .groupCode(commonCodeForm.getCommonGroupCode())
+                .commonGroup(commonGroupService.findById(commonCodeForm.getCommonGroupCode()))
                 .codeName(commonCodeForm.getCodeName())
                 .codeNameKor(commonCodeForm.getCodeNameKor())
                 .description(commonCodeForm.getDescription())
                 .isUse(commonCodeForm.getUse())
                 .build();
-        CommonGroup commonGroup = commonGroupService.findById(commonCodeForm.getCommonGroupCode());
-        commonCode.addCommonGroup(commonGroup);
+        commonCodeRepository.save(commonCode);
     }
 
     @Transactional
@@ -61,6 +62,10 @@ public class CommonCodeService {
      */
     public CommonCode findById(CommonCodeId id) {
         return commonCodeRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+    }
+
+    public List<CommonCode> findByGroupCode(String groupCode) {
+        return commonCodeRepository.findByGroupCodeEquals(groupCode);
     }
 
     public Page<CommonCode> findCommonCode(BoardSearch commonCodeSearch, Pageable pageable) {

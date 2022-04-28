@@ -1,7 +1,10 @@
 package com.crowdsourcing.test.controller;
 
 import com.crowdsourcing.test.controller.form.BoardSearch;
+import com.crowdsourcing.test.domain.CommonCode;
 import com.crowdsourcing.test.domain.File;
+import com.crowdsourcing.test.service.CommonCodeService;
+import com.crowdsourcing.test.service.CommonGroupService;
 import com.crowdsourcing.test.service.FileService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,12 +35,15 @@ import java.util.Map;
 public class FileController {
 
     private final FileService fileService;
+    private final CommonCodeService commonCodeService;
 
     /**
      * 관리자 페이지 접속시
      */
     @GetMapping("/file")
-    public String list() {
+    public String list(Model model) {
+        model.addAttribute("fileUseList", commonCodeService.findByGroupCode("G003"));
+        model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "admin/fileList";
     }
 
@@ -45,12 +51,16 @@ public class FileController {
      * 관리자 페이지 접속시
      */
     @PostMapping("/file")
-    public String paging(@RequestParam Map<String, Object> param, @PageableDefault(size = 10, sort = "file_id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
+    public String paging(@RequestParam Map<String, Object> param, @PageableDefault(sort = "file_id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         BoardSearch fileSearch = new BoardSearch();
+        if (param.get("types") != null) {
+            fileSearch.setTypes(param.get("types").toString());
+        }
         if (param.get("search") != null) {
             fileSearch.setSearch(param.get("search").toString());
         }
         Page<File> file = fileService.findFile(fileSearch, pageable);
+
         int startPage = 1, endPage;
         int totalPages = file.getTotalPages();
         if(totalPages == 0) {
@@ -61,7 +71,7 @@ public class FileController {
         model.addAttribute("file", file);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
-        return "admin/fileList :: #fileList";
+        return "admin/fileList :: #viewList";
     }
 
     @GetMapping("/download/{file}")

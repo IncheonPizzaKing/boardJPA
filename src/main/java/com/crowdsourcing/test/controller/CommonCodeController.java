@@ -56,6 +56,7 @@ public class CommonCodeController {
     @GetMapping("/commonCode")
     public String list(Model model) {
         model.addAttribute("commonGroupList", commonGroupService.findAll());
+        model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "admin/commonCodeList";
     }
 
@@ -83,7 +84,7 @@ public class CommonCodeController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-        return "admin/commonCodeList :: #commonCodeList";
+        return "admin/commonCodeList :: #viewList";
     }
 
     /**

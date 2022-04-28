@@ -25,7 +25,7 @@ public class User implements UserDetails {
 
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "codeGroup"),
+            @JoinColumn(name = "groupCode"),
             @JoinColumn(name = "code")
     })
     private CommonCode commonCode;
