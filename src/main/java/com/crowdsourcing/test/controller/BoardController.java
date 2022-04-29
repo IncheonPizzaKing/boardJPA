@@ -117,6 +117,7 @@ public class BoardController {
 
         return "board/boardList :: #viewList";
     }
+
     /**
      * 첨부파일 다운로드 버튼 클릭시
      */

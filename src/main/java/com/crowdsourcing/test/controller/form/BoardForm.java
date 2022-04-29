@@ -19,5 +19,4 @@ public class BoardForm {
     private String content;
     private List<CommonCode> commonCodeList;
     private CommonCode commonCode;
-
 }

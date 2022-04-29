@@ -13,6 +13,7 @@ public interface CommonCodeRepository extends JpaRepository<CommonCode, CommonCo
 
     /**
      * JPA Repository 내장 메소드
+     * ex) findByGroupCodeEquals(String groupCode) -> SELECT * FROM COMMON_CODE WHERE GROUP_CODE == GROUP_CODE;
      */
     List<CommonCode> findByGroupCodeEquals(String groupCode);
     Page<CommonCode> findByCodeNameKorContaining(String commonCodeNameKor, Pageable pageable);

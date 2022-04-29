@@ -9,12 +9,6 @@
             </a>
         </div>
         <ul class="nav d-flex nav-right">
-            <li sec:authorize="isAuthenticated()" class="nav-item">
-                <div>
-                    <span sec:authentication="name"></span>
-                    <span th:text="${'님 환영합니다.'}"></span>
-                </div>
-            </li>
             <li class="nav-item">
                 <a class="btn btn-outline-secondary" href="/board/new">게시글 등록</a>
             </li>
@@ -42,6 +36,11 @@
                    class="btn btn-outline-danger">로그아웃</a>
             </li>
         </ul>
+        <div sec:authorize="isAuthenticated()" class="nav-item">
+            <div>
+                <span sec:authentication="name"></span>
+            </div>
+        </div>
     </div>
 </nav>
 </body>

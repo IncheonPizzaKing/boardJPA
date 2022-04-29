@@ -2,7 +2,6 @@ package com.crowdsourcing.test.service;
 
 import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.File;
-import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -17,6 +16,11 @@ public class FileService {
 
     private final FileRepository fileRepository;
 
+    /**
+     * 파일 검색(id)
+     * @param id
+     * @return
+     */
     public File findById(Long id) {
         return fileRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
@@ -29,6 +33,10 @@ public class FileService {
         return fileRepository.findFile(fileSearch, pageable);
     }
 
+    /**
+     * 파일 삭제
+     * @param file
+     */
     @Transactional
     public void deleteFile(File file) {
         fileRepository.delete(file);

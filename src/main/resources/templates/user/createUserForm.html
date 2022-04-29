@@ -9,7 +9,7 @@
 </style>
 <body>
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <nav th:replace="fragments/bodyHeader :: bodyHeader"/>
     <form role="form" method="post" th:object="${userForm}" th:action="@{/user/new} ">
         <div class="form-group">
             <label>email</label>

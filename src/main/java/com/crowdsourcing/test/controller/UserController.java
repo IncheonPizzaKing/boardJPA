@@ -22,7 +22,6 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
-    private final CommonGroupService commonGroupService;
     private final CommonCodeService commonCodeService;
 
     /**

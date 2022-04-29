@@ -21,7 +21,7 @@ public class CommonGroupService {
     private final CommonGroupRepository commonGroupRepository;
 
     /**
-     * 공통코드 저장, 삭제
+     * 공통 그룹 저장
      */
     @Transactional
     public void save(CommonGroupForm commonGroupForm) {
@@ -34,11 +34,22 @@ public class CommonGroupService {
                 .build();
         commonGroupRepository.save(commonGroup);
     }
+
+    /**
+     * 공통 그룹 삭제
+     * @param groupCode
+     */
     @Transactional
     public void remove(String groupCode) {
         commonGroupRepository.delete(findById(groupCode));
     }
 
+    /**
+     * 공통 그룹 수정
+     * @param code
+     * @param isUse
+     * @param description
+     */
     @Transactional
     public void update(String code, Boolean isUse, String description) {
         CommonGroup commonGroup = findById(code);
@@ -46,6 +57,12 @@ public class CommonGroupService {
         commonGroup.setDescription(description);
     }
 
+    /**
+     * 조건에 맞는 공통 그룹 탐색
+     * @param commonGroupSearch
+     * @param pageable
+     * @return
+     */
     public Page<CommonGroup> findCommonGroup(BoardSearch commonGroupSearch, Pageable pageable) {
         String commonGroupNameKor = commonGroupSearch.getSearch();
         if(!StringUtils.hasText(commonGroupNameKor)) {
@@ -55,7 +72,7 @@ public class CommonGroupService {
     }
 
     /**
-     * 공통코드 한 개 검색(id)
+     * 공통 그룹 한 개 검색(id)
      * @return
      */
     public CommonGroup findById(String groupCode) {
@@ -63,7 +80,7 @@ public class CommonGroupService {
     }
 
     /**
-     * 공통코드 전체 검색
+     * 공통 그룹 전체 검색
      * @return
      */
     public List<CommonGroup> findAll() {

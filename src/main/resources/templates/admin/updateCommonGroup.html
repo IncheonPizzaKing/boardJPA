@@ -11,7 +11,7 @@
 </style>
 <body>
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <nav th:replace="fragments/bodyHeader :: bodyHeader"/>
     <form role="form" th:object="${form}" method="post">
         <div class="form-group">
             <label th:for="commonGroup">그룹 코드</label>

@@ -26,7 +26,8 @@ public class CommonCodeService {
     private final CommonCodeRepository commonCodeRepository;
 
     /**
-     * 사용자 저장, 삭제
+     * 공통 코드 저장
+     * @param commonCodeForm
      */
     @Transactional
     public void save(CommonCodeForm commonCodeForm) {
@@ -42,12 +43,23 @@ public class CommonCodeService {
         commonCodeRepository.save(commonCode);
     }
 
+    /**
+     * 공통 코드 삭제
+     * @param code
+     */
     @Transactional
     public void remove(String code) {
         String[] codes = code.split("_");
         CommonCode commonCode = findById(new CommonCodeId(codes[0], codes[1]));
         commonCodeRepository.delete(commonCode);
     }
+
+    /**
+     * 공통 코드 정보 수정
+     * @param code
+     * @param isUse
+     * @param description
+     */
     @Transactional
     public void update(String code, Boolean isUse, String description) {
         String[] codes = code.split("_");
@@ -57,17 +69,29 @@ public class CommonCodeService {
     }
 
     /**
-     * 사용자 한 명 검색(id)
+     * 공통 코드 검색(id)
+     * @param id
      * @return
      */
     public CommonCode findById(CommonCodeId id) {
         return commonCodeRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
+    /**
+     * 공통 코드 검색(groupCode)
+     * @param groupCode
+     * @return
+     */
     public List<CommonCode> findByGroupCode(String groupCode) {
         return commonCodeRepository.findByGroupCodeEquals(groupCode);
     }
 
+    /**
+     * 조건에 맞는 공통 코드 탐색
+     * @param commonCodeSearch
+     * @param pageable
+     * @return
+     */
     public Page<CommonCode> findCommonCode(BoardSearch commonCodeSearch, Pageable pageable) {
         String commonCodeNameKor = commonCodeSearch.getSearch();
         String types = commonCodeSearch.getTypes();

@@ -1,15 +1,10 @@
 package com.crowdsourcing.test.controller;
 
 import com.crowdsourcing.test.controller.form.BoardSearch;
-import com.crowdsourcing.test.domain.CommonCode;
 import com.crowdsourcing.test.domain.File;
 import com.crowdsourcing.test.service.CommonCodeService;
-import com.crowdsourcing.test.service.CommonGroupService;
 import com.crowdsourcing.test.service.FileService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONArray;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -26,7 +21,6 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +32,7 @@ public class FileController {
     private final CommonCodeService commonCodeService;
 
     /**
-     * 관리자 페이지 접속시
+     * 파일 조회 페이지 접속시
      */
     @GetMapping("/file")
     public String list(Model model) {
@@ -48,7 +42,7 @@ public class FileController {
     }
 
     /**
-     * 관리자 페이지 접속시
+     * 파일 조회 페이지 접속시
      */
     @PostMapping("/file")
     public String paging(@RequestParam Map<String, Object> param, @PageableDefault(sort = "file_id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
@@ -74,6 +68,9 @@ public class FileController {
         return "admin/fileList :: #viewList";
     }
 
+    /**
+     * 파일 다운로드 버튼 클릭시
+     */
     @GetMapping("/download/{file}")
     public ResponseEntity<Resource> downloadFile(@PathVariable("file") Long file) throws Exception {
         com.crowdsourcing.test.domain.File fileDto = fileService.findById(file);

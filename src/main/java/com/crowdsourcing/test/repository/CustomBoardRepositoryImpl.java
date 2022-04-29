@@ -25,6 +25,7 @@ public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 
     /**
      * 검색 조건에 만족하는 모든 게시글 조회
+     * querydsl 사용 -> 쿼리를 자바 코드로 작성할 수 있게 도와주는 기술
      */
     @Override
     public Page<Board> findAll(BoardSearch boardSearch, Pageable pageable) {

@@ -1,10 +1,7 @@
 package com.crowdsourcing.test.controller;
 
 import com.crowdsourcing.test.controller.form.BoardSearch;
-import com.crowdsourcing.test.controller.form.CommonCodeForm;
 import com.crowdsourcing.test.controller.form.CommonGroupForm;
-import com.crowdsourcing.test.domain.CommonCode;
-import com.crowdsourcing.test.domain.CommonCodeId;
 import com.crowdsourcing.test.domain.CommonGroup;
 import com.crowdsourcing.test.service.CommonCodeService;
 import com.crowdsourcing.test.service.CommonGroupService;
@@ -28,7 +25,7 @@ public class CommonGroupController {
     private final CommonGroupService commonGroupService;
 
     /**
-     * 공통코드 작성 페이지 접속시
+     * 공통그룹 작성 페이지 접속시
      */
     @GetMapping("/commonGroup/new")
     public String createForm(Model model) {
@@ -38,7 +35,7 @@ public class CommonGroupController {
     }
 
     /**
-     * 공통코드 작성 버튼 클릭시
+     * 공통그룹 작성 버튼 클릭시
      */
     @PostMapping("/commonGroup/new")
     public String create(@ModelAttribute("commonGroupForm") CommonGroupForm commonGroupForm, BindingResult result) throws Exception {
@@ -51,7 +48,7 @@ public class CommonGroupController {
     }
 
     /**
-     * 공통코드 조회시
+     * 공통그룹 조회시
      */
     @GetMapping("/commonGroup")
     public String list(Model model) {
@@ -60,7 +57,7 @@ public class CommonGroupController {
     }
 
     /**
-     * 공통코드 검색시
+     * 공통그룹 검색시
      */
     @PostMapping("/commonGroup")
     public String paging(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "groupCode", direction = Sort.Direction.DESC) Pageable pageable) {
@@ -84,7 +81,7 @@ public class CommonGroupController {
     }
 
     /**
-     * 공통코드 수정페이지 접속시
+     * 공통그룹 수정페이지 접속시
      */
     @GetMapping("/commonGroup/{code}/update")
     public String updateCommonGroupForm(@PathVariable("code") String code, Model model) {
@@ -102,7 +99,7 @@ public class CommonGroupController {
 
 
     /**
-     * 공통코드 수정 버튼 클릭시
+     * 공통그룹 수정 버튼 클릭시
      */
     @PostMapping("/commonGroup/{code}/update")
     public String updateCommonGroup(@ModelAttribute("form") CommonGroupForm form, @PathVariable String code) {
@@ -112,7 +109,7 @@ public class CommonGroupController {
 
 
     /**
-     * 공통코드 삭제 버튼 클릭시
+     * 공통그룹 삭제 버튼 클릭시
      */
     @GetMapping("/commonGroup/{code}/delete")
     public String deleteCommonGroup(@PathVariable String code) {
