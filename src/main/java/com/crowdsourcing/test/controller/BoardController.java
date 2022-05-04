@@ -5,7 +5,6 @@ import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.*;
 import com.crowdsourcing.test.service.BoardService;
 import com.crowdsourcing.test.service.CommonCodeService;
-import com.crowdsourcing.test.service.CommonGroupService;
 import com.crowdsourcing.test.service.FileMasterService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
@@ -54,7 +53,7 @@ public class BoardController {
         board.setAuthor(username);
         board.setCommonCodeList(commonCodeService.findByGroupCode("G001"));
         model.addAttribute("boardForm", board);
-        return "board/createBoardForm";
+        return "board/createBoardForm :: #modalForm";
     }
 
     /**
@@ -148,7 +147,7 @@ public class BoardController {
         form.setContent(board.getContent());
 
         model.addAttribute("form", form);
-        return "board/updateBoardForm";
+        return "board/updateBoardForm :: #modalForm";
     }
 
 

@@ -10,7 +10,7 @@
 <body>
 <div class="container">
     <nav th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <form role="form" action="/board/new" th:object="${boardForm}" method="post" enctype="multipart/form-data">
+    <form role="form" action="/board/new" th:object="${boardForm}" method="post" enctype="multipart/form-data" id="modalForm">
         <div class="form-group">
             <label th:for="commonCode">분류</label>
             <select th:field="*{commonCodeId}" class="form-control">
@@ -20,7 +20,7 @@
         <div class="form-group">
             <label th:for="title">제목</label>
             <input type="text" th:field="*{title}" class="form-control" placeholder="제목을 입력하세요"
-                   th:class="${#fields.hasErrors('title')}? 'form-control fieldError' : 'form-control'">
+                   th:class="${#fields.hasErrors('title')}? 'form-control fieldError' : 'form-control'" required>
             <p th:if="${#fields.hasErrors('title')}"
                th:errors="*{title}">Incorrect date</p>
         </div>

@@ -5,26 +5,28 @@
  .fieldError {
  border-color: #bd2130;
  }
-
 </style>
 <body>
 <div class="container">
     <nav th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <form role="form" method="post" th:object="${userForm}" th:action="@{/user/new} ">
+    <form id="modalForm" role="form" method="post" th:object="${userForm}" th:action="@{/user/new}">
         <div class="form-group">
             <label>email</label>
-            <input type="email" th:field="*{username}" class="form-control" th:class="${#fields.hasErrors('username')}? 'form-control fieldError' : 'form-control'" required>
+            <input type="email" th:field="*{username}" class="form-control"
+                   th:class="${#fields.hasErrors('username')}? 'form-control fieldError' : 'form-control'" required>
             <p th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Incorrect date</p>
         </div>
         <div class="form-group">
             <label>password</label>
-            <input type="password" th:field="*{password}" class="form-control" th:class="${#fields.hasErrors('password')}? 'form-control fieldError' : 'form-control'">
+            <input type="password" th:field="*{password}" class="form-control"
+                   th:class="${#fields.hasErrors('password')}? 'form-control fieldError' : 'form-control'" required>
             <p th:if="${#fields.hasErrors('password')}" th:errors="*{password}">Incorrect date</p>
         </div>
         <div class="form-group">
             <label>auth</label>
             <select th:field="*{commonCodeId}" class="form-control">
-                <option th:each="list : ${userForm.commonCodeList}" th:if="${list.isUse == true}" th:value="${list.commonGroup + '_' + list.code}" th:text="${list.codeNameKor}">
+                <option th:each="list : ${userForm.commonCodeList}" th:if="${list.isUse == true}"
+                        th:value="${list.commonGroup + '_' + list.code}" th:text="${list.codeNameKor}">
             </select>
         </div>
         <input type="submit" value="회원가입" class="form-control btn btn-success">

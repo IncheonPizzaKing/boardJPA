@@ -1,10 +1,8 @@
-<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
-<body>
 <div class="container">
     <input type="hidden" id="address" name="address" value="commonCode">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <nav th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div>
         <select id="types" name="types" class="form-control">
             <option value="none">전체</option>
@@ -31,8 +29,7 @@
             </thead>
             <tbody>
             <tr th:each="commonCode : ${commonCode}">
-                <td><a th:href="@{/commonCode/{code}/update (code=${commonCode.commonGroup + '_' +commonCode.code})}"
-                       th:text="${commonCode.code}"></a></td>
+                <td><input type="button" th:onclick="|create('@{commonCode/{code}/update (code=${commonCode.commonGroup + '_' +commonCode.code})}', '공통코드 수정')|" th:value="${commonCode.code}" /></td>
                 <td th:text="${commonCode.commonGroup.groupNameKor}"></td>
                 <td th:text="${commonCode.codeNameKor}"></td>
                 <td th:text="${commonCode.codeName}"></td>
@@ -44,9 +41,7 @@
         <p th:if="${commonCode != null}" th:text="${commonCode.pageable.pageNumber}"></p>
     </div>
 </div>
-</body>
 <div th:replace="fragments/footer :: footer"/>
-<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 <script src="/js/script.js"></script>
 <script>
     $(function() {

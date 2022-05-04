@@ -1,10 +1,8 @@
-<!DOCTYPE HTML>
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
-<body>
 <div class="container">
     <input type="hidden" id="address" name="address" value="commonGroup">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <nav th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div>
         <input type="hidden" id="types" name="types" value="hi" />
         <input type="text" id="search" name="search" class="form-control"
@@ -27,8 +25,7 @@
             </thead>
             <tbody>
             <tr th:each="commonGroup : ${commonGroup}">
-                <td><a th:href="@{/commonGroup/{code}/update (code=${commonGroup.groupCode})}"
-                       th:text="${commonGroup.groupCode}"></a></td>
+                <td><input type="button" th:onclick="|create('@{commonGroup/{code}/update (code=${commonGroup.groupCode})}', '공통그룹 수정')|" th:value="${commonGroup.groupCode}" /></td>
                 <td th:text="${commonGroup.groupName}"></td>
                 <td th:text="${commonGroup.groupNameKor}"></td>
                 <td th:text="${commonGroup.isUse}"></td>
@@ -39,9 +36,7 @@
         <p th:if="${commonGroup != null}" th:text="${commonGroup.pageable.pageNumber}"></p>
     </div>
 </div>
-</body>
 <div th:replace="fragments/footer :: footer"/>
-<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 <script src="/js/script.js"></script>
 <script>
     $(function() {

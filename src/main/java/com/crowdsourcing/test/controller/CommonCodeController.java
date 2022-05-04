@@ -103,7 +103,7 @@ public class CommonCodeController {
                 .description(commonCode.getDescription())
                 .build();
         model.addAttribute("form", form);
-        return "admin/updateCommonCode";
+        return "admin/updateCommonCode :: #modalForm";
     }
 
 

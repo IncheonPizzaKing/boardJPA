@@ -5,7 +5,6 @@ import com.crowdsourcing.test.domain.CommonCode;
 import com.crowdsourcing.test.domain.CommonCodeId;
 import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.service.CommonCodeService;
-import com.crowdsourcing.test.service.CommonGroupService;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -32,7 +31,7 @@ public class UserController {
         UserForm user = new UserForm();
         user.setCommonCodeList(commonCodeService.findByGroupCode("G002"));
         model.addAttribute("userForm", user);
-        return "user/createUserForm";
+        return "user/createUserForm :: #modalForm";
     }
 
     /**

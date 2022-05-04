@@ -1,0 +1,39 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="myModal">
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" role="dialog">
+        <div class="modal-dialog modal-lg">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" align="center"></h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div id="modalForm"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <script>
+    function create(url, title) {
+            const modalForm = document.querySelector("#modalForm");
+            const modalTitle = document.querySelector(".modal-title");
+            modalTitle.textContent = title;
+            $('#myModal').modal();
+                $.ajax({
+                    url: url,
+                    type: "GET",
+                    success: function (data) {
+                        console.log(data);
+                        $(modalForm).replaceWith(data);
+                    }
+                });
+        }
+    </script>
+</div>
+</body>
+</html>

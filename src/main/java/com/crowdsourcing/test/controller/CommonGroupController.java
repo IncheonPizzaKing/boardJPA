@@ -94,7 +94,7 @@ public class CommonGroupController {
                 .isUse(commonGroup.isUse())
                 .build();
         model.addAttribute("form", form);
-        return "admin/updateCommonGroup";
+        return "admin/updateCommonGroup :: #modalForm";
     }
 
 
