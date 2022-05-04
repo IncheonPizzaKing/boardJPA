@@ -1,13 +1,9 @@
 package com.crowdsourcing.test.controller;
 
 import com.crowdsourcing.test.controller.form.UserForm;
-import com.crowdsourcing.test.domain.CommonCode;
-import com.crowdsourcing.test.domain.CommonCodeId;
-import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.service.CommonCodeService;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -29,8 +25,8 @@ public class UserController {
     @GetMapping("/user/new")
     public String createUserForm(Model model) {
         UserForm user = new UserForm();
-        user.setCommonCodeList(commonCodeService.findByGroupCode("G002"));
         model.addAttribute("userForm", user);
+        model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G002"));
         return "user/createUserForm :: #modalForm";
     }
 
@@ -38,19 +34,11 @@ public class UserController {
      * 회원가입 버튼 클릭시
      */
     @PostMapping("/user/new")
-    public String create(@Valid UserForm userForm, BindingResult result) {
+    public String signup(@Valid UserForm userForm, BindingResult result) {
         if (result.hasErrors()) {
             return "user/createUserForm";
         }
-        User user = new User();
-        user.setUsername(userForm.getUsername());
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        user.setPassword(encoder.encode(userForm.getPassword()));
-        String[] commonCodeOne = userForm.getCommonCodeId().split("_");
-        CommonCode one = commonCodeService.findById(new CommonCodeId(commonCodeOne[0], commonCodeOne[1]));
-        user.setCommonCode(one);
-        userService.save(user);
-
+        userService.signup(userForm);
         return "redirect:/";
     }
 }

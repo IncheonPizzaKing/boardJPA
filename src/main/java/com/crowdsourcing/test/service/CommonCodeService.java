@@ -4,18 +4,14 @@ import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.controller.form.CommonCodeForm;
 import com.crowdsourcing.test.domain.*;
 import com.crowdsourcing.test.repository.CommonCodeRepository;
-import com.crowdsourcing.test.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -105,5 +101,25 @@ public class CommonCodeService {
             CommonGroup commonGroup = commonGroupService.findById(types);
             return commonCodeRepository.findByCodeNameKorContainingAndCommonGroupEquals(commonCodeNameKor, commonGroup, pageable);
         }
+    }
+
+    /**
+     * 공통 코드 수정페이지 접속시
+     * @param code
+     * @return
+     */
+    public CommonCodeForm updateCommonCodeForm(String code) {
+        String codeOne[] = code.split("_");
+        CommonCode commonCode = (CommonCode) findById(new CommonCodeId(codeOne[0], codeOne[1]));
+        CommonCodeForm form = CommonCodeForm.builder()
+                .code(commonCode.getCode())
+                .codeName(commonCode.getCodeName())
+                .codeNameKor(commonCode.getCodeNameKor())
+                .commonGroup(commonCode.getCommonGroup())
+                .use(commonCode.isUse())
+                .description(commonCode.getDescription())
+                .build();
+
+        return form;
     }
 }

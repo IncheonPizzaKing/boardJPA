@@ -29,8 +29,7 @@ public class CommonGroupController {
      */
     @GetMapping("/commonGroup/new")
     public String createForm(Model model) {
-        CommonGroupForm commonGroupForm = new CommonGroupForm();
-        model.addAttribute("commonGroupForm", commonGroupForm);
+        model.addAttribute("commonGroupForm", new CommonGroupForm());
         return "admin/createCommonGroup";
     }
 
@@ -85,14 +84,7 @@ public class CommonGroupController {
      */
     @GetMapping("/commonGroup/{code}/update")
     public String updateCommonGroupForm(@PathVariable("code") String code, Model model) {
-        CommonGroup commonGroup = (CommonGroup) commonGroupService.findById(code);
-        CommonGroupForm form = CommonGroupForm.builder()
-                .groupCode(commonGroup.getGroupCode())
-                .groupName(commonGroup.getGroupName())
-                .groupNameKor(commonGroup.getGroupNameKor())
-                .description(commonGroup.getDescription())
-                .isUse(commonGroup.isUse())
-                .build();
+        CommonGroupForm form = commonGroupService.updateCommonGroupForm(code);
         model.addAttribute("form", form);
         return "admin/updateCommonGroup :: #modalForm";
     }

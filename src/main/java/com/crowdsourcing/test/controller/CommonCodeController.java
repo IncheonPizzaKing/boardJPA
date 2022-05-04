@@ -30,9 +30,8 @@ public class CommonCodeController {
      */
     @GetMapping("/commonCode/new")
     public String createForm(Model model) {
-        CommonCodeForm commonCodeForm = new CommonCodeForm();
-        commonCodeForm.setCommonGroupList(commonGroupService.findAll());
-        model.addAttribute("commonCodeForm", commonCodeForm);
+        model.addAttribute("commonCodeForm", new CommonCodeForm());
+        model.addAttribute("commonGroupList", commonGroupService.findAll());
         return "admin/createCommonCode";
     }
 
@@ -92,16 +91,7 @@ public class CommonCodeController {
     @GetMapping("/commonCode/{code}/update")
     public String updateCommonCodeForm(@PathVariable("code") String code, Model model) {
 
-        String codeOne[] = code.split("_");
-        CommonCode commonCode = (CommonCode) commonCodeService.findById(new CommonCodeId(codeOne[0], codeOne[1]));
-        CommonCodeForm form = CommonCodeForm.builder()
-                .code(commonCode.getCode())
-                .codeName(commonCode.getCodeName())
-                .codeNameKor(commonCode.getCodeNameKor())
-                .commonGroup(commonCode.getCommonGroup())
-                .use(commonCode.isUse())
-                .description(commonCode.getDescription())
-                .build();
+        CommonCodeForm form = commonCodeService.updateCommonCodeForm(code);
         model.addAttribute("form", form);
         return "admin/updateCommonCode :: #modalForm";
     }

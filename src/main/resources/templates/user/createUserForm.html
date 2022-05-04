@@ -25,7 +25,7 @@
         <div class="form-group">
             <label>auth</label>
             <select th:field="*{commonCodeId}" class="form-control">
-                <option th:each="list : ${userForm.commonCodeList}" th:if="${list.isUse == true}"
+                <option th:each="list : ${commonCodeList}" th:if="${list.isUse == true}"
                         th:value="${list.commonGroup + '_' + list.code}" th:text="${list.codeNameKor}">
             </select>
         </div>

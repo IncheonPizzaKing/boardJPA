@@ -4,10 +4,20 @@ import com.crowdsourcing.test.controller.form.BoardSearch;
 import com.crowdsourcing.test.domain.File;
 import com.crowdsourcing.test.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
@@ -35,10 +45,30 @@ public class FileService {
 
     /**
      * 파일 삭제
-     * @param file
+     * @param selectedValues
      */
     @Transactional
-    public void deleteFile(File file) {
-        fileRepository.delete(file);
+    public void deleteFile(List<Integer> selectedValues) {
+        for (int file : selectedValues) {
+            Long fileId = Long.parseLong(String.valueOf(file));
+            File findFile = findById(fileId);
+            fileRepository.delete(findFile);
+        }
+    }
+
+    /**
+     * 파일 다운로드
+     * @param file
+     * @return
+     * @throws Exception
+     */
+    public ResponseEntity<Resource> downloadFile(Long file) throws Exception {
+        com.crowdsourcing.test.domain.File fileDto = findById(file);
+        Path path = Paths.get(fileDto.getFilePath());
+        Resource resource = new InputStreamResource(Files.newInputStream(path));
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("application/octet-stream"))
+                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment;fileName=\\" + new String(fileDto.getOriginFileName().getBytes("UTF-8"), "ISO-8859-1"))
+                .body(resource);
     }
 }

@@ -85,7 +85,7 @@ public class TestDatabaseController {
         board.setContent(content);
         board.setTime(LocalDateTime.now());
 
-        boardService.write(board, author);
+//        boardService.write(board, author);
     }
 
     public CommonGroup createCommonGroup(String groupCode, String groupName, String groupNameKor, Boolean isUse) {

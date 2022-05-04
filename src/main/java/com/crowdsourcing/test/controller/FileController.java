@@ -5,22 +5,16 @@ import com.crowdsourcing.test.domain.File;
 import com.crowdsourcing.test.service.CommonCodeService;
 import com.crowdsourcing.test.service.FileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
 
@@ -73,29 +67,15 @@ public class FileController {
      */
     @GetMapping("/download/{file}")
     public ResponseEntity<Resource> downloadFile(@PathVariable("file") Long file) throws Exception {
-        com.crowdsourcing.test.domain.File fileDto = fileService.findById(file);
-        Path path = Paths.get(fileDto.getFilePath());
-        Resource resource = new InputStreamResource(Files.newInputStream(path));
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION,"attachment;fileName=\\" + new String(fileDto.getOriginFileName().getBytes("UTF-8"), "ISO-8859-1"))
-                .body(resource);
+        return fileService.downloadFile(file);
     }
 
     /**
      * 파일 삭제 버튼 클릭시
      */
     @PostMapping("/file/delete")
-    public String deleteBoard(@RequestParam("sList[]") List<Integer> selectedValues) {
-        System.out.println(selectedValues);
-        for(int i : selectedValues) {
-            System.out.println(i);
-        }
-        for (int file : selectedValues) {
-            Long fileId = Long.parseLong(String.valueOf(file));
-            File findFile = fileService.findById(fileId);
-            fileService.deleteFile(findFile);
-        }
+    public String deleteFile(@RequestParam("sList[]") List<Integer> selectedValues) {
+        fileService.deleteFile(selectedValues);
         return "admin/fileList";
     }
 }

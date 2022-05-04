@@ -41,7 +41,7 @@
                 </td>
                 <td th:each="list : ${board.fileMaster}">
                     <span th:each="file : ${list.fileList}">
-                        <a th:href="@{'/download/' + ${board.id} + '/' + ${fileStat.index}}"
+                        <a th:href="@{'/download/' + ${board.id} + '/' + ${file.id}}"
                            th:text="${file.originFileName}" class="btn btn-outline-dark"></a>
                     </span>
                 </td>

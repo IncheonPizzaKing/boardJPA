@@ -10,6 +10,9 @@ import java.util.*;
 
 @Entity
 @Getter @Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @IdClass(UserId.class)
 public class User implements UserDetails {
 

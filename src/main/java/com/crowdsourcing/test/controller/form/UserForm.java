@@ -19,6 +19,5 @@ public class UserForm {
     private String password;
     @NotEmpty
     private String commonCodeId;
-    private List<CommonCode> commonCodeList;
     private CommonCode commonCode;
 }

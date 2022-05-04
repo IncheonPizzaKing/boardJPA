@@ -24,7 +24,6 @@ public class CommonCodeForm {
     private String codeNameKor;
     private Boolean use;
     private String description;
-    private List<CommonGroup> commonGroupList;
     private CommonGroup commonGroup;
 }
 

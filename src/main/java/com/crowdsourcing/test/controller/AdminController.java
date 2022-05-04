@@ -3,9 +3,7 @@ package com.crowdsourcing.test.controller;
 import com.crowdsourcing.test.domain.CommonCode;
 import com.crowdsourcing.test.domain.CommonCodeId;
 import com.crowdsourcing.test.domain.User;
-import com.crowdsourcing.test.domain.UserId;
 import com.crowdsourcing.test.service.CommonCodeService;
-import com.crowdsourcing.test.service.CommonGroupService;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -27,7 +25,6 @@ import java.util.Map;
 public class AdminController {
 
     private final UserService userService;
-    private final CommonGroupService commonGroupService;
     private final CommonCodeService commonCodeService;
 
     /**
@@ -77,16 +74,8 @@ public class AdminController {
      * 사용자 삭제 버튼 클릭시
      */
     @PostMapping("/admin/delete")
-    public String deleteBoard(@RequestParam("sList[]") List<String> selectedValues) {
-        System.out.println(selectedValues);
-        for(String i : selectedValues) {
-            System.out.println(i);
-        }
-        for (String user : selectedValues) {
-            String[] userOne = user.split("_");
-            User one = userService.findOne(new UserId(Long.parseLong(userOne[0]), userOne[1]));
-            userService.remove(one);
-        }
+    public String deleteUsers(@RequestParam("sList[]") List<String> selectedValues) {
+        userService.deleteUsers(selectedValues);
         return "admin/adminList";
     }
 

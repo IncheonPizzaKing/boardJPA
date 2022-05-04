@@ -86,4 +86,22 @@ public class CommonGroupService {
     public List<CommonGroup> findAll() {
         return commonGroupRepository.findAll();
     }
+
+    /**
+     * 공통 그룹 수정 페이지 접속시
+     * @param code
+     * @return
+     */
+    public CommonGroupForm updateCommonGroupForm(String code) {
+        CommonGroup commonGroup = (CommonGroup) findById(code);
+        CommonGroupForm form = CommonGroupForm.builder()
+                .groupCode(commonGroup.getGroupCode())
+                .groupName(commonGroup.getGroupName())
+                .groupNameKor(commonGroup.getGroupNameKor())
+                .description(commonGroup.getDescription())
+                .isUse(commonGroup.isUse())
+                .build();
+
+        return form;
+    }
 }

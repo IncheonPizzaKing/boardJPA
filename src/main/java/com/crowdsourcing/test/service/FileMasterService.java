@@ -43,11 +43,12 @@ public class FileMasterService {
                 String filePath = savePath + "\\" + filename;
                 multipartFileIn.transferTo(new File(filePath));
 
-                com.crowdsourcing.test.domain.File fileDto = new com.crowdsourcing.test.domain.File();
-                fileDto.setFileName(filename);
-                fileDto.setFilePath(filePath);
-                fileDto.setOriginFileName(originFilename);
-                fileDto.setUseFile("true");
+                com.crowdsourcing.test.domain.File fileDto = com.crowdsourcing.test.domain.File.builder()
+                        .fileName(filename)
+                        .filePath(filePath)
+                        .originFileName(originFilename)
+                        .useFile("true")
+                        .build();
                 fileDto.addFileMaster(fileMaster);
             }
         }
