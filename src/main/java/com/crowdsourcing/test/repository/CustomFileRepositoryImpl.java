@@ -18,7 +18,7 @@ import static com.crowdsourcing.test.domain.QFile.file;
 
 @Repository
 @Transactional
-@RequiredArgsConstructor
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class CustomFileRepositoryImpl implements CustomFileRepository {
 
     private final JPAQueryFactory query;

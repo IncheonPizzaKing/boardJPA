@@ -14,7 +14,7 @@ import org.springframework.util.StringUtils;
 import java.util.List;
 
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 @Service
 public class CommonGroupService {
 

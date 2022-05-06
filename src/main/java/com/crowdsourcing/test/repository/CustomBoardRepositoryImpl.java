@@ -18,7 +18,7 @@ import static com.crowdsourcing.test.domain.QBoard.board;
 
 @Repository
 @Transactional
-@RequiredArgsConstructor
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class CustomBoardRepositoryImpl implements CustomBoardRepository {
 
     private final JPAQueryFactory query;

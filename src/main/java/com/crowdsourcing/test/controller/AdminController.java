@@ -20,8 +20,8 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
-@Controller
-@RequiredArgsConstructor
+@Controller /** controller 클래스 어노테이션 */
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class AdminController {
 
     private final UserService userService;
@@ -31,7 +31,7 @@ public class AdminController {
      * 관리자 페이지 접속시
      */
     @GetMapping("/admin")
-    public String list(Model model) {
+    public String adminList(Model model) {
         model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G002"));
         model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "admin/adminList";
@@ -41,7 +41,7 @@ public class AdminController {
      * 관리자 페이지 접속시
      */
     @PostMapping("/admin")
-    public String paging(@RequestParam Map<String, Object> param, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
+    public String adminList(@RequestParam Map<String, Object> param, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         String search = param.get("search").toString();
         String types = param.get("types").toString();
         Page<User> user;

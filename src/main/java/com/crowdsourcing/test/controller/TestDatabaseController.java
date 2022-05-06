@@ -13,8 +13,8 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
 
-@Controller
-@RequiredArgsConstructor
+@Controller /** controller 클래스 어노테이션 */
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class TestDatabaseController {
 
     private final UserService userService;

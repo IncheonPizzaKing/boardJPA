@@ -7,7 +7,7 @@
 //import org.springframework.stereotype.Component;
 //
 //@Component
-//@RequiredArgsConstructor
+//@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 //public class TestListener implements ApplicationListener<ApplicationStartedEvent> {
 //
 //    private final TestDatabaseController testDatabaseController;

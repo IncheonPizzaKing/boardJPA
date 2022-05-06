@@ -23,8 +23,8 @@ import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
-@Controller
-@RequiredArgsConstructor
+@Controller /** controller 클래스 어노테이션 */
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class BoardController {
 
     private final BoardService boardService;
@@ -35,7 +35,7 @@ public class BoardController {
      * 게시글 작성 페이지 접속시
      */
     @GetMapping("/board/new")
-    public String createForm(Model model) {
+    public String createBoardForm(Model model) {
         model.addAttribute("boardForm", new BoardForm());
         model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G001"));
         return "board/createBoardForm :: #modalForm";
@@ -45,7 +45,7 @@ public class BoardController {
      * 게시글 작성 버튼 클릭시
      */
     @PostMapping("/board/new")
-    public String write(@ModelAttribute("boardForm") @Valid BoardForm boardForm, BindingResult result, List<MultipartFile> multipartFile) throws Exception {
+    public String createBoard(@ModelAttribute("boardForm") @Valid BoardForm boardForm, BindingResult result, List<MultipartFile> multipartFile) throws Exception {
         if (result.hasErrors()) {
             return "board/createBoardForm";
         }
@@ -57,7 +57,7 @@ public class BoardController {
      * 게시글 조회시
      */
     @GetMapping("/board")
-    public String list(Model model) {
+    public String boardList(Model model) {
         model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G001"));
         model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "board/boardList";
@@ -67,7 +67,7 @@ public class BoardController {
      * 게시글 검색시
      */
     @PostMapping("/board")
-    public String paging(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "board_id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public String boardList(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "board_id", direction = Sort.Direction.DESC) Pageable pageable) {
         BoardSearch boardSearch = new BoardSearch();
         if (param.get("types") != null) {
             boardSearch.setTypes(param.get("types").toString());
@@ -89,6 +89,7 @@ public class BoardController {
 
         return "board/boardList :: #viewList";
     }
+
 
     /**
      * 첨부파일 다운로드 버튼 클릭시

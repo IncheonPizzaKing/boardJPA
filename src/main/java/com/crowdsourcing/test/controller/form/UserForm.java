@@ -8,8 +8,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.validation.constraints.NotEmpty;
 import java.util.List;
 
-@Getter
-@Setter
+@Getter @Setter /** 클래스 내 모든 필드의 Getter/Setter 메소드 생성 */
 public class UserForm {
 
     @NotEmpty(message = "이메일은 필수 입력 값입니다")

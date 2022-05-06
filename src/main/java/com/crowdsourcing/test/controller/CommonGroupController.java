@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@Controller
-@RequiredArgsConstructor
+@Controller /** controller 클래스 어노테이션 */
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class CommonGroupController {
 
     private final CommonCodeService commonCodeService;
@@ -28,7 +28,7 @@ public class CommonGroupController {
      * 공통그룹 작성 페이지 접속시
      */
     @GetMapping("/commonGroup/new")
-    public String createForm(Model model) {
+    public String createCommonGroupForm(Model model) {
         model.addAttribute("commonGroupForm", new CommonGroupForm());
         return "admin/createCommonGroup";
     }
@@ -37,7 +37,7 @@ public class CommonGroupController {
      * 공통그룹 작성 버튼 클릭시
      */
     @PostMapping("/commonGroup/new")
-    public String create(@ModelAttribute("commonGroupForm") CommonGroupForm commonGroupForm, BindingResult result) throws Exception {
+    public String createCommonGroup(@ModelAttribute("commonGroupForm") CommonGroupForm commonGroupForm, BindingResult result) throws Exception {
 
         if (result.hasErrors()) {
             return "admin/createCommonGroup";
@@ -50,7 +50,7 @@ public class CommonGroupController {
      * 공통그룹 조회시
      */
     @GetMapping("/commonGroup")
-    public String list(Model model) {
+    public String commonGroupList(Model model) {
         model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "admin/commonGroupList";
     }
@@ -59,7 +59,7 @@ public class CommonGroupController {
      * 공통그룹 검색시
      */
     @PostMapping("/commonGroup")
-    public String paging(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "groupCode", direction = Sort.Direction.DESC) Pageable pageable) {
+    public String commonGroupList(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "groupCode", direction = Sort.Direction.DESC) Pageable pageable) {
         BoardSearch commonGroupSearch = new BoardSearch();
         if (param.get("search") != null) {
             commonGroupSearch.setSearch(param.get("search").toString());

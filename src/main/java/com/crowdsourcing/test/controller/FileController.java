@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Map;
 
-@Controller
-@RequiredArgsConstructor
+@Controller /** controller 클래스 어노테이션 */
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class FileController {
 
     private final FileService fileService;
@@ -29,7 +29,7 @@ public class FileController {
      * 파일 조회 페이지 접속시
      */
     @GetMapping("/file")
-    public String list(Model model) {
+    public String fileList(Model model) {
         model.addAttribute("fileUseList", commonCodeService.findByGroupCode("G003"));
         model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "admin/fileList";
@@ -39,7 +39,7 @@ public class FileController {
      * 파일 조회 페이지 접속시
      */
     @PostMapping("/file")
-    public String paging(@RequestParam Map<String, Object> param, @PageableDefault(sort = "file_id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
+    public String fileList(@RequestParam Map<String, Object> param, @PageableDefault(sort = "file_id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         BoardSearch fileSearch = new BoardSearch();
         if (param.get("types") != null) {
             fileSearch.setTypes(param.get("types").toString());

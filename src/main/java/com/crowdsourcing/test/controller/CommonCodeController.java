@@ -18,8 +18,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
-@Controller
-@RequiredArgsConstructor
+@Controller /** controller 클래스 어노테이션 */
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class CommonCodeController {
 
     private final CommonGroupService commonGroupService;
@@ -29,7 +29,7 @@ public class CommonCodeController {
      * 공통코드 작성 페이지 접속시
      */
     @GetMapping("/commonCode/new")
-    public String createForm(Model model) {
+    public String createCommonCodeForm(Model model) {
         model.addAttribute("commonCodeForm", new CommonCodeForm());
         model.addAttribute("commonGroupList", commonGroupService.findAll());
         return "admin/createCommonCode";
@@ -39,7 +39,7 @@ public class CommonCodeController {
      * 공통코드 작성 버튼 클릭시
      */
     @PostMapping("/commonCode/new")
-    public String create(@ModelAttribute("commonCodeForm") CommonCodeForm commonCodeForm, BindingResult result) throws Exception {
+    public String createCommonCode(@ModelAttribute("commonCodeForm") CommonCodeForm commonCodeForm, BindingResult result) throws Exception {
 
         if (result.hasErrors()) {
             return "admin/createCommonCode";
@@ -52,7 +52,7 @@ public class CommonCodeController {
      * 공통코드 조회시
      */
     @GetMapping("/commonCode")
-    public String list(Model model) {
+    public String commonCodeList(Model model) {
         model.addAttribute("commonGroupList", commonGroupService.findAll());
         model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "admin/commonCodeList";
@@ -62,7 +62,7 @@ public class CommonCodeController {
      * 공통코드 검색시
      */
     @PostMapping("/commonCode")
-    public String paging(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "code", direction = Sort.Direction.DESC) Pageable pageable) {
+    public String commonCodeList(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "code", direction = Sort.Direction.DESC) Pageable pageable) {
         BoardSearch commonCodeSearch = new BoardSearch();
         if (param.get("types") != null) {
             commonCodeSearch.setTypes(param.get("types").toString());
