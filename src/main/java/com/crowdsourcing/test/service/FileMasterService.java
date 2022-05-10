@@ -13,7 +13,7 @@ import java.util.List;
 
 @Service
 @Transactional(readOnly = true)
-@RequiredArgsConstructor
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class FileMasterService {
 
 
@@ -43,11 +43,12 @@ public class FileMasterService {
                 String filePath = savePath + "\\" + filename;
                 multipartFileIn.transferTo(new File(filePath));
 
-                com.crowdsourcing.test.domain.File fileDto = new com.crowdsourcing.test.domain.File();
-                fileDto.setFileName(filename);
-                fileDto.setFilePath(filePath);
-                fileDto.setOriginFileName(originFilename);
-                fileDto.setUseFile("true");
+                com.crowdsourcing.test.domain.File fileDto = com.crowdsourcing.test.domain.File.builder()
+                        .fileName(filename)
+                        .filePath(filePath)
+                        .originFileName(originFilename)
+                        .useFile("true")
+                        .build();
                 fileDto.addFileMaster(fileMaster);
             }
         }

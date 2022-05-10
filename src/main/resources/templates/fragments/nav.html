@@ -1,0 +1,29 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="nav(data)">
+    <nav th:if="${data != null}" aria-label="Page navigation example">
+        <ul class="pagination nav justify-content-center">
+            <li class="page-item" th:classappend="${1 == data.pageable.pageNumber + 1} ? 'disabled' : '' ">
+                <button class="page-link" th:onclick="|paging(${startPage-1})|">처음으로</button>
+            </li>
+            <li class="page-item" th:classappend="${1 == data.pageable.pageNumber + 1} ? 'disabled' : '' ">
+                <button class="page-link" th:onclick="|paging(${data.pageable.pageNumber - 1})|">이전</button>
+            </li>
+            <li class="page-item" th:classappend="${data.pageable.pageNumber/10*10 + i == data.pageable.pageNumber} ? 'active' : '' "
+                th:each="i : ${#numbers.sequence(0, 9)}">
+                <button th:if="${data.pageable.pageNumber/10*10 + i < data.totalPages}" class="page-link" th:onclick="|paging(${data.pageable.pageNumber/10*10 + i})|" th:text="${data.pageable.pageNumber/10*10 + i + 1}"></button>
+            </li>
+            <li class="page-item"
+                th:classappend="${data.totalPages == data.pageable.pageNumber + 1 || data.totalPages == 0} ? 'disabled' : '' ">
+                <button class="page-link" th:onclick="|paging(${data.pageable.pageNumber + 1})|">다음</button>
+            </li>
+            <li class="page-item"
+                th:classappend="${data.totalPages == data.pageable.pageNumber + 1 || data.totalPages == 0} ? 'disabled' : '' ">
+                <button class="page-link" th:onclick="|paging(${endPage-1})|">마지막으로</button>
+            </li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

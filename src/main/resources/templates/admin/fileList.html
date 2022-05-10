@@ -3,116 +3,56 @@
 <head th:replace="fragments/header :: header"/>
 <body>
 <div class="container">
+    <input type="hidden" id="address" name="address" value="file">
     <div th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div>
+        <select id="types" name="types" class="form-control">
+            <option value="none">전체</option>
+            <option th:each="list : ${fileUseList}" th:text="${list.codeNameKor}"
+                    th:value="${list.codeName}"/>
+        </select>
         <input type="text" id="search" name="search" class="form-control" placeholder="파일명을 입력하세요"/>
-        <button id="btnSearch" name="btnSearch" class="btn btn-primary">검색</button>
+        <button id="btnSearch" name="btnSearch" class="btn btn-primary" th:onclick="|dataSend()|">검색</button>
+        <select id="size" name="size" class="form-control" th:onchange="|dataSend()|">
+            <option th:each="list : ${sizeList}" th:value="${list.codeName}"
+                    th:text="${list.codeNameKor}">
+        </select>
     </div>
-    <div id="fileList">
-            <table class="table table-striped">
-                <thead>
-                <tr>
-                    <th>체크</th>
-                    <th>파일 번호</th>
-                    <th>파일 이름</th>
-                    <th>사용 여부</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr th:each="file : ${file}">
-                    <td>
-                        <input type="checkbox" name="selected" th:value="${file.id}" />
-                    </td>
-                    <td th:text="${file.id}" ></td>
-                    <td><a th:href="@{'/download/' + ${file.id}}" th:text="${file.originFileName}"></a></td>
-                    <td th:if="${file.useFile.equals('true')}" th:text="${'사용중'}"></td>
-                    <td th:if="${file.useFile.equals('false')}" th:text="${'사용X'}"></td>
-                </tr>
-                <button th:onclick="|remove()|">삭제</button>
-                </tbody>
-            </table>
-<!--            페이지 네비게이션-->
-            <nav th:if="${file != null}" aria-label="Page navigation example">
-                <ul class="pagination nav justify-content-center">
-                    <li class="page-item" th:classappend="${1 == file.pageable.pageNumber + 1} ? 'disabled' : '' ">
-                        <button class="page-link" th:onclick="|paging(${file.pageable.pageNumber - 1})|">이전</button>
-                    </li>
-                    <li class="page-item" th:classappend="${i == file.pageable.pageNumber + 1} ? 'active' : '' " th:each="i : ${#numbers.sequence(startPage, endPage)}">
-                        <button class="page-link" th:onclick="|paging(${i - 1})|" th:text="${i}"></button>                
-                    </li>
-                    <li class="page-item" th:classappend="${file.totalPages == file.pageable.pageNumber + 1 || file.totalPages == 0} ? 'disabled' : '' ">
-                        <button class="page-link" th:onclick="|paging(${file.pageable.pageNumber + 1})|">다음</button>
-                    </li>
-                </ul>
-            </nav>
-            <p th:if="${file != null}" th:text="${file.pageable.pageNumber}"></p>
+    <div id="viewList">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>체크</th>
+                <th>파일 번호</th>
+                <th>파일 이름</th>
+                <th>사용 여부</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="file : ${file}">
+                <td>
+                    <input type="checkbox" name="selected" th:value="${file.id}"/>
+                </td>
+                <td th:text="${file.id}"></td>
+                <td><a th:href="@{'/download/' + ${file.id}}" th:text="${file.originFileName}"></a></td>
+                <td th:if="${file.useFile.equals('true')}" th:text="${'사용중'}"></td>
+                <td th:if="${file.useFile.equals('false')}" th:text="${'사용X'}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <!--            페이지 네비게이션-->
+        <div th:replace="fragments/nav :: nav(${file})"/>
+        <button th:onclick="|remove()|" class="btn btn-outline-danger justify-content-center">삭제</button>
+        <p th:if="${file != null}" th:text="${file.pageable.pageNumber}"></p>
     </div>
 </div> <!-- /container -->
+</body>
 <div th:replace="fragments/footer :: footer"/>
-<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-<script th:inline="javascript">
-    const btnSearch = document.querySelector("#btnSearch");
-    const search = document.querySelector("#search");
-
+<script src="/js/script.js"></script>
+<script>
     $(function() {
         dataSend();
     });
-    function dataSend() {
 
-                var fileSearch={
-                    search:$(search).val()
-                };
-                $.ajax({
-                    url: "/file",
-                    data: fileSearch,
-                    type: "POST",
-                    success : function(data) {
-                        $('#fileList').replaceWith(data);
-                    }
-                });
-    }
-
-    function paging(now) {
-        
-                var fileSearch={
-                    page:now,
-                    search:$(search).val()
-                };
-                $.ajax({
-                    url: "/file/",
-                    data: fileSearch,
-                    type: "POST",
-                    success : function(data) {
-                        console.log(data);
-                        $('#fileList').replaceWith(data);
-                    }
-                });
-    }
-
-    function remove() {
-
-                const query = 'input[name="selected"]:checked';
-                const selectedAll = document.querySelectorAll(query);
-                let selectedValues = new Array();
-                for(i=0; i<selectedAll.length; i++) {
-                    selectedValues[i] = selectedAll[i].value;
-                    console.log(selectedAll[i].value);
-                }
-                console.log(selectedValues);
-                $.ajax({
-                    url: "/file/delete",
-                    data: { 
-                        sList: selectedValues
-                    },
-                    type: "POST",
-                    success : function(data) {
-                        console.log(data);
-                        dataSend();
-                    }
-                });
-    }
-
-    btnSearch.addEventListener("click", dataSend);
 </script>
-</body>
 </html>

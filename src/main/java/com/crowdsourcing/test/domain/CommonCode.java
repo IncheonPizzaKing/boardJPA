@@ -4,8 +4,10 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@NoArgsConstructor
-@Getter @Setter
+@Builder
+@NoArgsConstructor /** 기본 생성자를 자동으로 추가(접근권한은 protected로 제한) */
+@AllArgsConstructor /** 모든 필드 값을 파라미터로 받는 생성자를 추가 */
+@Getter @Setter /** 클래스 내 모든 필드의 Getter/Setter 메소드 생성 */
 @IdClass(CommonCodeId.class)
 public class CommonCode {
 
@@ -28,19 +30,4 @@ public class CommonCode {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "groupCode", insertable = false, updatable = false, foreignKey = @ForeignKey(value = ConstraintMode.NO_CONSTRAINT))
     private CommonGroup commonGroup;
-
-    @Builder
-    public CommonCode(String groupCode, String code, String codeName, String codeNameKor, String description, boolean isUse) {
-        this.groupCode = groupCode;
-        this.code = code;
-        this.codeName = codeName;
-        this.codeNameKor = codeNameKor;
-        this.description = description;
-        this.isUse = isUse;
-    }
-
-    public void addCommonGroup(CommonGroup commonGroup) {
-        this.commonGroup = commonGroup;
-        commonGroup.getCommonCodeList().add(this);
-    }
 }

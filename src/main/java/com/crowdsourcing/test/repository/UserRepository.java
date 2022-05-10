@@ -11,13 +11,11 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User,UserId> {
 
-    @Query("SELECT u from User u WHERE u.username = :username")
-    User findByUsername(@Param("username") String username);
-
     /**
      * JPA Repository 내장 메소드
      * ex) findByUsernameContaining == Select * from user where username like %search%
      */
+    User findByUsernameEquals(String username);
     Page<User> findByUsernameContaining(String search, Pageable pageable);
     Page<User> findByUsernameContainingAndCommonCodeEquals(String search, CommonCode commonCode, Pageable pageable);
 }

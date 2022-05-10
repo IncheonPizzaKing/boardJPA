@@ -1,6 +1,6 @@
 package com.crowdsourcing.test.repository;
 
-import com.crowdsourcing.test.controller.form.BoardSearch;
+import com.crowdsourcing.test.dto.SearchDto;
 import com.crowdsourcing.test.domain.File;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -18,7 +18,7 @@ import static com.crowdsourcing.test.domain.QFile.file;
 
 @Repository
 @Transactional
-@RequiredArgsConstructor
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class CustomFileRepositoryImpl implements CustomFileRepository {
 
     private final JPAQueryFactory query;
@@ -28,16 +28,28 @@ public class CustomFileRepositoryImpl implements CustomFileRepository {
      * querydsl 사용 -> 쿼리를 자바 코드로 작성할 수 있게 도와주는 기술
      */
     @Override
-    public Page<File> findFile(BoardSearch fileSearch, Pageable pageable) {
+    public Page<File> findFile(SearchDto fileSearch, Pageable pageable) {
+        String types = fileSearch.getTypes();
         String search = fileSearch.getSearch();
         List<File> list = query.selectFrom(file)
-                .where(eqSearch(search))
+                .where(eqTypes(types),
+                        eqSearch(search))
                 .orderBy(file.id.desc())
                 .fetch();
         int start = (int)pageable.getOffset();
         int end = Math.min((start + pageable.getPageSize()), list.size());
         Page<File> page = new PageImpl<File>(list.subList(start, end), pageable, list.size());
         return page;
+    }
+
+    private BooleanExpression eqTypes(String types) {
+        if(!StringUtils.hasText(types)) {
+            return null;
+        }
+        if(types.equals("none")) {
+            return null;
+        }
+        return file.useFile.eq(types);
     }
 
     private BooleanExpression eqSearch(String search) {

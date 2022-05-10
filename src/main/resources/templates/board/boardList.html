@@ -1,19 +1,23 @@
-<!--<!DOCTYPE HTML>-->
 <html xmlns:th="http://www.thymeleaf.org">
 <head th:replace="fragments/header :: header"/>
-<!--<body>-->
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <input type="hidden" id="address" name="address" value="board">
+    <nav th:replace="fragments/bodyHeader :: bodyHeader"/>
     <div>
-            <select id="types" name="types" class="form-control">
-                <option value="none">전체</option>
-                <option th:each="list : ${commonCodeList}" th:text="${list.codeNameKor}" th:value="${list.commonGroup + '_' + list.code}"/>
-            </select>
-            <input type="text" id="search" name="search" class="form-control"
-                   placeholder="제목을 입력하세요"/>
-            <button id="btnSearch" name="btnSearch" class="btn btn-primary">검색</button>
+        <select id="types" name="types" class="form-control">
+            <option value="none">전체</option>
+            <option th:each="list : ${commonCodeList}" th:text="${list.codeNameKor}"
+                    th:value="${list.commonGroup + '_' + list.code}"/>
+        </select>
+        <input type="text" id="search" name="search" class="form-control"
+               placeholder="제목을 입력하세요"/>
+        <button id="btnSearch" name="btnSearch" class="btn btn-primary" th:onclick="|dataSend()|">검색</button>
+        <select id="size" name="size" class="form-control" th:onchange="|dataSend()|">
+            <option th:each="list : ${sizeList}" th:value="${list.codeName}"
+                    th:text="${list.codeNameKor}">
+        </select>
     </div>
-    <div id="boardList">
+    <div id="viewList">
         <table class="table table-striped">
             <thead>
             <tr>
@@ -27,83 +31,35 @@
             </thead>
             <tbody>
             <tr th:each="board : ${board}">
-                <td><a th:href="@{/board/{id}/update (id=${board.id})}" th:text="${board.id}"></a></td>
+                <td><input type="button" th:onclick="|create('@{board/{id}/update (id=${board.id})}', '게시글 수정')|" th:value="${board.id}" /></td>
                 <td th:text="${board.commonCode.codeNameKor}"></td>
                 <td th:text="${board.title}"></td>
                 <td th:if="${board.author != null}" th:text="${board.author.getUsername()}"></td>
                 <td th:text="${board.time}"></td>
                 <td th:if="${board.fileMaster == null}">
-                    <span>첨부파일 없음</span>
+                    <span>첨부파일 X</span>
                 </td>
-                <td th:each="list : ${board.fileMaster}">
-                    <span th:each="file : ${list.fileList}">
-                        <a th:href="@{'/download/' + ${board.id} + '/' + ${fileStat.index}}"
-                           th:text="${file.originFileName}" class="btn btn-outline-dark"></a>
-                    </span>
+                <td th:if="${board.fileMaster != null}">
+                    <span>첨부파일 O</span>
                 </td>
+<!--                <td th:each="list : ${board.fileMaster}">-->
+<!--                    <span th:each="file : ${list.fileList}">-->
+<!--                        <a th:href="@{'/download/' + ${board.id} + '/' + ${file.id}}"-->
+<!--                           th:text="${file.originFileName}" class="btn btn-outline-dark"></a>-->
+<!--                    </span>-->
+<!--                </td>-->
             </tr>
             </tbody>
         </table>
-        <nav th:if="${board != null}" aria-label="Page navigation example">
-            <ul class="pagination nav justify-content-center">
-                <li class="page-item" th:classappend="${1 == board.pageable.pageNumber + 1} ? 'disabled' : '' ">
-                    <button class="page-link" th:onclick="|paging(${board.pageable.pageNumber - 1})|">이전</button>
-                </li>
-                <li class="page-item" th:classappend="${i == board.pageable.pageNumber + 1} ? 'active' : '' " th:each="i : ${#numbers.sequence(startPage, endPage)}">
-                    <button class="page-link" th:onclick="|paging(${i - 1})|" th:text="${i}"></button>
-                </li>
-                <li class="page-item" th:classappend="${board.totalPages == board.pageable.pageNumber + 1 || board.totalPages == 0} ? 'disabled' : '' ">
-                    <button class="page-link" th:onclick="|paging(${board.pageable.pageNumber + 1})|">다음</button>
-                </li>
-            </ul>
-        </nav>
+        <div th:replace="fragments/nav :: nav(${board})"/>
         <p th:if="${board != null}" th:text="${board.pageable.pageNumber}"></p>
     </div>
 </div>
 <div th:replace="fragments/footer :: footer"/>
-<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
-<!-- /container -->
-<!--</body>-->
-<script th:inline="javascript">
-    const btnSearch = document.querySelector("#btnSearch");
-    const types = document.querySelector("#types");
-    const search = document.querySelector("#search");
-
+<script src="/js/script.js"></script>
+<script>
     $(function() {
         dataSend();
     });
-    function dataSend() {
-                let boardSearch={
-                    types:$(types).val(),
-                    search:$(search).val()
-                };
-                $.ajax({
-                    url: "/board",
-                    data: boardSearch,
-                    type: "POST",
-                    success : function(data) {
-                        $('#boardList').replaceWith(data);
-                    }
-                });
-    }
-
-    function paging(now) {
-                let boardSearch={
-                    page:now,
-                    search:$(search).val(),
-                    types:$(types).val()
-                };
-                $.ajax({
-                    url: "/board/",
-                    data: boardSearch,
-                    type: "POST",
-                    success : function(data) {
-                        console.log(data);
-                        $('#boardList').replaceWith(data);
-                    }
-                });
-    }
-
-    btnSearch.addEventListener("click", dataSend);
 </script>
-<!--</html>-->
+</html>

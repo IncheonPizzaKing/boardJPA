@@ -1,4 +1,4 @@
-package com.crowdsourcing.test.controller.form;
+package com.crowdsourcing.test.dto.user;
 
 import com.crowdsourcing.test.domain.CommonCode;
 import lombok.Getter;
@@ -6,11 +6,9 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.NotEmpty;
-import java.util.List;
 
-@Getter
-@Setter
-public class UserForm {
+@Getter @Setter /** 클래스 내 모든 필드의 Getter/Setter 메소드 생성 */
+public class UserDto {
 
     @NotEmpty(message = "이메일은 필수 입력 값입니다")
     private String username;
@@ -19,6 +17,5 @@ public class UserForm {
     private String password;
     @NotEmpty
     private String commonCodeId;
-    private List<CommonCode> commonCodeList;
     private CommonCode commonCode;
 }

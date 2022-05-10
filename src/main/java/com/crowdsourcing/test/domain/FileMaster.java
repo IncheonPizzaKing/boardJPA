@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Getter @Setter
+@Getter @Setter /** 클래스 내 모든 필드의 Getter/Setter 메소드 생성 */
 public class FileMaster {
 
     @Id

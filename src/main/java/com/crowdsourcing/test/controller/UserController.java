@@ -1,14 +1,9 @@
 package com.crowdsourcing.test.controller;
 
-import com.crowdsourcing.test.controller.form.UserForm;
-import com.crowdsourcing.test.domain.CommonCode;
-import com.crowdsourcing.test.domain.CommonCodeId;
-import com.crowdsourcing.test.domain.User;
+import com.crowdsourcing.test.dto.user.UserDto;
 import com.crowdsourcing.test.service.CommonCodeService;
-import com.crowdsourcing.test.service.CommonGroupService;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,42 +12,33 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.validation.Valid;
 
-@Controller
-@RequiredArgsConstructor
+@Controller /** controller 클래스 어노테이션 */
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class UserController {
 
     private final UserService userService;
-    private final CommonGroupService commonGroupService;
     private final CommonCodeService commonCodeService;
 
     /**
      * 회원가입 페이지 접속시
      */
     @GetMapping("/user/new")
-    public String createUserForm(Model model) {
-        UserForm user = new UserForm();
-        user.setCommonCodeList(commonGroupService.findById("G002").getCommonCodeList());
-        model.addAttribute("userForm", user);
-        return "user/createUserForm";
+    public String createUserDto(Model model) {
+        UserDto user = new UserDto();
+        model.addAttribute("userDto", user);
+        model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G002"));
+        return "user/createUserForm :: #modalForm";
     }
 
     /**
      * 회원가입 버튼 클릭시
      */
     @PostMapping("/user/new")
-    public String create(@Valid UserForm userForm, BindingResult result) {
+    public String signup(@Valid UserDto userDto, BindingResult result) {
         if (result.hasErrors()) {
             return "user/createUserForm";
         }
-        User user = new User();
-        user.setUsername(userForm.getUsername());
-        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        user.setPassword(encoder.encode(userForm.getPassword()));
-        String[] commonCodeOne = userForm.getCommonCodeId().split("_");
-        CommonCode one = commonCodeService.findById(new CommonCodeId(commonCodeOne[0], commonCodeOne[1]));
-        user.setCommonCode(one);
-        userService.save(user);
-
+        userService.signup(userDto);
         return "redirect:/";
     }
 }

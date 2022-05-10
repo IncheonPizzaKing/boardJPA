@@ -3,9 +3,7 @@ package com.crowdsourcing.test.controller;
 import com.crowdsourcing.test.domain.CommonCode;
 import com.crowdsourcing.test.domain.CommonCodeId;
 import com.crowdsourcing.test.domain.User;
-import com.crowdsourcing.test.domain.UserId;
 import com.crowdsourcing.test.service.CommonCodeService;
-import com.crowdsourcing.test.service.CommonGroupService;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,20 +20,20 @@ import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 
-@Controller
-@RequiredArgsConstructor
+@Controller /** controller 클래스 어노테이션 */
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class AdminController {
 
     private final UserService userService;
-    private final CommonGroupService commonGroupService;
     private final CommonCodeService commonCodeService;
 
     /**
      * 관리자 페이지 접속시
      */
     @GetMapping("/admin")
-    public String list(Model model) {
-        model.addAttribute("commonCodeList", commonGroupService.findById("G002").getCommonCodeList());
+    public String adminList(Model model) {
+        model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G002"));
+        model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "admin/adminList";
     }
 
@@ -43,7 +41,7 @@ public class AdminController {
      * 관리자 페이지 접속시
      */
     @PostMapping("/admin")
-    public String paging(@RequestParam Map<String, Object> param, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
+    public String adminList(@RequestParam Map<String, Object> param, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         String search = param.get("search").toString();
         String types = param.get("types").toString();
         Page<User> user;
@@ -69,23 +67,15 @@ public class AdminController {
         model.addAttribute("endPage", endPage);
         model.addAttribute("admin", user);
 
-        return "admin/adminList :: #adminList";
+        return "admin/adminList :: #viewList";
     }
 
     /**
      * 사용자 삭제 버튼 클릭시
      */
     @PostMapping("/admin/delete")
-    public String deleteBoard(@RequestParam("sList[]") List<String> selectedValues) {
-        System.out.println(selectedValues);
-        for(String i : selectedValues) {
-            System.out.println(i);
-        }
-        for (String user : selectedValues) {
-            String[] userOne = user.split("_");
-            User one = userService.findOne(new UserId(Long.parseLong(userOne[0]), userOne[1]));
-            userService.remove(one);
-        }
+    public String deleteUsers(@RequestParam("sList[]") List<String> selectedValues) {
+        userService.deleteUsers(selectedValues);
         return "admin/adminList";
     }
 

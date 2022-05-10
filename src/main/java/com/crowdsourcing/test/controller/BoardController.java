@@ -1,24 +1,18 @@
 package com.crowdsourcing.test.controller;
 
-import com.crowdsourcing.test.controller.form.BoardForm;
-import com.crowdsourcing.test.controller.form.BoardSearch;
+import com.crowdsourcing.test.dto.board.BoardDto;
+import com.crowdsourcing.test.dto.SearchDto;
 import com.crowdsourcing.test.domain.*;
 import com.crowdsourcing.test.service.BoardService;
 import com.crowdsourcing.test.service.CommonCodeService;
-import com.crowdsourcing.test.service.CommonGroupService;
-import com.crowdsourcing.test.service.FileMasterService;
+import com.crowdsourcing.test.service.FileService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,59 +20,36 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
-@Controller
-@RequiredArgsConstructor
+@Controller /** controller 클래스 어노테이션 */
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class BoardController {
 
     private final BoardService boardService;
-    private final FileMasterService fileMasterService;
-    private final CommonGroupService commonGroupService;
     private final CommonCodeService commonCodeService;
+    private final FileService fileService;
 
     /**
      * 게시글 작성 페이지 접속시
      */
     @GetMapping("/board/new")
-    public String createForm(Model model) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        UserDetails userDetails = (UserDetails) principal;
-        String username = ((UserDetails) principal).getUsername();
-        BoardForm board = new BoardForm();
-        board.setAuthor(username);
-        board.setCommonCodeList(commonGroupService.findById("G001").getCommonCodeList());
-        model.addAttribute("boardForm", board);
-        return "board/createBoardForm";
+    public String createBoardDto(Model model) {
+        model.addAttribute("boardDto", new BoardDto());
+        model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G001"));
+        return "board/createBoardForm :: #modalForm";
     }
 
     /**
      * 게시글 작성 버튼 클릭시
      */
     @PostMapping("/board/new")
-    public String create(@ModelAttribute("boardForm") @Valid BoardForm boardForm, BindingResult result, List<MultipartFile> multipartFile) throws Exception {
-
+    public String createBoard(@ModelAttribute("boardDto") @Valid BoardDto boardDto, BindingResult result, List<MultipartFile> multipartFile) throws Exception {
         if (result.hasErrors()) {
             return "board/createBoardForm";
         }
-        Board board = new Board();
-        String[] commonCodeOne = boardForm.getCommonCodeId().split("_");
-        CommonCode one = commonCodeService.findById(new CommonCodeId(commonCodeOne[0], commonCodeOne[1]));
-        board.setCommonCode(one);
-        board.setTitle(boardForm.getTitle());
-        board.setContent(boardForm.getContent());
-        board.setTime(LocalDateTime.now());
-        if (!multipartFile.get(0).isEmpty()) {
-            FileMaster fileMasterIn = fileMasterService.upload(multipartFile);
-            board.setFileMaster(fileMasterIn);
-        }
-        boardService.write(board, boardForm.getAuthor());
+        boardService.write(boardDto, multipartFile);
         return "redirect:/board";
     }
 
@@ -86,12 +57,9 @@ public class BoardController {
      * 게시글 조회시
      */
     @GetMapping("/board")
-    public String list(Model model) {
-        model.addAttribute("commonCodeList", commonGroupService.findById("G001").getCommonCodeList());
-        List<CommonCode> common = commonGroupService.findById("G002").getCommonCodeList();
-        for(CommonCode i : common) {
-            System.out.println(i.getCodeNameKor());
-        }
+    public String boardList(Model model) {
+        model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G001"));
+        model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "board/boardList";
     }
 
@@ -99,15 +67,15 @@ public class BoardController {
      * 게시글 검색시
      */
     @PostMapping("/board")
-    public String paging(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "board_id", direction = Sort.Direction.DESC) Pageable pageable) {
-        BoardSearch boardSearch = new BoardSearch();
+    public String boardList(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "board_id", direction = Sort.Direction.DESC) Pageable pageable) {
+        SearchDto searchDto = new SearchDto();
         if (param.get("types") != null) {
-            boardSearch.setTypes(param.get("types").toString());
+            searchDto.setTypes(param.get("types").toString());
         }
         if (param.get("search") != null) {
-            boardSearch.setSearch(param.get("search").toString());
+            searchDto.setSearch(param.get("search").toString());
         }
-        Page<Board> boardList = boardService.findBoard(boardSearch, pageable);
+        Page<Board> boardList = boardService.findBoard(searchDto, pageable);
         int startPage = 1, endPage;
         int totalPages = boardList.getTotalPages();
         if (totalPages == 0) {
@@ -119,22 +87,16 @@ public class BoardController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-        return "board/boardList :: #boardList";
+        return "board/boardList :: #viewList";
     }
+
+
     /**
      * 첨부파일 다운로드 버튼 클릭시
      */
     @GetMapping("/download/{boardId}/{file}")
-    public ResponseEntity<Resource> fileDownload(@PathVariable("boardId") Long id, @PathVariable("file") int file) throws IOException {
-        Board board = boardService.findOne(id);
-        List<com.crowdsourcing.test.domain.File> fileList = board.getFileMaster().getFileList();
-        com.crowdsourcing.test.domain.File fileDto = fileList.get(file);
-        Path path = Paths.get(fileDto.getFilePath());
-        Resource resource = new InputStreamResource(Files.newInputStream(path));
-        return ResponseEntity.ok()
-                .contentType(MediaType.parseMediaType("application/octet-stream"))
-                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;fileName=\\" + new String(fileDto.getOriginFileName().getBytes("UTF-8"), "ISO-8859-1"))
-                .body(resource);
+    public ResponseEntity<Resource> fileDownload(@PathVariable("boardId") Long id, @PathVariable("file") Long file) throws Exception {
+        return fileService.downloadFile(file);
     }
 
 
@@ -142,16 +104,9 @@ public class BoardController {
      * 게시글 수정페이지 접속시
      */
     @GetMapping("/board/{boardId}/update")
-    public String updateBoardForm(@PathVariable("boardId") Long boardId, Model model) {
-        Board board = (Board) boardService.findOne(boardId);
-        BoardForm form = new BoardForm();
-        form.setCommonCode(board.getCommonCode());
-        form.setTitle(board.getTitle());
-        form.setAuthor(board.getAuthor().getUsername());
-        form.setContent(board.getContent());
-
-        model.addAttribute("form", form);
-        return "board/updateBoardForm";
+    public String updateBoardDto(@PathVariable("boardId") Long boardId, Model model) {
+        model.addAttribute("form", boardService.updateBoardDto(boardId));
+        return "board/updateBoardForm :: #modalForm";
     }
 
 
@@ -159,7 +114,7 @@ public class BoardController {
      * 게시글 수정 버튼 클릭시
      */
     @PostMapping("/board/{boardId}/update")
-    public String updateBoard(@ModelAttribute("form") @Valid BoardForm form, BindingResult result, @PathVariable Long boardId) {
+    public String updateBoard(@ModelAttribute("form") @Valid BoardDto form, BindingResult result, @PathVariable Long boardId) {
         if (result.hasErrors()) {
             return "board/updateBoardForm";
         }

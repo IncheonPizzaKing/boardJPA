@@ -1,9 +1,8 @@
 package com.crowdsourcing.test.controller;
 
-import com.crowdsourcing.test.controller.form.BoardSearch;
-import com.crowdsourcing.test.controller.form.CommonCodeForm;
+import com.crowdsourcing.test.dto.SearchDto;
+import com.crowdsourcing.test.dto.commoncode.CommonCodeDto;
 import com.crowdsourcing.test.domain.CommonCode;
-import com.crowdsourcing.test.domain.CommonCodeId;
 import com.crowdsourcing.test.service.CommonCodeService;
 import com.crowdsourcing.test.service.CommonGroupService;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +15,10 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.Map;
 
-@Controller
-@RequiredArgsConstructor
+@Controller /** controller 클래스 어노테이션 */
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 public class CommonCodeController {
 
     private final CommonGroupService commonGroupService;
@@ -30,23 +28,26 @@ public class CommonCodeController {
      * 공통코드 작성 페이지 접속시
      */
     @GetMapping("/commonCode/new")
-    public String createForm(Model model) {
-        CommonCodeForm commonCodeForm = new CommonCodeForm();
-        commonCodeForm.setCommonGroupList(commonGroupService.findAll());
-        model.addAttribute("commonCodeForm", commonCodeForm);
-        return "admin/createCommonCode";
+    public String createCommonCodeDto(Model model) {
+        model.addAttribute("commonCodeDto", new CommonCodeDto());
+        model.addAttribute("commonGroupList", commonGroupService.findAll());
+        return "admin/createCommonCode :: #modalForm";
     }
 
     /**
      * 공통코드 작성 버튼 클릭시
      */
     @PostMapping("/commonCode/new")
+<<<<<<< HEAD
     public String create(@ModelAttribute("commonCodeForm") @Valid CommonCodeForm commonCodeForm, BindingResult result) throws Exception {
+=======
+    public String createCommonCode(@ModelAttribute("commonCodeDto") CommonCodeDto commonCodeDto, BindingResult result) throws Exception {
+>>>>>>> refactoring
 
         if (result.hasErrors()) {
             return "admin/createCommonCode";
         }
-        commonCodeService.save(commonCodeForm);
+        commonCodeService.save(commonCodeDto);
         return "redirect:/commonCode";
     }
 
@@ -54,8 +55,9 @@ public class CommonCodeController {
      * 공통코드 조회시
      */
     @GetMapping("/commonCode")
-    public String list(Model model) {
+    public String commonCodeList(Model model) {
         model.addAttribute("commonGroupList", commonGroupService.findAll());
+        model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "admin/commonCodeList";
     }
 
@@ -63,8 +65,8 @@ public class CommonCodeController {
      * 공통코드 검색시
      */
     @PostMapping("/commonCode")
-    public String paging(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "code", direction = Sort.Direction.DESC) Pageable pageable) {
-        BoardSearch commonCodeSearch = new BoardSearch();
+    public String commonCodeList(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "code", direction = Sort.Direction.DESC) Pageable pageable) {
+        SearchDto commonCodeSearch = new SearchDto();
         if (param.get("types") != null) {
             commonCodeSearch.setTypes(param.get("types").toString());
         }
@@ -83,27 +85,18 @@ public class CommonCodeController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-        return "admin/commonCodeList :: #commonCodeList";
+        return "admin/commonCodeList :: #viewList";
     }
 
     /**
      * 공통코드 수정페이지 접속시
      */
     @GetMapping("/commonCode/{code}/update")
-    public String updateCommonCodeForm(@PathVariable("code") String code, Model model) {
+    public String updateCommonCodeDto(@PathVariable("code") String code, Model model) {
 
-        String codeOne[] = code.split("_");
-        CommonCode commonCode = (CommonCode) commonCodeService.findById(new CommonCodeId(codeOne[0], codeOne[1]));
-        CommonCodeForm form = CommonCodeForm.builder()
-                .code(commonCode.getCode())
-                .codeName(commonCode.getCodeName())
-                .codeNameKor(commonCode.getCodeNameKor())
-                .commonGroup(commonCode.getCommonGroup())
-                .use(commonCode.isUse())
-                .description(commonCode.getDescription())
-                .build();
+        CommonCodeDto form = commonCodeService.updateCommonCodeDto(code);
         model.addAttribute("form", form);
-        return "admin/updateCommonCode";
+        return "admin/updateCommonCode :: #modalForm";
     }
 
 
@@ -111,7 +104,7 @@ public class CommonCodeController {
      * 공통코드 수정 버튼 클릭시
      */
     @PostMapping("/commonCode/{code}/update")
-    public String updateCommonCode(@ModelAttribute("form") CommonCodeForm form, @PathVariable String code) {
+    public String updateCommonCode(@ModelAttribute("form") CommonCodeDto form, @PathVariable String code) {
         commonCodeService.update(code, form.getUse(), form.getDescription());
         return "redirect:/commonCode";
     }

@@ -10,7 +10,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@RequiredArgsConstructor
+/**
+ * 스프링 서큐리티 설정
+ */
+@RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 @EnableWebSecurity
 @Configuration
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
@@ -19,17 +22,20 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(WebSecurity web) {
-        web.ignoring().antMatchers("/css/**", "/js/**", "/img/**", "/favicon.ico", "/resources/**", "/error");
+        web.ignoring().antMatchers("/css/**", "/templates/js/**", "/img/**", "/favicon.ico", "/resources/**", "/error");
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        /**
+         * 권한 설정
+         */
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/login", "/user/new").anonymous()
                 .antMatchers("/download/**", "/board/**").hasAuthority("USER")
-                .antMatchers("/admin/**", "/file/**", "/commonCode/**").hasAuthority("ADMIN")
+                .antMatchers("/admin/**", "/file/**", "/commonCode/**", "/commonGroup/**").hasAuthority("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .formLogin()
@@ -39,6 +45,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true);
 
+        /**
+         * 로그인 세션 설정
+         */
         http.csrf().disable()
                 .sessionManagement()
                 .maximumSessions(1)

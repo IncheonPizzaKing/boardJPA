@@ -6,7 +6,7 @@
 </head>
 <body>
 <div class="container">
-    <div th:replace="fragments/bodyHeader :: bodyHeader" />
+    <nav th:replace="fragments/bodyHeader :: bodyHeader" />
     <div class="jumbotron">
         <h1>게시판</h1>
         <p class="lead">게시판 기능</p>
@@ -14,9 +14,9 @@
             <a class="btn btn-lg btn-success" href="/board/new">게시글 등록</a>
             <a class="btn btn-lg btn-info" href="/board">게시판 목록</a>
         </p>
-
     </div>
     <div th:replace="fragments/footer :: footer" />
 </div> <!-- /container -->
+
 </body>
 </html>
