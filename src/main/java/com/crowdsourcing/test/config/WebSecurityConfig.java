@@ -27,6 +27,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        /**
+         * 권한 설정
+         */
         http.csrf().disable()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
@@ -42,6 +45,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logoutSuccessUrl("/")
                 .invalidateHttpSession(true);
 
+        /**
+         * 로그인 세션 설정
+         */
         http.csrf().disable()
                 .sessionManagement()
                 .maximumSessions(1)

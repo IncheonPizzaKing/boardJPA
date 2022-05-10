@@ -1,6 +1,6 @@
 package com.crowdsourcing.test.controller;
 
-import com.crowdsourcing.test.controller.form.UserForm;
+import com.crowdsourcing.test.dto.user.UserDto;
 import com.crowdsourcing.test.service.CommonCodeService;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +23,9 @@ public class UserController {
      * 회원가입 페이지 접속시
      */
     @GetMapping("/user/new")
-    public String createUserForm(Model model) {
-        UserForm user = new UserForm();
-        model.addAttribute("userForm", user);
+    public String createUserDto(Model model) {
+        UserDto user = new UserDto();
+        model.addAttribute("userDto", user);
         model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G002"));
         return "user/createUserForm :: #modalForm";
     }
@@ -34,11 +34,11 @@ public class UserController {
      * 회원가입 버튼 클릭시
      */
     @PostMapping("/user/new")
-    public String signup(@Valid UserForm userForm, BindingResult result) {
+    public String signup(@Valid UserDto userDto, BindingResult result) {
         if (result.hasErrors()) {
             return "user/createUserForm";
         }
-        userService.signup(userForm);
+        userService.signup(userDto);
         return "redirect:/";
     }
 }

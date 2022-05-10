@@ -6,6 +6,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.util.*;
 
 @Entity
@@ -20,15 +21,15 @@ public class User implements UserDetails {
     @Column(name = "userId")
     private Long id;
 
-    @Id
+    @Id @Column(unique = true) @NotEmpty
     private String username;
 
-    @Column(nullable = false)
+    @NotEmpty
     private String password;
 
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "groupCode"),
+            @JoinColumn(name = "commonGroup"),
             @JoinColumn(name = "code")
     })
     private CommonCode commonCode;

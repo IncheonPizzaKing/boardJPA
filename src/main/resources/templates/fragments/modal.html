@@ -19,19 +19,19 @@
         </div>
     </div>
     <script>
-    function create(url, title) {
+        function create(url, title) {
             const modalForm = document.querySelector("#modalForm");
             const modalTitle = document.querySelector(".modal-title");
             modalTitle.textContent = title;
             $('#myModal').modal();
-                $.ajax({
-                    url: url,
-                    type: "GET",
-                    success: function (data) {
-                        console.log(data);
-                        $(modalForm).replaceWith(data);
-                    }
-                });
+            $.ajax({
+                url: url,
+                type: "GET",
+                success: function (data) {
+                    console.log(data);
+                    $(modalForm).replaceWith(data);
+                }
+            });
         }
     </script>
 </div>

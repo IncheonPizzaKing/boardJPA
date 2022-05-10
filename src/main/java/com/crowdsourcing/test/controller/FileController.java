@@ -1,6 +1,6 @@
 package com.crowdsourcing.test.controller;
 
-import com.crowdsourcing.test.controller.form.BoardSearch;
+import com.crowdsourcing.test.dto.SearchDto;
 import com.crowdsourcing.test.domain.File;
 import com.crowdsourcing.test.service.CommonCodeService;
 import com.crowdsourcing.test.service.FileService;
@@ -40,7 +40,7 @@ public class FileController {
      */
     @PostMapping("/file")
     public String fileList(@RequestParam Map<String, Object> param, @PageableDefault(sort = "file_id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-        BoardSearch fileSearch = new BoardSearch();
+        SearchDto fileSearch = new SearchDto();
         if (param.get("types") != null) {
             fileSearch.setTypes(param.get("types").toString());
         }

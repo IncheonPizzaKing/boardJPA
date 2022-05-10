@@ -41,7 +41,7 @@
             </tbody>
         </table>
         <div th:replace="fragments/nav :: nav(${admin})"/>
-        <button id="btnDelete" name="btnDelete" th:onclick="|remove()|">계정 삭제</button>
+        <button id="btnDelete" name="btnDelete" th:onclick="|remove()|" class="btn btn-outline-danger justify-content-center">삭제</button>
     </div>
     <div th:replace="fragments/footer :: footer"/>
 </div>

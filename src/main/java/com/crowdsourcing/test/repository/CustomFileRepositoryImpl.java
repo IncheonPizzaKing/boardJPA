@@ -1,6 +1,6 @@
 package com.crowdsourcing.test.repository;
 
-import com.crowdsourcing.test.controller.form.BoardSearch;
+import com.crowdsourcing.test.dto.SearchDto;
 import com.crowdsourcing.test.domain.File;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -28,7 +28,7 @@ public class CustomFileRepositoryImpl implements CustomFileRepository {
      * querydsl 사용 -> 쿼리를 자바 코드로 작성할 수 있게 도와주는 기술
      */
     @Override
-    public Page<File> findFile(BoardSearch fileSearch, Pageable pageable) {
+    public Page<File> findFile(SearchDto fileSearch, Pageable pageable) {
         String types = fileSearch.getTypes();
         String search = fileSearch.getSearch();
         List<File> list = query.selectFrom(file)

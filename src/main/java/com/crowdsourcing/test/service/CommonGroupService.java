@@ -1,7 +1,7 @@
 package com.crowdsourcing.test.service;
 
-import com.crowdsourcing.test.controller.form.BoardSearch;
-import com.crowdsourcing.test.controller.form.CommonGroupForm;
+import com.crowdsourcing.test.dto.SearchDto;
+import com.crowdsourcing.test.dto.commongroup.CommonGroupDto;
 import com.crowdsourcing.test.domain.CommonGroup;
 import com.crowdsourcing.test.repository.CommonGroupRepository;
 import lombok.RequiredArgsConstructor;
@@ -19,20 +19,23 @@ import java.util.List;
 public class CommonGroupService {
 
     private final CommonGroupRepository commonGroupRepository;
-
     /**
      * 공통 그룹 저장
      */
     @Transactional
-    public void save(CommonGroupForm commonGroupForm) {
+    public Boolean save(CommonGroupDto commonGroupDto) {
+        if(commonGroupRepository.existsById(commonGroupDto.getGroupCode())) {
+            return false;
+        }
         CommonGroup commonGroup = CommonGroup.builder()
-                .groupCode(commonGroupForm.getGroupCode())
-                .groupName(commonGroupForm.getGroupName())
-                .groupNameKor(commonGroupForm.getGroupNameKor())
-                .description(commonGroupForm.getDescription())
-                .isUse(commonGroupForm.getIsUse())
+                .groupCode(commonGroupDto.getGroupCode())
+                .groupName(commonGroupDto.getGroupName())
+                .groupNameKor(commonGroupDto.getGroupNameKor())
+                .description(commonGroupDto.getDescription())
+                .isUse(commonGroupDto.getIsUse())
                 .build();
         commonGroupRepository.save(commonGroup);
+        return true;
     }
 
     /**
@@ -63,7 +66,7 @@ public class CommonGroupService {
      * @param pageable
      * @return
      */
-    public Page<CommonGroup> findCommonGroup(BoardSearch commonGroupSearch, Pageable pageable) {
+    public Page<CommonGroup> findCommonGroup(SearchDto commonGroupSearch, Pageable pageable) {
         String commonGroupNameKor = commonGroupSearch.getSearch();
         if(!StringUtils.hasText(commonGroupNameKor)) {
             commonGroupNameKor = "";
@@ -92,9 +95,9 @@ public class CommonGroupService {
      * @param code
      * @return
      */
-    public CommonGroupForm updateCommonGroupForm(String code) {
+    public CommonGroupDto updateCommonGroupDto(String code) {
         CommonGroup commonGroup = (CommonGroup) findById(code);
-        CommonGroupForm form = CommonGroupForm.builder()
+        CommonGroupDto form = CommonGroupDto.builder()
                 .groupCode(commonGroup.getGroupCode())
                 .groupName(commonGroup.getGroupName())
                 .groupNameKor(commonGroup.getGroupNameKor())

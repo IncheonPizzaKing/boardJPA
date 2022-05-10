@@ -1,10 +1,13 @@
 package com.crowdsourcing.test.domain;
 
 import lombok.*;
+import org.hibernate.validator.constraints.UniqueElements;
 
+import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 
 /**
@@ -20,6 +23,6 @@ public class UserId implements Serializable {
     private Long id;
 
     @EqualsAndHashCode.Include
-    @Id
+    @Id @Column(unique = true) @NotEmpty
     private String username;
 }

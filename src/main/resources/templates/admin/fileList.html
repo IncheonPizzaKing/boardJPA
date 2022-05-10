@@ -42,7 +42,7 @@
         </table>
         <!--            페이지 네비게이션-->
         <div th:replace="fragments/nav :: nav(${file})"/>
-        <button th:onclick="|remove()|">삭제</button>
+        <button th:onclick="|remove()|" class="btn btn-outline-danger justify-content-center">삭제</button>
         <p th:if="${file != null}" th:text="${file.pageable.pageNumber}"></p>
     </div>
 </div> <!-- /container -->

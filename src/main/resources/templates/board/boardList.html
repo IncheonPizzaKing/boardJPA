@@ -37,14 +37,17 @@
                 <td th:if="${board.author != null}" th:text="${board.author.getUsername()}"></td>
                 <td th:text="${board.time}"></td>
                 <td th:if="${board.fileMaster == null}">
-                    <span>첨부파일 없음</span>
+                    <span>첨부파일 X</span>
                 </td>
-                <td th:each="list : ${board.fileMaster}">
-                    <span th:each="file : ${list.fileList}">
-                        <a th:href="@{'/download/' + ${board.id} + '/' + ${file.id}}"
-                           th:text="${file.originFileName}" class="btn btn-outline-dark"></a>
-                    </span>
+                <td th:if="${board.fileMaster != null}">
+                    <span>첨부파일 O</span>
                 </td>
+<!--                <td th:each="list : ${board.fileMaster}">-->
+<!--                    <span th:each="file : ${list.fileList}">-->
+<!--                        <a th:href="@{'/download/' + ${board.id} + '/' + ${file.id}}"-->
+<!--                           th:text="${file.originFileName}" class="btn btn-outline-dark"></a>-->
+<!--                    </span>-->
+<!--                </td>-->
             </tr>
             </tbody>
         </table>

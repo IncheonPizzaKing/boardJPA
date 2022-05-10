@@ -10,7 +10,7 @@
         </div>
         <ul class="nav d-flex nav-right">
             <li class="nav-item">
-                <input type="button" class="btn btn-outline-secondary" value="게시글 등록" th:onclick="|create('/board/new','게시글 등록')|" />
+                <input type="button" class="btn btn-outline-warning" value="게시글 등록" th:onclick="|create('/board/new','게시글 등록')|" />
             </li>
             <li class="nav-item">
                 <a class="btn btn-outline-warning" href="/board">게시판 목록</a>
@@ -18,10 +18,10 @@
             <li sec:authorize="hasAuthority('ADMIN')">
                 <a th:href="@{/admin}" class="btn btn-outline-primary">관리자 페이지</a>
                 <a th:href="@{/file}" class="btn btn-outline-primary">파일 관리</a>
-                <a th:href="@{/commonCode/new}" class="btn btn-outline-info">공통코드생성</a>
+                <a th:onclick="|create('/commonCode/new', '공통코드생성')|" class="btn btn-outline-info">공통코드생성</a>
                 <a th:href="@{/commonCode}" class="btn btn-outline-info">공통코드목록</a>
-                <a th:href="@{/commonGroup/new}" class="btn btn-outline-info">공통그룹생성</a>
-                <a th:href="@{/commonGroup}" class="btn btn-outline-info">공통그룹목록</a>
+                <a th:onclick="|create('/commonGroup/new', '공통그룹생성')|" class="btn btn-outline-success">공통그룹생성</a>
+                <a th:href="@{/commonGroup}" class="btn btn-outline-success">공통그룹목록</a>
             </li>
             <li class="nav-item" sec:authorize="!isAuthenticated()">
                 <input type="button" id="signupBtn" class="btn btn-outline-success" value="회원가입" th:onclick="|create('/user/new', '회원가입')|" />

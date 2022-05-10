@@ -3,6 +3,8 @@ package com.crowdsourcing.test.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.AssertTrue;
+import javax.validation.constraints.NotEmpty;
 
 @Entity
 @Getter @Setter /** 클래스 내 모든 필드의 Getter/Setter 메소드 생성 */
@@ -11,14 +13,15 @@ import javax.persistence.*;
 @Builder
 public class CommonGroup {
 
-    @Id @Column(columnDefinition = "char(4)")
+    @Id @Column(columnDefinition = "char(4)") @NotEmpty
     private String groupCode;
 
-    @Column(nullable = false)
+    @NotEmpty
     private String groupName;
 
+    @NotEmpty
     private String groupNameKor;
     private String description;
-    @Column(nullable = false, columnDefinition = "tinyint(1) default 1")
+    @Column(columnDefinition = "tinyint(1) default 1")
     private boolean isUse;
 }

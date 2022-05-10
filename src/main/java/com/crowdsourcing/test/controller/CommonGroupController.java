@@ -1,7 +1,7 @@
 package com.crowdsourcing.test.controller;
 
-import com.crowdsourcing.test.controller.form.BoardSearch;
-import com.crowdsourcing.test.controller.form.CommonGroupForm;
+import com.crowdsourcing.test.dto.SearchDto;
+import com.crowdsourcing.test.dto.commongroup.CommonGroupDto;
 import com.crowdsourcing.test.domain.CommonGroup;
 import com.crowdsourcing.test.service.CommonCodeService;
 import com.crowdsourcing.test.service.CommonGroupService;
@@ -28,21 +28,21 @@ public class CommonGroupController {
      * 공통그룹 작성 페이지 접속시
      */
     @GetMapping("/commonGroup/new")
-    public String createCommonGroupForm(Model model) {
-        model.addAttribute("commonGroupForm", new CommonGroupForm());
-        return "admin/createCommonGroup";
+    public String createCommonGroupDto(Model model) {
+        model.addAttribute("commonGroupDto", new CommonGroupDto());
+        return "admin/createCommonGroup :: #modalForm";
     }
 
     /**
      * 공통그룹 작성 버튼 클릭시
      */
     @PostMapping("/commonGroup/new")
-    public String createCommonGroup(@ModelAttribute("commonGroupForm") CommonGroupForm commonGroupForm, BindingResult result) throws Exception {
+    public String createCommonGroup(@ModelAttribute("commonGroupDto") CommonGroupDto commonGroupDto, BindingResult result) throws Exception {
 
         if (result.hasErrors()) {
             return "admin/createCommonGroup";
         }
-        commonGroupService.save(commonGroupForm);
+        commonGroupService.save(commonGroupDto);
         return "redirect:/commonGroup";
     }
 
@@ -60,7 +60,7 @@ public class CommonGroupController {
      */
     @PostMapping("/commonGroup")
     public String commonGroupList(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "groupCode", direction = Sort.Direction.DESC) Pageable pageable) {
-        BoardSearch commonGroupSearch = new BoardSearch();
+        SearchDto commonGroupSearch = new SearchDto();
         if (param.get("search") != null) {
             commonGroupSearch.setSearch(param.get("search").toString());
         }
@@ -83,8 +83,8 @@ public class CommonGroupController {
      * 공통그룹 수정페이지 접속시
      */
     @GetMapping("/commonGroup/{code}/update")
-    public String updateCommonGroupForm(@PathVariable("code") String code, Model model) {
-        CommonGroupForm form = commonGroupService.updateCommonGroupForm(code);
+    public String updateCommonGroupDto(@PathVariable("code") String code, Model model) {
+        CommonGroupDto form = commonGroupService.updateCommonGroupDto(code);
         model.addAttribute("form", form);
         return "admin/updateCommonGroup :: #modalForm";
     }
@@ -94,7 +94,7 @@ public class CommonGroupController {
      * 공통그룹 수정 버튼 클릭시
      */
     @PostMapping("/commonGroup/{code}/update")
-    public String updateCommonGroup(@ModelAttribute("form") CommonGroupForm form, @PathVariable String code) {
+    public String updateCommonGroup(@ModelAttribute("form") CommonGroupDto form, @PathVariable String code) {
         commonGroupService.update(code, form.getIsUse(), form.getDescription());
         return "redirect:/commonGroup";
     }
@@ -105,6 +105,7 @@ public class CommonGroupController {
      */
     @GetMapping("/commonGroup/{code}/delete")
     public String deleteCommonGroup(@PathVariable String code) {
+        commonCodeService.deleteByGroupCode(code);
         commonGroupService.remove(code);
         return "redirect:/commonGroup";
     }

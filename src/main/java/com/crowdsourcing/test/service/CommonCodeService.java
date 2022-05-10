@@ -1,7 +1,7 @@
 package com.crowdsourcing.test.service;
 
-import com.crowdsourcing.test.controller.form.BoardSearch;
-import com.crowdsourcing.test.controller.form.CommonCodeForm;
+import com.crowdsourcing.test.dto.SearchDto;
+import com.crowdsourcing.test.dto.commoncode.CommonCodeDto;
 import com.crowdsourcing.test.domain.*;
 import com.crowdsourcing.test.repository.CommonCodeRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,20 +23,24 @@ public class CommonCodeService {
 
     /**
      * 공통 코드 저장
-     * @param commonCodeForm
+     * @param commonCodeDto
      */
     @Transactional
-    public void save(CommonCodeForm commonCodeForm) {
+    public Boolean save(CommonCodeDto commonCodeDto) {
+        if(commonCodeRepository.existsById(new CommonCodeId(commonCodeDto.getCommonGroupCode(), commonCodeDto.getCode()))) {
+            return false;
+        }
         CommonCode commonCode = CommonCode.builder()
-                .code(commonCodeForm.getCode())
-                .groupCode(commonCodeForm.getCommonGroupCode())
-                .commonGroup(commonGroupService.findById(commonCodeForm.getCommonGroupCode()))
-                .codeName(commonCodeForm.getCodeName())
-                .codeNameKor(commonCodeForm.getCodeNameKor())
-                .description(commonCodeForm.getDescription())
-                .isUse(commonCodeForm.getUse())
+                .code(commonCodeDto.getCode())
+                .groupCode(commonCodeDto.getCommonGroupCode())
+                .commonGroup(commonGroupService.findById(commonCodeDto.getCommonGroupCode()))
+                .codeName(commonCodeDto.getCodeName())
+                .codeNameKor(commonCodeDto.getCodeNameKor())
+                .description(commonCodeDto.getDescription())
+                .isUse(commonCodeDto.getUse())
                 .build();
         commonCodeRepository.save(commonCode);
+        return true;
     }
 
     /**
@@ -48,6 +52,18 @@ public class CommonCodeService {
         String[] codes = code.split("_");
         CommonCode commonCode = findById(new CommonCodeId(codes[0], codes[1]));
         commonCodeRepository.delete(commonCode);
+    }
+
+    /**
+     * 공통 그룹 삭제시 공통 코드도 같이 삭제
+     * @param groupCode
+     */
+    @Transactional
+    public void deleteByGroupCode(String groupCode) {
+        List<CommonCode> list = commonCodeRepository.findByGroupCodeEquals(groupCode);
+        for(CommonCode i : list) {
+            commonCodeRepository.delete(i);
+        }
     }
 
     /**
@@ -88,7 +104,7 @@ public class CommonCodeService {
      * @param pageable
      * @return
      */
-    public Page<CommonCode> findCommonCode(BoardSearch commonCodeSearch, Pageable pageable) {
+    public Page<CommonCode> findCommonCode(SearchDto commonCodeSearch, Pageable pageable) {
         String commonCodeNameKor = commonCodeSearch.getSearch();
         String types = commonCodeSearch.getTypes();
         if(!StringUtils.hasText(commonCodeNameKor)) {
@@ -108,11 +124,12 @@ public class CommonCodeService {
      * @param code
      * @return
      */
-    public CommonCodeForm updateCommonCodeForm(String code) {
+    public CommonCodeDto updateCommonCodeDto(String code) {
         String codeOne[] = code.split("_");
         CommonCode commonCode = (CommonCode) findById(new CommonCodeId(codeOne[0], codeOne[1]));
-        CommonCodeForm form = CommonCodeForm.builder()
+        CommonCodeDto form = CommonCodeDto.builder()
                 .code(commonCode.getCode())
+                .commonGroupCode(commonCode.getGroupCode())
                 .codeName(commonCode.getCodeName())
                 .codeNameKor(commonCode.getCodeNameKor())
                 .commonGroup(commonCode.getCommonGroup())

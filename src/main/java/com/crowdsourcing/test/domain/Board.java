@@ -3,6 +3,7 @@ package com.crowdsourcing.test.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDateTime;
 
 @Entity
@@ -17,11 +18,11 @@ public class Board {
     private Long id;
     @ManyToOne
     @JoinColumns({
-            @JoinColumn(name = "codeGroup"),
+            @JoinColumn(name = "commonGroup"),
             @JoinColumn(name = "code")
     })
     private CommonCode commonCode;
-    @Column(nullable = false)
+    @NotEmpty
     private String title;
 
     /** User 엔티티와 다대일 양방향 매핑 */
@@ -31,7 +32,7 @@ public class Board {
             @JoinColumn(name = "userId")
     })
     private User author;
-    @Column(nullable = false)
+    @NotEmpty
     private String content;
     private LocalDateTime time;
 

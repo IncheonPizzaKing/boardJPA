@@ -1,6 +1,6 @@
 package com.crowdsourcing.test.service;
 
-import com.crowdsourcing.test.controller.form.BoardSearch;
+import com.crowdsourcing.test.dto.SearchDto;
 import com.crowdsourcing.test.domain.File;
 import com.crowdsourcing.test.repository.FileRepository;
 import lombok.RequiredArgsConstructor;
@@ -39,7 +39,7 @@ public class FileService {
      * 조건에 맞는 파일 전체 검색
      */
     @Transactional(readOnly = true)
-    public Page<File> findFile(BoardSearch fileSearch, Pageable pageable) {
+    public Page<File> findFile(SearchDto fileSearch, Pageable pageable) {
         return fileRepository.findFile(fileSearch, pageable);
     }
 

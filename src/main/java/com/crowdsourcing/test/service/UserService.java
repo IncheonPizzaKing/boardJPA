@@ -1,6 +1,6 @@
 package com.crowdsourcing.test.service;
 
-import com.crowdsourcing.test.controller.form.UserForm;
+import com.crowdsourcing.test.dto.user.UserDto;
 import com.crowdsourcing.test.domain.CommonCode;
 import com.crowdsourcing.test.domain.CommonCodeId;
 import com.crowdsourcing.test.domain.User;
@@ -69,16 +69,16 @@ public class UserService implements UserDetailsService {
 
     /**
      * 회원가입
-     * @param userForm
+     * @param userDto
      */
     @Transactional
-    public void signup(UserForm userForm) {
+    public void signup(UserDto userDto) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String[] commonCodeOne = userForm.getCommonCodeId().split("_");
+        String[] commonCodeOne = userDto.getCommonCodeId().split("_");
         CommonCode one = commonCodeService.findById(new CommonCodeId(commonCodeOne[0], commonCodeOne[1]));
         User user = User.builder()
-                .username(userForm.getUsername())
-                .password(encoder.encode(userForm.getPassword()))
+                .username(userDto.getUsername())
+                .password(encoder.encode(userDto.getPassword()))
                 .commonCode(one)
                 .build();
         userRepository.save(user);

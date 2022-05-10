@@ -1,7 +1,7 @@
 package com.crowdsourcing.test.controller;
 
-import com.crowdsourcing.test.controller.form.BoardForm;
-import com.crowdsourcing.test.controller.form.BoardSearch;
+import com.crowdsourcing.test.dto.board.BoardDto;
+import com.crowdsourcing.test.dto.SearchDto;
 import com.crowdsourcing.test.domain.*;
 import com.crowdsourcing.test.service.BoardService;
 import com.crowdsourcing.test.service.CommonCodeService;
@@ -35,8 +35,8 @@ public class BoardController {
      * 게시글 작성 페이지 접속시
      */
     @GetMapping("/board/new")
-    public String createBoardForm(Model model) {
-        model.addAttribute("boardForm", new BoardForm());
+    public String createBoardDto(Model model) {
+        model.addAttribute("boardDto", new BoardDto());
         model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G001"));
         return "board/createBoardForm :: #modalForm";
     }
@@ -45,11 +45,11 @@ public class BoardController {
      * 게시글 작성 버튼 클릭시
      */
     @PostMapping("/board/new")
-    public String createBoard(@ModelAttribute("boardForm") @Valid BoardForm boardForm, BindingResult result, List<MultipartFile> multipartFile) throws Exception {
+    public String createBoard(@ModelAttribute("boardDto") @Valid BoardDto boardDto, BindingResult result, List<MultipartFile> multipartFile) throws Exception {
         if (result.hasErrors()) {
             return "board/createBoardForm";
         }
-        boardService.write(boardForm, multipartFile);
+        boardService.write(boardDto, multipartFile);
         return "redirect:/board";
     }
 
@@ -68,14 +68,14 @@ public class BoardController {
      */
     @PostMapping("/board")
     public String boardList(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "board_id", direction = Sort.Direction.DESC) Pageable pageable) {
-        BoardSearch boardSearch = new BoardSearch();
+        SearchDto searchDto = new SearchDto();
         if (param.get("types") != null) {
-            boardSearch.setTypes(param.get("types").toString());
+            searchDto.setTypes(param.get("types").toString());
         }
         if (param.get("search") != null) {
-            boardSearch.setSearch(param.get("search").toString());
+            searchDto.setSearch(param.get("search").toString());
         }
-        Page<Board> boardList = boardService.findBoard(boardSearch, pageable);
+        Page<Board> boardList = boardService.findBoard(searchDto, pageable);
         int startPage = 1, endPage;
         int totalPages = boardList.getTotalPages();
         if (totalPages == 0) {
@@ -104,8 +104,8 @@ public class BoardController {
      * 게시글 수정페이지 접속시
      */
     @GetMapping("/board/{boardId}/update")
-    public String updateBoardForm(@PathVariable("boardId") Long boardId, Model model) {
-        model.addAttribute("form", boardService.updateBoardForm(boardId));
+    public String updateBoardDto(@PathVariable("boardId") Long boardId, Model model) {
+        model.addAttribute("form", boardService.updateBoardDto(boardId));
         return "board/updateBoardForm :: #modalForm";
     }
 
@@ -114,7 +114,7 @@ public class BoardController {
      * 게시글 수정 버튼 클릭시
      */
     @PostMapping("/board/{boardId}/update")
-    public String updateBoard(@ModelAttribute("form") @Valid BoardForm form, BindingResult result, @PathVariable Long boardId) {
+    public String updateBoard(@ModelAttribute("form") @Valid BoardDto form, BindingResult result, @PathVariable Long boardId) {
         if (result.hasErrors()) {
             return "board/updateBoardForm";
         }

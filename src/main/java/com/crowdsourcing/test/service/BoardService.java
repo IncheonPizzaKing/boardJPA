@@ -1,7 +1,7 @@
 package com.crowdsourcing.test.service;
 
-import com.crowdsourcing.test.controller.form.BoardForm;
-import com.crowdsourcing.test.controller.form.BoardSearch;
+import com.crowdsourcing.test.dto.board.BoardDto;
+import com.crowdsourcing.test.dto.SearchDto;
 import com.crowdsourcing.test.domain.*;
 import com.crowdsourcing.test.repository.BoardRepository;
 import lombok.RequiredArgsConstructor;
@@ -28,33 +28,34 @@ public class BoardService {
 
     /**
      * 게시글 작성
-     * @param boardForm
+     * @param boardDto
      * @param multipartFile
      * @throws Exception
      */
     @Transactional
-    public void write(BoardForm boardForm, List<MultipartFile> multipartFile) throws Exception {
-        String[] commonCodeOne = boardForm.getCommonCodeId().split("_");
+    public void write(BoardDto boardDto, List<MultipartFile> multipartFile) throws Exception {
+        String[] commonCodeOne = boardDto.getCommonCodeId().split("_");
         CommonCode one = commonCodeService.findById(new CommonCodeId(commonCodeOne[0], commonCodeOne[1]));
         Board board;
+        /** 첨부파일이 있으면 첨부파일 저장 */
         if (!multipartFile.get(0).isEmpty()) {
             FileMaster fileMasterIn = fileMasterService.upload(multipartFile);
             board = Board.builder()
                     .commonCode(one)
-                    .title(boardForm.getTitle())
-                    .content(boardForm.getContent())
+                    .title(boardDto.getTitle())
+                    .content(boardDto.getContent())
                     .time(LocalDateTime.now())
                     .fileMaster(fileMasterIn)
                     .build();
         } else {
             board = Board.builder()
                     .commonCode(one)
-                    .title(boardForm.getTitle())
-                    .content(boardForm.getContent())
+                    .title(boardDto.getTitle())
+                    .content(boardDto.getContent())
                     .time(LocalDateTime.now())
                     .build();
         }
-        // 세션에서 username get
+        /** 세션에서 username get */
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = (UserDetails) principal;
         String username = ((UserDetails) principal).getUsername();
@@ -88,8 +89,8 @@ public class BoardService {
     /**
      * 조건에 맞는 게시글 전체 조회
      */
-    public Page<Board> findBoard(BoardSearch boardSearch, Pageable pageable) {
-        return boardRepository.findAll(boardSearch, pageable);
+    public Page<Board> findBoard(SearchDto searchDto, Pageable pageable) {
+        return boardRepository.findAll(searchDto, pageable);
     }
 
     /**
@@ -99,13 +100,15 @@ public class BoardService {
         return boardRepository.findById(boardId).orElseThrow(IllegalArgumentException::new);
     }
 
-    public BoardForm updateBoardForm(Long boardId) {
+    public BoardDto updateBoardDto(Long boardId) {
         Board board = (Board) findOne(boardId);
-        BoardForm form = BoardForm.builder()
+        BoardDto form = BoardDto.builder()
+                .id(board.getId())
                 .commonCode(board.getCommonCode())
                 .title(board.getTitle())
                 .author(board.getAuthor().getUsername())
                 .content(board.getContent())
+                .fileMaster(board.getFileMaster())
                 .build();
         return form;
     }
