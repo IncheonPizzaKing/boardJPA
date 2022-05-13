@@ -38,7 +38,11 @@ public class CommonCodeController {
      * 공통코드 작성 버튼 클릭시
      */
     @PostMapping("/commonCode/new")
+<<<<<<< HEAD
+    public String create(@ModelAttribute("commonCodeForm") @Valid CommonCodeForm commonCodeForm, BindingResult result) throws Exception {
+=======
     public String createCommonCode(@ModelAttribute("commonCodeDto") CommonCodeDto commonCodeDto, BindingResult result) throws Exception {
+>>>>>>> refactoring
 
         if (result.hasErrors()) {
             return "admin/createCommonCode";

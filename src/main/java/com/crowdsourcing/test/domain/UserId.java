@@ -25,4 +25,8 @@ public class UserId implements Serializable {
     @EqualsAndHashCode.Include
     @Id @Column(unique = true) @NotEmpty
     private String username;
+
+    @EqualsAndHashCode.Include
+    @Id @Column(unique = true) @NotEmpty
+    private String username;
 }

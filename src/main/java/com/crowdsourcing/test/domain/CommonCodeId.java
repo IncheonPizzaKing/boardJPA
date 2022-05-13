@@ -21,6 +21,6 @@ public class CommonCodeId implements Serializable {
     private String groupCode;
 
     @EqualsAndHashCode.Include
-    @Id
+    @Id @Column(unique = true)
     private String code;
 }
