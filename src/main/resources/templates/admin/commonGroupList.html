@@ -1,0 +1,46 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<div class="container">
+    <input type="hidden" id="address" name="address" value="commonGroup">
+    <nav th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div>
+        <input type="hidden" id="types" name="types" value="hi" />
+        <input type="text" id="search" name="search" class="form-control"
+               placeholder="제목을 입력하세요"/>
+        <button id="btnSearch" name="btnSearch" class="btn btn-primary" th:onclick="|dataSend()|">검색</button>
+        <select id="size" name="size" class="form-control" th:onchange="|dataSend()|">
+            <option th:each="list : ${sizeList}" th:value="${list.codeName}"
+                    th:text="${list.codeNameKor}">
+        </select>
+    </div>
+    <div id="viewList">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>그룹 코드</th>
+                <th>그룹 이름</th>
+                <th>그룹 이름(한국어)</th>
+                <th>사용여부</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="commonGroup : ${commonGroup}">
+                <td><input type="button" th:onclick="|create('@{commonGroup/{code}/update (code=${commonGroup.groupCode})}', '공통그룹 수정')|" th:value="${commonGroup.groupCode}" /></td>
+                <td th:text="${commonGroup.groupName}"></td>
+                <td th:text="${commonGroup.groupNameKor}"></td>
+                <td th:text="${commonGroup.isUse}"></td>
+            </tr>
+            </tbody>
+        </table>
+        <div th:replace="fragments/nav :: nav(${commonGroup})"/>
+        <p th:if="${commonGroup != null}" th:text="${commonGroup.pageable.pageNumber}"></p>
+    </div>
+</div>
+<div th:replace="fragments/footer :: footer"/>
+<script src="/js/script.js"></script>
+<script>
+    $(function() {
+        dataSend();
+    });
+</script>
+</html>

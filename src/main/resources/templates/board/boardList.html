@@ -1,0 +1,65 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/header :: header"/>
+<div class="container">
+    <input type="hidden" id="address" name="address" value="board">
+    <nav th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <div>
+        <select id="types" name="types" class="form-control">
+            <option value="none">전체</option>
+            <option th:each="list : ${commonCodeList}" th:text="${list.codeNameKor}"
+                    th:value="${list.commonGroup + '_' + list.code}"/>
+        </select>
+        <input type="text" id="search" name="search" class="form-control"
+               placeholder="제목을 입력하세요"/>
+        <button id="btnSearch" name="btnSearch" class="btn btn-primary" th:onclick="|dataSend()|">검색</button>
+        <select id="size" name="size" class="form-control" th:onchange="|dataSend()|">
+            <option th:each="list : ${sizeList}" th:value="${list.codeName}"
+                    th:text="${list.codeNameKor}">
+        </select>
+    </div>
+    <div id="viewList">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>글 번호</th>
+                <th>분류</th>
+                <th>제목</th>
+                <th>작성자</th>
+                <th>작성시간</th>
+                <th>첨부파일</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="board : ${board}">
+                <td><input type="button" th:onclick="|create('@{board/{id}/update (id=${board.id})}', '게시글 수정')|" th:value="${board.id}" /></td>
+                <td th:text="${board.commonCode.codeNameKor}"></td>
+                <td th:text="${board.title}"></td>
+                <td th:if="${board.author != null}" th:text="${board.author.getUsername()}"></td>
+                <td th:text="${board.time}"></td>
+                <td th:if="${board.fileMaster == null}">
+                    <span>첨부파일 X</span>
+                </td>
+                <td th:if="${board.fileMaster != null}">
+                    <span>첨부파일 O</span>
+                </td>
+<!--                <td th:each="list : ${board.fileMaster}">-->
+<!--                    <span th:each="file : ${list.fileList}">-->
+<!--                        <a th:href="@{'/download/' + ${board.id} + '/' + ${file.id}}"-->
+<!--                           th:text="${file.originFileName}" class="btn btn-outline-dark"></a>-->
+<!--                    </span>-->
+<!--                </td>-->
+            </tr>
+            </tbody>
+        </table>
+        <div th:replace="fragments/nav :: nav(${board})"/>
+        <p th:if="${board != null}" th:text="${board.pageable.pageNumber}"></p>
+    </div>
+</div>
+<div th:replace="fragments/footer :: footer"/>
+<script src="/js/script.js"></script>
+<script>
+    $(function() {
+        dataSend();
+    });
+</script>
+</html>

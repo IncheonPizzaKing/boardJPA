@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/header :: header"/>
+<style>
+ .fieldError {
+ border-color: #bd2130;
+ }
+
+
+
+</style>
+<body>
+<div class="container">
+    <div th:replace="fragments/bodyHeader :: bodyHeader"/>
+    <form role="form" th:object="${form}" method="post" id="modalForm" th:action="@{/commonCode/{code}/update (code=${form.commonGroup.groupCode + '_' + form.code})}" >
+        <div class="form-group">
+            <label th:for="commonGroup">그룹</label>
+            <input type="text" th:field="*{commonGroup}" class="form-control" readonly>
+        </div>
+        <div class="form-group">
+            <label th:for="code">코드</label>
+            <input type="text" th:field="*{code}" class="form-control" readonly>
+        </div>
+        <div class="form-group">
+            <label th:for="codeName">코드 이름</label>
+            <input type="text" th:field="*{codeName}" class="form-control" readonly>
+        </div>
+        <div class="form-group">
+            <label th:for="codeNameKor">코드 이름(한국어)</label>
+            <input type="text" th:field="*{codeNameKor}" class="form-control" readonly>
+        </div>
+        <div class="form-group">
+            <label th:for="use">사용 여부</label>
+            <select th:field="*{use}" class="form-control">
+                <option th:text="${'사용'}" th:value="1" />
+                <option th:text="${'사용x'}" th:value="0" />
+            </select>
+        </div>
+        <div class="form-group">
+            <label th:for="description">설명</label>
+            <textarea rows="5" th:field="*{description}" class="form-control"></textarea>
+        </div>
+        <div class="form-group">
+            <button type="submit" class="btn btn-success">수정</button>
+            <a th:href="@{/commonCode/{code}/delete (code=${form.commonGroup.groupCode + '_' + form.code})}" class="btn btn-danger">삭제</a>
+        </div>
+    </form>
+    <br/>
+    <div th:replace="fragments/footer :: footer"/>
+</div> <!-- /container -->
+</body>
+</html>
