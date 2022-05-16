@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor /** 기본 생성자를 자동으로 추가(접근권한은 protected로 제한) */
 @AllArgsConstructor /** 모든 필드 값을 파라미터로 받는 생성자를 추가 */
 @Builder
+@Table(name = "board")
 public class Board {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,7 +32,7 @@ public class Board {
             @JoinColumn(name = "username"),
             @JoinColumn(name = "userId")
     })
-    private User author;
+    private BoardUser author;
     @NotEmpty
     private String content;
     private LocalDateTime time;
@@ -41,7 +42,7 @@ public class Board {
     @JoinColumn(name = "fileMasterId")
     private FileMaster fileMaster;
 
-    public void addUser(User author) {
+    public void addUser(BoardUser author) {
         this.author = author;
         author.getBoardList().add(this);
     }

@@ -1,9 +1,9 @@
 package com.crowdsourcing.test.service;
 
+import com.crowdsourcing.test.domain.BoardUser;
 import com.crowdsourcing.test.dto.user.UserDto;
 import com.crowdsourcing.test.domain.CommonCode;
 import com.crowdsourcing.test.domain.CommonCodeId;
-import com.crowdsourcing.test.domain.User;
 import com.crowdsourcing.test.domain.UserId;
 import com.crowdsourcing.test.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -29,19 +29,19 @@ public class UserService implements UserDetailsService {
      * 사용자 저장, 삭제
      */
     @Transactional
-    public void save(User user) {
-        userRepository.save(user);
+    public void save(BoardUser boardUser) {
+        userRepository.save(boardUser);
     }
     @Transactional
-    public void remove(User user) {
-        userRepository.delete(user);
+    public void remove(BoardUser boardUser) {
+        userRepository.delete(boardUser);
     }
 
     /**
      * 사용자 한 명 검색(username)
      */
     @Override
-    public User loadUserByUsername(String username) throws UsernameNotFoundException {
+    public BoardUser loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsernameEquals(username);
     }
 
@@ -49,21 +49,21 @@ public class UserService implements UserDetailsService {
      * 사용자 한 명 검색(id)
      * @return
      */
-    public User findOne(UserId id) {
+    public BoardUser findOne(UserId id) {
         return userRepository.findById(id).orElseThrow(IllegalArgumentException::new);
     }
 
     /**
      * 조건에 맞는 사용자 전체 검색(role, search 값 전달 받았을때)
      */
-    public Page<User> findByUsernameContainingAndRoleEquals(String search, CommonCode commonCode, Pageable pageable) {
+    public Page<BoardUser> findByUsernameContainingAndRoleEquals(String search, CommonCode commonCode, Pageable pageable) {
         return userRepository.findByUsernameContainingAndCommonCodeEquals(search, commonCode, pageable);
     }
 
     /**
      * 조건에 맞는 사용자 전체 검색(search 값만 전달 받았을때)
      */
-    public Page<User> findByUsernameContaining(String search, Pageable pageable) {
+    public Page<BoardUser> findByUsernameContaining(String search, Pageable pageable) {
         return userRepository.findByUsernameContaining(search, pageable);
     }
 
@@ -76,12 +76,12 @@ public class UserService implements UserDetailsService {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         String[] commonCodeOne = userDto.getCommonCodeId().split("_");
         CommonCode one = commonCodeService.findById(new CommonCodeId(commonCodeOne[0], commonCodeOne[1]));
-        User user = User.builder()
+        BoardUser boardUser = BoardUser.builder()
                 .username(userDto.getUsername())
                 .password(encoder.encode(userDto.getPassword()))
                 .commonCode(one)
                 .build();
-        userRepository.save(user);
+        userRepository.save(boardUser);
     }
 
     /**
@@ -92,7 +92,7 @@ public class UserService implements UserDetailsService {
     public void deleteUsers(List<String> selectedValues) {
         for (String user : selectedValues) {
             String[] userOne = user.split("_");
-            User one = findOne(new UserId(Long.parseLong(userOne[0]), userOne[1]));
+            BoardUser one = findOne(new UserId(Long.parseLong(userOne[0]), userOne[1]));
             userRepository.delete(one);
         }
     }

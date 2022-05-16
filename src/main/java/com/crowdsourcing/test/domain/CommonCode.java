@@ -9,6 +9,7 @@ import javax.persistence.*;
 @AllArgsConstructor /** 모든 필드 값을 파라미터로 받는 생성자를 추가 */
 @Getter @Setter /** 클래스 내 모든 필드의 Getter/Setter 메소드 생성 */
 @IdClass(CommonCodeId.class)
+@Table(name = "common_code")
 public class CommonCode {
 
     @Id
@@ -23,7 +24,7 @@ public class CommonCode {
     private String codeNameKor;
     private String description;
 
-    @Column(columnDefinition = "tinyint(1) default 1")
+    @Column(columnDefinition = "boolean default true")
     private boolean isUse;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -5,10 +5,8 @@ import com.crowdsourcing.test.repository.BoardRepository;
 import com.crowdsourcing.test.repository.CommonCodeRepository;
 import com.crowdsourcing.test.repository.CommonGroupRepository;
 import com.crowdsourcing.test.repository.UserRepository;
-import com.crowdsourcing.test.service.BoardService;
 import com.crowdsourcing.test.service.CommonCodeService;
 import com.crowdsourcing.test.service.CommonGroupService;
-import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -72,13 +70,13 @@ public class TestDatabaseController {
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-        User user = User.builder()
+        BoardUser boardUser = BoardUser.builder()
                 .username(name)
                 .password(encoder.encode(password))
                 .commonCode(commonCode)
                 .build();
 
-        userRepository.save(user);
+        userRepository.save(boardUser);
     }
 
     /**

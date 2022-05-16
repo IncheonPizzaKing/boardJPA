@@ -59,8 +59,8 @@ public class BoardService {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         UserDetails userDetails = (UserDetails) principal;
         String username = ((UserDetails) principal).getUsername();
-        User user = userService.loadUserByUsername(username);
-        board.addUser(user);
+        BoardUser boardUser = userService.loadUserByUsername(username);
+        board.addUser(boardUser);
         boardRepository.save(board);
     }
 

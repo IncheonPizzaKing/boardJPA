@@ -15,7 +15,8 @@ import java.util.*;
 @AllArgsConstructor /** 모든 필드 값을 파라미터로 받는 생성자를 추가 */
 @Builder
 @IdClass(UserId.class)
-public class User implements UserDetails {
+@Table(name = "board_user")
+public class BoardUser implements UserDetails {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "userId")

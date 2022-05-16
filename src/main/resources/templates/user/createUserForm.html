@@ -9,7 +9,7 @@
 <body>
 <div class="container">
     <nav th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <form id="modalForm" role="form" method="post" th:object="${userDto}" th:action="@{/user/new}">
+    <form id="modalForm" role="form" method="post" th:object="${userDto}" th:action="@{/boardUser/new}">
         <div class="form-group">
             <label>email</label>
             <input type="email" th:field="*{username}" class="form-control"

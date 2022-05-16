@@ -2,7 +2,7 @@ package com.crowdsourcing.test.controller;
 
 import com.crowdsourcing.test.domain.CommonCode;
 import com.crowdsourcing.test.domain.CommonCodeId;
-import com.crowdsourcing.test.domain.User;
+import com.crowdsourcing.test.domain.BoardUser;
 import com.crowdsourcing.test.service.CommonCodeService;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +44,7 @@ public class AdminController {
     public String adminList(@RequestParam Map<String, Object> param, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
         String search = param.get("search").toString();
         String types = param.get("types").toString();
-        Page<User> user;
+        Page<BoardUser> user;
         if(!StringUtils.hasText(search)) {
             search = "";
         }

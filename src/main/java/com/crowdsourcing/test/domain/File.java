@@ -9,6 +9,7 @@ import javax.persistence.*;
 @NoArgsConstructor /** 기본 생성자를 자동으로 추가(접근권한은 protected로 제한) */
 @AllArgsConstructor /** 모든 필드 값을 파라미터로 받는 생성자를 추가 */
 @Builder
+@Table(name = "file")
 public class File {
 
     @Id
