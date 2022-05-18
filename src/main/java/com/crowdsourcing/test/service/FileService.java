@@ -1,8 +1,10 @@
 package com.crowdsourcing.test.service;
 
+import com.crowdsourcing.test.domain.FileMaster;
 import com.crowdsourcing.test.dto.SearchDto;
 import com.crowdsourcing.test.domain.File;
 import com.crowdsourcing.test.repository.FileRepository;
+import com.crowdsourcing.test.util.MD5Generator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -13,6 +15,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,6 +28,41 @@ import java.util.List;
 public class FileService {
 
     private final FileRepository fileRepository;
+
+    /**
+     * 파일 업로드
+     * @param multipartFile
+     * @throws Exception
+     */
+    @Transactional
+    public void uploadFile(List<MultipartFile> multipartFile, FileMaster fileMaster) throws Exception {
+        for (MultipartFile multipartFileIn : multipartFile) {
+            if (!multipartFileIn.isEmpty()) {
+                String originFilename = multipartFileIn.getOriginalFilename();
+                String filename = new MD5Generator(originFilename).toString();
+                String savePath = System.getProperty("user.dir") + "\\files";
+                if (!new java.io.File(savePath).exists()) {
+
+                    try {
+                        new java.io.File(savePath).mkdir();
+                    } catch (Exception e) {
+                        e.getStackTrace();
+                    }
+                }
+                String filePath = savePath + "\\" + filename;
+                multipartFileIn.transferTo(new java.io.File(filePath));
+
+                com.crowdsourcing.test.domain.File file = com.crowdsourcing.test.domain.File.builder()
+                        .fileName(filename)
+                        .filePath(filePath)
+                        .originFileName(originFilename)
+                        .useFile("true")
+                        .fileMaster(fileMaster)
+                        .build();
+                fileRepository.save(file);
+            }
+        }
+    }
 
     /**
      * 파일 검색(id)
@@ -54,6 +92,10 @@ public class FileService {
             File findFile = findById(fileId);
             fileRepository.delete(findFile);
         }
+    }
+
+    public List<File> findByFileMasterEquals(FileMaster fileMaster) {
+        return fileRepository.findByFileMasterEquals(fileMaster);
     }
 
     /**

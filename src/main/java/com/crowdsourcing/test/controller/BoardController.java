@@ -3,9 +3,11 @@ package com.crowdsourcing.test.controller;
 import com.crowdsourcing.test.dto.board.BoardDto;
 import com.crowdsourcing.test.dto.SearchDto;
 import com.crowdsourcing.test.domain.*;
+import com.crowdsourcing.test.dto.board.BoardListDto;
 import com.crowdsourcing.test.service.BoardService;
 import com.crowdsourcing.test.service.CommonCodeService;
 import com.crowdsourcing.test.service.FileService;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
@@ -68,14 +70,7 @@ public class BoardController {
      */
     @PostMapping("/board")
     public String boardList(@RequestParam Map<String, Object> param, Model model, @PageableDefault(size = 10, sort = "board_id", direction = Sort.Direction.DESC) Pageable pageable) {
-        SearchDto searchDto = new SearchDto();
-        if (param.get("types") != null) {
-            searchDto.setTypes(param.get("types").toString());
-        }
-        if (param.get("search") != null) {
-            searchDto.setSearch(param.get("search").toString());
-        }
-        Page<Board> boardList = boardService.findBoard(searchDto, pageable);
+        Page<BoardListDto> boardList = boardService.findBoard(param, pageable);
         int startPage = 1, endPage;
         int totalPages = boardList.getTotalPages();
         if (totalPages == 0) {

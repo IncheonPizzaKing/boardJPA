@@ -14,13 +14,12 @@
                 search: search.value,
                 size: size.value
             };
-            console.log(dataSearch.types, dataSearch.search);
             $.ajax({
                 url: "/" + address.value,
                 data: dataSearch,
                 type: "POST",
                 success: function (data) {
-                    console.log(data);
+
                     $(viewList).replaceWith(data);
                 }
             });
@@ -40,7 +39,6 @@
                 data: dataSearch,
                 type: "POST",
                 success: function (data) {
-                    console.log(data);
                     $(viewList).replaceWith(data);
                 }
             });

@@ -1,5 +1,6 @@
 package com.crowdsourcing.test.domain;
 
+import com.crowdsourcing.test.service.CommonCodeService;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,32 +19,23 @@ import java.util.*;
 @Table(name = "board_user")
 public class BoardUser implements UserDetails {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userId")
+    @Id
     private Long id;
 
-    @Id @Column(unique = true) @NotEmpty
+    @Id
     private String username;
 
     @NotEmpty
     private String password;
 
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "commonGroup"),
-            @JoinColumn(name = "code")
-    })
-    private CommonCode commonCode;
+    private String commonCode;
 
-    //Board 엔티티와 양방향 매핑
-    //저자가 계정을 수정, 삭제하면 게시글도 같이 수정,삭제된다(영속성 전이)
-    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL)
-    private List<Board> boardList = new ArrayList<>();
+    private String role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Set<GrantedAuthority> roles = new HashSet<>();
-        for (String role : commonCode.getCodeName().split(",")) {
+        for (String role : this.role.split(",")) {
             roles.add(new SimpleGrantedAuthority(role));
         }
         return roles;

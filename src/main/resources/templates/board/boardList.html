@@ -7,7 +7,7 @@
         <select id="types" name="types" class="form-control">
             <option value="none">전체</option>
             <option th:each="list : ${commonCodeList}" th:text="${list.codeNameKor}"
-                    th:value="${list.commonGroup + '_' + list.code}"/>
+                    th:value="${list.code}"/>
         </select>
         <input type="text" id="search" name="search" class="form-control"
                placeholder="제목을 입력하세요"/>
@@ -32,22 +32,16 @@
             <tbody>
             <tr th:each="board : ${board}">
                 <td><input type="button" th:onclick="|create('@{board/{id}/update (id=${board.id})}', '게시글 수정')|" th:value="${board.id}" /></td>
-                <td th:text="${board.commonCode.codeNameKor}"></td>
+                <td th:text="${board.codeNameKor}"></td>
                 <td th:text="${board.title}"></td>
-                <td th:if="${board.author != null}" th:text="${board.author.getUsername()}"></td>
+                <td th:text="${board.author}"></td>
                 <td th:text="${board.time}"></td>
-                <td th:if="${board.fileMaster == null}">
+                <td th:if="${board.fileMasterId == null}">
                     <span>첨부파일 X</span>
                 </td>
-                <td th:if="${board.fileMaster != null}">
+                <td th:if="${board.fileMasterId != null}">
                     <span>첨부파일 O</span>
                 </td>
-<!--                <td th:each="list : ${board.fileMaster}">-->
-<!--                    <span th:each="file : ${list.fileList}">-->
-<!--                        <a th:href="@{'/download/' + ${board.id} + '/' + ${file.id}}"-->
-<!--                           th:text="${file.originFileName}" class="btn btn-outline-dark"></a>-->
-<!--                    </span>-->
-<!--                </td>-->
             </tr>
             </tbody>
         </table>

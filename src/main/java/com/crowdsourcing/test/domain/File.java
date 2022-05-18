@@ -26,13 +26,7 @@ public class File {
     @Column(nullable = false)
     private String useFile;
 
-    //fileMaster 엔티티와 양방향 매핑
     @ManyToOne
     @JoinColumn(name = "fileMasterId")
     private FileMaster fileMaster;
-
-    public void addFileMaster(FileMaster fileMaster) {
-        this.fileMaster = fileMaster;
-        fileMaster.getFileList().add(this);
-    }
 }

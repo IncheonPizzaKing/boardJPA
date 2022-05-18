@@ -9,7 +9,7 @@
 <body>
 <div class="container">
     <nav th:replace="fragments/bodyHeader :: bodyHeader"/>
-    <form id="modalForm" role="form" method="post" th:object="${userDto}" th:action="@{/boardUser/new}">
+    <form id="modalForm" role="form" method="post" th:object="${userDto}" th:action="@{/user/new}">
         <div class="form-group">
             <label>email</label>
             <input type="email" th:field="*{username}" class="form-control"
@@ -24,9 +24,11 @@
         </div>
         <div class="form-group">
             <label>auth</label>
-            <select th:field="*{commonCodeId}" class="form-control">
-                <option th:each="list : ${commonCodeList}" th:if="${list.isUse == true}"
-                        th:value="${list.commonGroup + '_' + list.code}" th:text="${list.codeNameKor}">
+            <select th:field="*{commonCode}" class="form-control">
+                <span th:each="list : ${commonCodeList}">
+                    <option th:each="list : ${commonCodeList}" th:if="${list.isUse == true}"
+                            th:value="${list.code}" th:text="${list.codeNameKor}">
+                </span>
             </select>
         </div>
         <input type="submit" value="회원가입" class="form-control btn btn-success">

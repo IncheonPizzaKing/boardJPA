@@ -3,6 +3,7 @@ package com.crowdsourcing.test.controller;
 import com.crowdsourcing.test.domain.CommonCode;
 import com.crowdsourcing.test.domain.CommonCodeId;
 import com.crowdsourcing.test.domain.BoardUser;
+import com.crowdsourcing.test.dto.user.UserListDto;
 import com.crowdsourcing.test.service.CommonCodeService;
 import com.crowdsourcing.test.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +33,7 @@ public class AdminController {
      */
     @GetMapping("/admin")
     public String adminList(Model model) {
+
         model.addAttribute("commonCodeList", commonCodeService.findByGroupCode("G002"));
         model.addAttribute("sizeList", commonCodeService.findByGroupCode("G004"));
         return "admin/adminList";
@@ -42,20 +44,7 @@ public class AdminController {
      */
     @PostMapping("/admin")
     public String adminList(@RequestParam Map<String, Object> param, @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable, Model model) {
-        String search = param.get("search").toString();
-        String types = param.get("types").toString();
-        Page<BoardUser> user;
-        if(!StringUtils.hasText(search)) {
-            search = "";
-        }
-        if(!StringUtils.hasText(types) || types.equals("none")) {
-            types = "";
-            user = userService.findByUsernameContaining(search, pageable);
-        } else {
-            String[] common = types.split("_");
-            CommonCode commonCode = commonCodeService.findById(new CommonCodeId(common[0],common[1]));
-            user = userService.findByUsernameContainingAndRoleEquals(search, commonCode, pageable);
-        }
+        Page<UserListDto> user = userService.findUserList(param, pageable);
         int startPage = 1, endPage;
         int totalPages = user.getTotalPages();
         if(totalPages == 0) {

@@ -17,33 +17,17 @@ public class Board {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "boardId")
     private Long id;
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "commonGroup"),
-            @JoinColumn(name = "code")
-    })
-    private CommonCode commonCode;
+
+    private String commonCode;
     @NotEmpty
     private String title;
 
-    /** User 엔티티와 다대일 양방향 매핑 */
-    @ManyToOne
-    @JoinColumns({
-            @JoinColumn(name = "username"),
-            @JoinColumn(name = "userId")
-    })
-    private BoardUser author;
+    private Long userId;
+    private String username;
     @NotEmpty
     private String content;
     private LocalDateTime time;
 
-    /** FileMaster 엔티티와 1대1 단방향 매핑 */
-    @OneToOne
-    @JoinColumn(name = "fileMasterId")
-    private FileMaster fileMaster;
+    private Long fileMasterId;
 
-    public void addUser(BoardUser author) {
-        this.author = author;
-        author.getBoardList().add(this);
-    }
 }

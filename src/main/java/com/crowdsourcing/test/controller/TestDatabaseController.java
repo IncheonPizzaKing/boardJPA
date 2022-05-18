@@ -73,7 +73,8 @@ public class TestDatabaseController {
         BoardUser boardUser = BoardUser.builder()
                 .username(name)
                 .password(encoder.encode(password))
-                .commonCode(commonCode)
+                .role(commonCode.getCodeName())
+                .commonCode(commonCode.getCode())
                 .build();
 
         userRepository.save(boardUser);
@@ -83,10 +84,11 @@ public class TestDatabaseController {
      * 테스트 게시글 데이터 메소드
      */
     public void createTestDB2(String type, String title, String author, String content, CommonCode commonCode) {
-
+        BoardUser user = userRepository.findByUsernameEquals(author);
         Board board = Board.builder()
-                .author(userRepository.findByUsernameEquals(author))
-                .commonCode(commonCode)
+                .userId(user.getId())
+                .username(user.getUsername())
+                .commonCode(commonCode.getCode())
                 .title(title)
                 .content(content)
                 .time(LocalDateTime.now())

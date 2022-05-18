@@ -1,5 +1,6 @@
 package com.crowdsourcing.test.service;
 
+import com.crowdsourcing.test.domain.File;
 import com.crowdsourcing.test.domain.FileMaster;
 import com.crowdsourcing.test.repository.FileMasterRepository;
 import com.crowdsourcing.test.util.MD5Generator;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.util.List;
 
 @Service
@@ -18,6 +18,7 @@ public class FileMasterService {
 
 
     private final FileMasterRepository fileMasterRepository;
+    private final FileService fileService;
 
     /**
      * 파일 업로드
@@ -27,32 +28,9 @@ public class FileMasterService {
 
         FileMaster fileMaster = new FileMaster();
         fileMaster.setUseFile("true");
-        for (MultipartFile multipartFileIn : multipartFile) {
-            if (!multipartFileIn.isEmpty()) {
-                String originFilename = multipartFileIn.getOriginalFilename();
-                String filename = new MD5Generator(originFilename).toString();
-                String savePath = System.getProperty("user.dir") + "\\files";
-                if (!new File(savePath).exists()) {
-
-                    try {
-                        new File(savePath).mkdir();
-                    } catch (Exception e) {
-                        e.getStackTrace();
-                    }
-                }
-                String filePath = savePath + "\\" + filename;
-                multipartFileIn.transferTo(new File(filePath));
-
-                com.crowdsourcing.test.domain.File fileDto = com.crowdsourcing.test.domain.File.builder()
-                        .fileName(filename)
-                        .filePath(filePath)
-                        .originFileName(originFilename)
-                        .useFile("true")
-                        .build();
-                fileDto.addFileMaster(fileMaster);
-            }
-        }
         fileMasterRepository.save(fileMaster);
+        fileService.uploadFile(multipartFile, fileMaster);
+
         return fileMaster;
     }
 
@@ -60,13 +38,18 @@ public class FileMasterService {
      * 게시판 삭제시 useFile=false
      */
     @Transactional
-    public void deleteBoard(FileMaster fileMaster) {
-        List<com.crowdsourcing.test.domain.File> list = fileMaster.getFileList();
+    public void deleteBoard(Long fileMasterId) {
+        FileMaster fileMaster = fileMasterRepository.findById(fileMasterId).orElseThrow(IllegalArgumentException::new);
+        List<com.crowdsourcing.test.domain.File> list = fileService.findByFileMasterEquals(fileMaster);
         if(list != null) {
             fileMaster.setUseFile("false");
             for(com.crowdsourcing.test.domain.File file : list) {
                 file.setUseFile("false");
             }
         }
+    }
+
+    public List<File> findByFileMasterEquals(Long fileMasterId) {
+        return fileService.findByFileMasterEquals(fileMasterRepository.findById(fileMasterId).orElseThrow(IllegalArgumentException::new));
     }
 }

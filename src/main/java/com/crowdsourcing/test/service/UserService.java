@@ -1,21 +1,25 @@
 package com.crowdsourcing.test.service;
 
 import com.crowdsourcing.test.domain.BoardUser;
+import com.crowdsourcing.test.dto.SearchDto;
 import com.crowdsourcing.test.dto.user.UserDto;
 import com.crowdsourcing.test.domain.CommonCode;
 import com.crowdsourcing.test.domain.CommonCodeId;
 import com.crowdsourcing.test.domain.UserId;
+import com.crowdsourcing.test.dto.user.UserListDto;
 import com.crowdsourcing.test.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import java.util.*;
 
 @RequiredArgsConstructor /** final이나 @NonNull인 필드 값만 파라미터로 받는 생성자를 추가 */
 @Service
@@ -54,17 +58,17 @@ public class UserService implements UserDetailsService {
     }
 
     /**
-     * 조건에 맞는 사용자 전체 검색(role, search 값 전달 받았을때)
+     * 조건에 맞는 사용자 전체 검색
      */
-    public Page<BoardUser> findByUsernameContainingAndRoleEquals(String search, CommonCode commonCode, Pageable pageable) {
-        return userRepository.findByUsernameContainingAndCommonCodeEquals(search, commonCode, pageable);
-    }
-
-    /**
-     * 조건에 맞는 사용자 전체 검색(search 값만 전달 받았을때)
-     */
-    public Page<BoardUser> findByUsernameContaining(String search, Pageable pageable) {
-        return userRepository.findByUsernameContaining(search, pageable);
+    public Page<UserListDto> findUserList(Map<String, Object> param, Pageable pageable) {
+        SearchDto searchDto = new SearchDto();
+        if(param.get("search") != null) {
+            searchDto.setSearch(param.get("search").toString());
+        }
+        if(param.get("types") != null) {
+            searchDto.setTypes(param.get("types").toString());
+        }
+        return userRepository.findUserList(searchDto, pageable);
     }
 
     /**
@@ -74,12 +78,11 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void signup(UserDto userDto) {
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        String[] commonCodeOne = userDto.getCommonCodeId().split("_");
-        CommonCode one = commonCodeService.findById(new CommonCodeId(commonCodeOne[0], commonCodeOne[1]));
         BoardUser boardUser = BoardUser.builder()
                 .username(userDto.getUsername())
                 .password(encoder.encode(userDto.getPassword()))
-                .commonCode(one)
+                .commonCode(userDto.getCommonCode())
+                .role(commonCodeService.findById(new CommonCodeId("G002", userDto.getCommonCode())).getCodeName())
                 .build();
         userRepository.save(boardUser);
     }

@@ -8,7 +8,7 @@
     <div>
         <select id="types" name="types" class="form-control">
             <option value="none">전체</option>
-            <option th:each="list : ${commonCodeList}" th:value="${list.commonGroup + '_' + list.code}"
+            <option th:each="list : ${commonCodeList}" th:value="${list.code}"
                     th:text="${list.codeNameKor}">
         </select>
         <input type="text" id="search" name="search" class="form-control" placeholder="사용자명을 입력하세요"/>
@@ -35,8 +35,8 @@
                 </td>
                 <td th:text="${admin.id}"></td>
                 <td th:text="${admin.username}"></td>
-                <td th:if="${admin.commonCode.codeName.equals('USER')}" th:text="${'사용자'}"></td>
-                <td th:if="${admin.commonCode.codeName.equals('ADMIN,USER')}" th:text="${'관리자'}"></td>
+                <td th:if="${admin.commonCode.codeName.equals('USER')}" th:text="${admin.commonCode.codeNameKor}"></td>
+                <td th:if="${admin.commonCode.codeName.equals('ADMIN,USER')}" th:text="${admin.commonCode.codeNameKor}"></td>
             </tr>
             </tbody>
         </table>
@@ -46,9 +46,8 @@
     <div th:replace="fragments/footer :: footer"/>
 </div>
 </body>
-<script src="https://code.jquery.com/jquery-3.5.0.js"></script>
 <script src="/js/script.js"></script>
-<script>
+<script type="text/javascript">
     $(function() {
         dataSend();
     });
