@@ -35,7 +35,7 @@
                 <td th:text="${board.codeNameKor}"></td>
                 <td th:text="${board.title}"></td>
                 <td th:text="${board.author}"></td>
-                <td th:text="${board.time}"></td>
+                <td th:text="${#temporals.format(board.time, 'yyyy-MM-dd HH:mm')}"></td>
                 <td th:if="${board.fileMasterId == null}">
                     <span>첨부파일 X</span>
                 </td>

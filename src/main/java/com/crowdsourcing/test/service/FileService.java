@@ -39,6 +39,8 @@ public class FileService {
         for (MultipartFile multipartFileIn : multipartFile) {
             if (!multipartFileIn.isEmpty()) {
                 String originFilename = multipartFileIn.getOriginalFilename();
+                System.out.println("##########");
+                System.out.println(multipartFileIn.getContentType());
                 String filename = new MD5Generator(originFilename).toString();
                 String savePath = System.getProperty("user.dir") + "\\files";
                 if (!new java.io.File(savePath).exists()) {

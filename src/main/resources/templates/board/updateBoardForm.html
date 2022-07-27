@@ -32,7 +32,7 @@
             <label th:for="content">내용</label>
             <textarea rows="5" th:field="*{content}" class="form-control" required></textarea>
         </div>
-        <div th:if="${form.fileList.size > 0}" class="form-group">
+        <div th:if="${form.fileList != null}" class="form-group">
             <label>첨부파일</label>
             <div th:each="list : ${form.fileList}">
                 <span th:each="file : ${list}">
